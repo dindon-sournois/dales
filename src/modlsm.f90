@@ -1556,6 +1556,7 @@ subroutine initlsm
     use modsurfdata, only : isurf
     use modemisdata, only : l_emission
     use fortran_support, only : nnml_output
+  use modsurfdata, only : tsoil, tsoilm, phiw, phiwm, H, LE, G0, rssoil, rsveg, cliq, lambda, lambdah, lambdas, gammas, lambdash, gammash, wl, wlm
 
     implicit none
 
