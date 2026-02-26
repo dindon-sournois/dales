@@ -35,7 +35,7 @@ set( dales_srcs
 	modchem.f90
 	modcloudfield.f90
 	modcrosssection.f90
-	modcufft.f90
+#	modcufft.f90
 	moddatetime.f90
 	moddepcrosssection.f90
 	moddrizzle.f90
@@ -242,9 +242,10 @@ ecbuild_add_executable( TARGET dales
                           $<$<BOOL:${HAVE_HIP}>:${HIPFORT_LIB}>
 )
 # Temporary
-#if( ENABLE_ACC )
+if( ENABLE_ACC )
 #  target_link_options( dales PUBLIC -cuda )
-#endif()
+target_link_options( dales PUBLIC $<$<STREQUAL:${CMAKE_Fortran_COMPILER_ID},Cray>:-homp>)
+endif()
 
 # DALES library, e.g. for use with OMUSE. Only built if -DENABLE_DALESLIB is turned on.
 ecbuild_add_library( TARGET libdales

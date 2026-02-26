@@ -1556,6 +1556,7 @@ subroutine initlsm
     use modsurfdata, only : isurf
     use modemisdata, only : l_emission
     use fortran_support, only : nnml_output
+  use modsurfdata, only : tsoil, tsoilm, phiw, phiwm, H, LE, G0, rssoil, rsveg, cliq, lambda, lambdah, lambdas, gammas, lambdash, gammash, wl, wlm
 
     implicit none
 
@@ -2797,7 +2798,7 @@ subroutine check_value_validity
     use modchecksim, only: check_array
     implicit none
     integer i, j, k
-    integer, parameter :: rkind = kind(tile(ilu)%z0h)
+    integer, parameter :: rkind = kind(tile(1)%z0h)
     character(len=*), parameter :: routine = modname//'/check_value_validity'
 
     do ilu=1,nlu-1

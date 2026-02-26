@@ -563,6 +563,7 @@ contains
     real :: hurav_s, clwav_s, cliav_s, plwav_s, pliav_s
     real :: wsvsub_s, wsvres_s
     real :: a_dry, b_dry, a_moist, b_moist
+    real :: qlhav_, wthlsub_, wqtsub_, wthvsub_, uwsub_, vwsub_, hurav_, clwav_, cliav_ 
 
     call timer_tic('modgenstat/do_genstat', 1)
 
@@ -707,35 +708,51 @@ contains
     cqt = 1./den
 
     !$acc parallel loop collapse(2) default(present) private(upcu, vpcv, ilratio) &
+#if 0
     !$acc& reduction(+: qlhav(1), wthlsub(1), wqtsub(1), wthvsub(1), uwsub(1), vwsub(1), hurav(1), clwav(1), cliav(1)) async(1)
+#else
+    !$acc& reduction(+: qlhav_, wthlsub_, wqtsub_, wthvsub_, uwsub_, vwsub_, hurav_, clwav_, cliav_) async(1)
+#endif
     do j = 2, j1
       do i = 2, i1
-        qlhav(1) = qlhav(1) + ql0h(i,j,1)
-        wthlsub(1) = wthlsub(1) + thlflux(i,j)
-        wqtsub(1) = wqtsub(1) + qtflux (i,j)
-        wthvsub(1) = wthvsub(1) + ( c1*thlflux(i,j)+c2*thls*qtflux(i,j) ) !hj: thv0 replaced by thls
+        qlhav_ = qlhav_ + ql0h(i,j,1)
+        wthlsub_ = wthlsub_ + thlflux(i,j)
+        wqtsub_ = wqtsub_ + qtflux (i,j)
+        wthvsub_ = wthvsub_ + ( c1*thlflux(i,j)+c2*thls*qtflux(i,j) ) !hj: thv0 replaced by thls
         wqlsub(1) = 0.0
 
         !Momentum flux
         upcu = um(i, j, 1) + cu
         upcu = sign(1._field_r, upcu) * max(abs(upcu), eps1)
 
-        uwsub(1) = uwsub(1) - (0.5 * (ustar(i,j) + ustar(i-1,j)))**2 &
+        uwsub_ = uwsub_ - (0.5 * (ustar(i,j) + ustar(i-1,j)))**2 &
                     * upcu / sqrt(upcu**2 + ((vm(i,j,1) + vm(i-1,j,1) + vm(i,j+1,1) + vm(i-1,j+1,1)) / 4. + cv)**2)
 
         vpcv = vm(i, j, 1) + cv
         vpcv = sign(1._field_r, vpcv) * max(abs(vpcv), eps1)
 
-        vwsub(1) = vwsub(1) - (0.5 * (ustar(i,j) + ustar(i,j-1)))**2 &
+        vwsub_ = vwsub_ - (0.5 * (ustar(i,j) + ustar(i,j-1)))**2 &
                     * vpcv / sqrt(vpcv**2 + ((um(i,j,1) + um(i+1,j,1) + um(i,j-1,1) + um(i+1,j-1,1)) / 4. + cu)**2)
 
-        hurav(1) = hurav(1) + 100 * (qt0(i,j,1) - ql0(i,j,1)) / qsat_tab(tmp0(i,j,1), presf(1))
+        hurav_ = hurav_ + 100 * (qt0(i,j,1) - ql0(i,j,1)) / qsat_tab(tmp0(i,j,1), presf(1))
 
         ilratio = max(0._field_r,min(1._field_r,(tmp0(i,j,1)-tdn) / (tup-tdn)))
-        clwav(1) = clwav(1) + ql0(i,j,1) * ilratio
-        cliav(1) = cliav(1) + ql0(i,j,1) * (1-ilratio)
+        clwav_ = clwav_ + ql0(i,j,1) * ilratio
+        cliav_ = cliav_ + ql0(i,j,1) * (1-ilratio)
       end do
     end do
+
+    !$acc kernels default(present) async(1)
+    qlhav(1) = qlhav_
+    wthlsub(1) = wthlsub_
+    wqtsub(1) = wqtsub_
+    wthvsub(1) = wthvsub_
+    uwsub(1) = uwsub_
+    vwsub(1) = vwsub_
+    hurav(1) = hurav_
+    clwav(1) = clwav_
+    cliav(1) = cliav_
+    !$acc end kernels
 
     !-------------------------------------------
     !     HIGHER LAYERS
