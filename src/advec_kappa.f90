@@ -121,7 +121,7 @@ subroutine hadvecc_kappa(a_in,a_out)
   kbeg = max(k_low-1,1)
   kend = min(k_high+2, kmax)
 
-  !$acc parallel loop collapse(3) async(2)
+  !$acc parallel loop collapse(3)
   do k = kbeg, kend
     do j = 2, j1
       do i = 2, i2
@@ -154,7 +154,7 @@ subroutine hadvecc_kappa(a_in,a_out)
     end do
   end do
 
-  !$acc parallel loop collapse(3) async(3)
+  !$acc parallel loop collapse(3)
   do k = kbeg, kend
     do j = 2, j2
       do i = 2, i1
@@ -260,7 +260,7 @@ subroutine vadvecc_kappa(a_in,a_out)
 
   ! vertical advection from layer 1 to 2, special case. k=2
   if (k_low <= 3) then
-    !$acc parallel loop collapse(2) async(1)
+    !$acc parallel loop collapse(2)
     do j = 2, j1
       do i = 2, i1
         d1m = 0
@@ -294,7 +294,7 @@ subroutine vadvecc_kappa(a_in,a_out)
 
   kend = min(k_high+2, kmax)
 
-  !$acc parallel loop collapse(3) async(4)
+  !$acc parallel loop collapse(3)
   do k = 3, kend
     do j = 2, j1
       do i = 2, i1
@@ -340,7 +340,7 @@ subroutine  halflev_kappa(a_in,a_out)
     real(field_r)      d1,d2,cf
     integer   i,j,k
 
-    !$acc parallel loop collapse(3) private(d1,d2,cf) async(1)
+    !$acc parallel loop collapse(3) private(d1,d2,cf)
     do k = 3, k1
       do j = 2, j1
         do i = 2, i1
@@ -358,7 +358,7 @@ subroutine  halflev_kappa(a_in,a_out)
       end do
     end do
 
-    !$acc parallel loop collapse(2) private(d1,d2,cf) async(2)
+    !$acc parallel loop collapse(2) private(d1,d2,cf)
     do j = 2, j1
       do i = 2, i1
         if (w0(i,j,2)>=0) then

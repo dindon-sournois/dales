@@ -657,7 +657,7 @@ contains
 
     real(field_r) :: corr !< Correction value [-/s]
 
-    !$acc parallel loop collapse(3) private(corr) async(1)
+    !$acc parallel loop collapse(3) private(corr)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -686,7 +686,7 @@ contains
     s2 = size(field, 2)
     s3 = size(field, 3)
 
-    !$acc parallel loop collapse(3) async(1)
+    !$acc parallel loop collapse(3)
     do k = 1, s3
       do j = 1, s2
         do i = 1, s1
@@ -709,7 +709,7 @@ contains
     s2 = size(src, 2)
     s3 = size(src, 3)
 
-    !$acc parallel loop collapse(3) async(1)
+    !$acc parallel loop collapse(3)
     do k = 1, s3
       do j = 1, s2
         do i = 1, s1

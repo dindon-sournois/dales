@@ -633,7 +633,7 @@ contains
     ! 2.1 SLAB AVERAGES OF PROGNOSTIC VARIABLES
     !------------------------------------------
 
-    !$acc parallel loop collapse(3) async(1)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -643,7 +643,7 @@ contains
       enddo
     enddo
 
-    !$acc parallel loop async(1)
+    !$acc parallel loop
     do k = 1, k1
       cfracav(k) = cfracav(k)+count(ql0(2:i1,2:j1,k)>0)
     end do
@@ -664,7 +664,7 @@ contains
       enddo
     end if
 
-    !$acc kernels async(1)
+    !$acc kernels
     umav    = umav    / ijtot + cu
     vmav    = vmav    / ijtot + cv
     wmav    = wmav    / ijtot
@@ -709,9 +709,9 @@ contains
 
     !$acc parallel loop collapse(2) private(upcu, vpcv, ilratio) &
 #if 0
-    !$acc& reduction(+: qlhav(1), wthlsub(1), wqtsub(1), wthvsub(1), uwsub(1), vwsub(1), hurav(1), clwav(1), cliav(1)) async(1)
+    !$acc& reduction(+: qlhav(1), wthlsub(1), wqtsub(1), wthvsub(1), uwsub(1), vwsub(1), hurav(1), clwav(1), cliav(1))
 #else
-    !$acc& reduction(+: qlhav_, wthlsub_, wqtsub_, wthvsub_, uwsub_, vwsub_, hurav_, clwav_, cliav_) async(1)
+    !$acc& reduction(+: qlhav_, wthlsub_, wqtsub_, wthvsub_, uwsub_, vwsub_, hurav_, clwav_, cliav_)
 #endif
     do j = 2, j1
       do i = 2, i1
@@ -742,7 +742,7 @@ contains
       end do
     end do
 
-    !$acc kernels async(1)
+    !$acc kernels
     qlhav(1) = qlhav_
     wthlsub(1) = wthlsub_
     wqtsub(1) = wqtsub_
@@ -761,7 +761,7 @@ contains
     !$acc parallel loop gang &
     !$acc& private(qlhav_s, wqlsub_s, wqlres_s, wthlsub_s, wthlres_s, wthvsub_s, wthvres_s, &
     !$acc&         wqtsub_s, wqtres_s, uwres_s, vwres_s, uwsub_s, vwsub_s, &
-    !$acc&         hurav_s, clwav_s, cliav_s, plwav_s, pliav_s) async(1)
+    !$acc&         hurav_s, clwav_s, cliav_s, plwav_s, pliav_s)
     do k = 2, kmax
       qlhav_s = 0.0
       wthlsub_s = 0.0
@@ -897,7 +897,7 @@ contains
     iqr = get_tracer_index("qr")
 
     if (iqr > 0) then
-       !$acc parallel loop gang private(plwav_s, pliav_s, ilratio) async(1)
+       !$acc parallel loop gang private(plwav_s, pliav_s, ilratio)
        do k = 1, kmax
           if (imicro == imicro_sice .or. imicro == imicro_sice2) then
              !$acc loop collapse(2) &
@@ -944,7 +944,7 @@ contains
         if (iadv_sv==iadv_kappa .and. .not. lopenbc) then
            call halflev_kappa(sv0(:,:,:,n),sv0h)
         else
-          !$acc parallel loop collapse(3) async(1)
+          !$acc parallel loop collapse(3)
           do k = 2, k1
             do j = 2, j1
               do i = 2, i1    ! note: sv0h only defined and only used for k=2...
@@ -969,7 +969,7 @@ contains
         end do
 
 
-        !$acc parallel loop gang private(wsvsub_s) async(1)
+        !$acc parallel loop gang private(wsvsub_s)
         do k = 1, kmax
           wsvsub_s = 0.0
           if (k == 1) then
@@ -1040,7 +1040,7 @@ contains
     !------------
     ! 4 NORMALIZE
     !------------
-    !$acc kernels async(1)
+    !$acc kernels
     cfracav = cfracav / ijtot
     qlhav   = qlhav  /ijtot
 
@@ -1084,7 +1084,7 @@ contains
     !---------------------------------
     ! 5 ADD SLAB AVERAGES TO TIME MEAN
     !---------------------------------
-    !$acc kernels async(1)
+    !$acc kernels
     umn     = umn     + umav
     vmn     = vmn     + vmav
     wmn     = wmn     + wmav
@@ -1163,7 +1163,7 @@ contains
       c = c_in
     end if
 
-    !$acc parallel loop private(prof_s) async
+    !$acc parallel loop private(prof_s)
     do k = 1, k1
       prof_s = 0.0
       !$acc loop collapse(2) reduction(+: prof_s)

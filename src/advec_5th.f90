@@ -96,7 +96,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
   integer :: i,j,k
 
   k = 1
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(1)) * ( &
@@ -108,7 +108,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
 
   ! CvH do 2nd order for bottom and top
   k = 2
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -120,7 +120,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-1
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -132,7 +132,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -144,7 +144,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = 3
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -164,7 +164,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-2
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -184,7 +184,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
 
-  !$acc parallel loop collapse(3) async(2)
+  !$acc parallel loop collapse(3)
   do k = 4, kmax-3
     do j = jstart, jend
       do i = istart, iend
@@ -226,7 +226,7 @@ subroutine hadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
 
   integer :: i,j,k
 
-  !$acc parallel loop collapse(3) async(1)
+  !$acc parallel loop collapse(3)
   do k = 1, kmax
     do j = jstart, jend
       do i = istart, iend
@@ -271,7 +271,7 @@ subroutine vadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
   integer :: i,j,k
 
   k = 1
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -283,7 +283,7 @@ subroutine vadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
   end do
 
   k = 2
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -296,7 +296,7 @@ subroutine vadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-1
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -309,7 +309,7 @@ subroutine vadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -322,7 +322,7 @@ subroutine vadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
   end do
 
   k = 3
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -342,7 +342,7 @@ subroutine vadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-2
-  !$acc parallel loop collapse(2) async(1)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -361,7 +361,7 @@ subroutine vadvecu_5th(a_in,a_out,istart,iend,jstart,jend)
     end do
   end do
 
-  !$acc parallel loop collapse(3) async(2)
+  !$acc parallel loop collapse(3)
   do k = 4, kmax-3
     do j = jstart, jend
       do i = istart, iend
@@ -402,7 +402,7 @@ subroutine hadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
 
   integer :: i,j,k
 
-  !$acc parallel loop collapse(3) async(2)
+  !$acc parallel loop collapse(3)
   do k = 1, kmax
     do j = jstart, jend
       do i = istart, iend
@@ -448,7 +448,7 @@ subroutine vadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
   integer :: i,j,k
 
   k = 1
-  !$acc parallel loop collapse(2) async(3)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -460,7 +460,7 @@ subroutine vadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = 2
-  !$acc parallel loop collapse(2) async(3)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -473,7 +473,7 @@ subroutine vadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-1
-  !$acc parallel loop collapse(2) async(3)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -486,7 +486,7 @@ subroutine vadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax
-  !$acc parallel loop collapse(2) async(3)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( &
@@ -499,7 +499,7 @@ subroutine vadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = 3
-  !$acc parallel loop collapse(2) async(3)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k)- ( (1/rhobf(k)) * ( &
@@ -519,7 +519,7 @@ subroutine vadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-2
-  !$acc parallel loop collapse(2) async(3)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobf(k)) * ( &
@@ -538,7 +538,7 @@ subroutine vadvecv_5th(a_in, a_out,istart,iend,jstart,jend)
     end do
   end do
 
-  !$acc parallel loop collapse(3) async(4)
+  !$acc parallel loop collapse(3)
   do k = 4, kmax-3
     do j = jstart, jend
       do i = istart, iend
@@ -578,7 +578,7 @@ subroutine hadvecw_5th(a_in, a_out,istart,iend,jstart,jend)
 
   integer :: i,j,k
 
-  !$acc parallel loop collapse(3) async(3)
+  !$acc parallel loop collapse(3)
   do k = 2, kmax
     do j = jstart, jend
       do i = istart, iend
@@ -623,7 +623,7 @@ subroutine vadvecw_5th(a_in, a_out,istart,iend,jstart,jend)
   integer :: i,j,k
 
   k = 2
-  !$acc parallel loop collapse(2) async(5)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - (  (1/rhobh(k)) * ( &
@@ -635,7 +635,7 @@ subroutine vadvecw_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-1
-  !$acc parallel loop collapse(2) async(5)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - (  (1/rhobh(k)) * ( &
@@ -647,7 +647,7 @@ subroutine vadvecw_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax
-  !$acc parallel loop collapse(2) async(5)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - (  (1/rhobh(k)) * ( &
@@ -659,7 +659,7 @@ subroutine vadvecw_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = 3
-  !$acc parallel loop collapse(2) async(5)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobh(k)) * ( &
@@ -679,7 +679,7 @@ subroutine vadvecw_5th(a_in, a_out,istart,iend,jstart,jend)
   end do
 
   k = kmax-2
-  !$acc parallel loop collapse(2) async(5)
+  !$acc parallel loop collapse(2)
   do j = jstart, jend
     do i = istart, iend
       a_out(i,j,k) = a_out(i,j,k) - ( (1/rhobh(k)) * ( &
@@ -698,7 +698,7 @@ subroutine vadvecw_5th(a_in, a_out,istart,iend,jstart,jend)
     end do
   end do
 
-  !$acc parallel loop collapse(3) async(6)
+  !$acc parallel loop collapse(3)
   do k = 4, kmax-3
     do j = jstart, jend
       do i = istart, iend

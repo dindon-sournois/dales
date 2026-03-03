@@ -600,7 +600,7 @@ contains
       end do
     else
       !$acc parallel loop collapse(2) reduction(+:ccl, qlintavl, qtintavl) &
-      !$acc& reduction(max: qlintmaxl) private(qlint, qtint) async
+      !$acc& reduction(max: qlintmaxl) private(qlint, qtint)
       do j = 2, j1
         do i = 2, i1
           qlint = 0.
@@ -626,7 +626,7 @@ contains
           iqr = get_tracer_index("qhr")
        endif
        !$acc parallel loop collapse(2) reduction(+:qrintavl) &
-      !$acc& private(qrint) async
+      !$acc& private(qrint)
       do j = 2, j1
         do i = 2, i1
           qrint = 0.0
@@ -656,7 +656,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) reduction(+: zbaseavl) reduction(min: zbaseminl) async
+      !$acc parallel loop collapse(2) reduction(+: zbaseavl) reduction(min: zbaseminl)
       do j = 2, j1
         do i = 2, i1
           !$acc loop seq
@@ -725,7 +725,7 @@ contains
   !     9.5  Domain Averaged TKE
   !     -------------------------
 
-    !$acc parallel loop collapse(3) reduction(+: tke_totl) async
+    !$acc parallel loop collapse(3) reduction(+: tke_totl)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -768,7 +768,7 @@ contains
     ustl = 0
     tstl = 0
     qstl = 0
-    !$acc parallel loop collapse(2) reduction(+:ustl,tstl,qstl) async
+    !$acc parallel loop collapse(2) reduction(+:ustl,tstl,qstl)
     do j = 2, j1
        do i = 2, i1
           ustl = ustl + ustar(i,j)
@@ -780,7 +780,7 @@ contains
     if(isurf < 3) then
        thlfluxl = 0
        qtfluxl  = 0
-       !$acc parallel loop collapse(2) reduction(+:thlfluxl,qtfluxl) async
+       !$acc parallel loop collapse(2) reduction(+:thlfluxl,qtfluxl)
        do j = 2, j1
           do i = 2, i1
              thlfluxl = thlfluxl + thlflux(i, j)
@@ -1066,7 +1066,7 @@ contains
       ! Surface fluxes
 
       !$acc parallel loop gang vector collapse(2) &
-      !$acc reduction(+: s_swd_surf, s_swu_surf, s_lwd_surf, s_lwu_surf) async
+      !$acc reduction(+: s_swd_surf, s_swu_surf, s_lwd_surf, s_lwu_surf)
       do j = 2, j1
         do i = 2, i1
           s_swd_surf = s_swd_surf + swd(i,j,1)
@@ -1079,7 +1079,7 @@ contains
       ! Top of atmosphere fluxes
 
       !$acc parallel loop gang vector collapse(2) &
-      !$acc reduction(+: s_swd_toa, s_swu_toa, s_lwu_toa) async
+      !$acc reduction(+: s_swd_toa, s_swu_toa, s_lwu_toa)
       do j = 2, j1
         do i = 2, i1
           s_swd_toa = s_swd_toa + swd(i,j,k1)
@@ -1091,7 +1091,7 @@ contains
       ! Top of model fluxes
 
       !$acc parallel loop gang vector collapse(2) &
-      !$acc reduction(+: s_swd_tom, s_swu_tom, s_lwd_tom, s_lwu_tom) async
+      !$acc reduction(+: s_swd_tom, s_swu_tom, s_lwd_tom, s_lwu_tom)
       do j = 2, j1
         do i = 2, i1
           s_swd_tom = s_swd_tom + swd(i,j,kmax)
@@ -1107,7 +1107,7 @@ contains
 
         !$acc parallel loop gang vector collapse(2) &
         !$acc reduction(+: s_swd_surf_ca, s_swu_surf_ca, &
-        !$acc              s_lwd_surf_ca, s_lwu_surf_ca) async
+        !$acc              s_lwd_surf_ca, s_lwu_surf_ca)
         do j = 2, j1
           do i = 2, i1
             s_swd_surf_ca = s_swd_surf_ca + swdca(i,j,1)
@@ -1120,7 +1120,7 @@ contains
         ! Top of atmosphere fluxes
 
         !$acc parallel loop gang vector collapse(2) &
-        !$acc reduction(+: s_swu_toa_ca, s_lwu_toa_ca) async
+        !$acc reduction(+: s_swu_toa_ca, s_lwu_toa_ca)
         do j = 2, j1
           do i = 2, i1
             s_swu_toa_ca = s_swu_toa_ca + swuca(i,j,k1)
@@ -1131,7 +1131,7 @@ contains
         ! Top of model fluxes
 
         !$acc parallel loop gang vector collapse(2) &
-        !$acc reduction(+: s_swu_tom_ca, s_lwu_tom_ca) async
+        !$acc reduction(+: s_swu_tom_ca, s_lwu_tom_ca)
         do j = 2, j1
           do i = 2, i1
             s_swu_tom_ca = s_swu_tom_ca + swuca(i,j,kmax)
@@ -1453,7 +1453,7 @@ contains
             blh_fld(:,:,:) = thl0(:,:,:)
             !$acc end kernels
           case(iblh_thv)
-            !$acc parallel loop collapse(3) async
+            !$acc parallel loop collapse(3)
             do k = 1, k1
               do j = 2, j1
                 do i = 2, i1
@@ -1473,7 +1473,7 @@ contains
     select case (iblh_meth)
       case (iblh_flux)
         stride = ceiling(real(imax)/real(blh_nsamp))
-        !$acc parallel loop collapse(2) reduction(+:zil) async
+        !$acc parallel loop collapse(2) reduction(+:zil)
         do i = 2, stride+1
           do j = 2, j1
             nsamp =  ceiling(real(i1-i+1)/real(stride))

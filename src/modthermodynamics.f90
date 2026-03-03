@@ -178,7 +178,7 @@ contains
       too_cold = .false.
       too_hot = .false.
 
-      !$acc parallel loop collapse(3) async(1) private(T) &
+      !$acc parallel loop collapse(3) private(T) &
       !$acc firstprivate(too_cold, too_hot)
       do k = 1, k1
         do j = 2, j1
@@ -236,7 +236,7 @@ contains
     ! recalculate thv and rho on the basis of results
     call calthv
 
-    !$acc parallel loop collapse(3) async(1)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -246,12 +246,12 @@ contains
       end do
     end do
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       thvh(k) = 0.0_field_r
     end do
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       thvf(k) = 0.0_field_r
     end do
@@ -266,11 +266,11 @@ contains
       call slabavg(thv0,fluid_mask,ih,thvf)
     end if
 
-    !$acc serial async(1)
+    !$acc serial
     thvh(1) = th0av(1)*(1+(rv/rd-1)*qt0av(1)-rv/rd*ql0av(1))
     !$acc end serial
 
-    !$acc parallel loop async(1)
+    !$acc parallel loop
     do k = 1, k1
       rhof(k) = presf(k)/(rd*thvf(k)*exnf(k))
     end do
@@ -291,7 +291,7 @@ contains
   subroutine calc_dry_tmp
     integer :: i, j, k
 
-    !$acc parallel loop collapse(3) async(1)
+    !$acc parallel loop collapse(3)
     do k = 1,k1
        do j = 2,j1
           do i = 2,i1
@@ -318,7 +318,7 @@ contains
     dthvdz = 0
 
     if (lmoist) then
-      !$acc parallel loop collapse(3) async(1)
+      !$acc parallel loop collapse(3)
       do k = 2, k1
         do j = 2, j1
           do i = 2, i1
@@ -332,7 +332,7 @@ contains
       !$acc parallel loop collapse(3) &
       !$acc private(a_dry, b_dry, a_moist, b_moist, c_liquid, epsilon, eps_I, &
       !$acc         chi_sat, chi, dthv, del_thv_dry, del_thv_sat, temp, qs, dq, dth) &
-      !$acc async(1)
+      !$acc
       do k = 2, kmax
         do j = 2 , j1
           do i = 2, i1
@@ -377,7 +377,7 @@ contains
         end do
       end do
 
-      !$acc parallel loop collapse(2) private(temp, qs, a_surf, b_surf) async(1)
+      !$acc parallel loop collapse(2) private(temp, qs, a_surf, b_surf)
       do j=2,j1
         do i=2,i1
           if(ql0(i,j,1)>0) then
@@ -397,7 +397,7 @@ contains
       end do
 
     else
-      !$acc parallel loop collapse(3) async(1)
+      !$acc parallel loop collapse(3)
       do k = 2, k1
         do j = 2, j1
           do i = 2, i1
@@ -406,7 +406,7 @@ contains
         end do
       end do
 
-      !$acc parallel loop collapse(3) async(1)
+      !$acc parallel loop collapse(3)
       do k = 2, kmax
         do j = 2, j1
           do i = 2, i1
@@ -415,7 +415,7 @@ contains
         end do
       end do
 
-      !$acc parallel loop collapse(2) async(1)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           dthvdz(i,j,1) = dthldz(i,j)
@@ -423,7 +423,7 @@ contains
       end do
     end if
 
-    !$acc parallel loop collapse(3) async(1)
+    !$acc parallel loop collapse(3)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -449,37 +449,37 @@ contains
 
     ! 1. Compute slab averaged fields
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       u0av(k) = 0.0_field_r
     end do
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       v0av(k) = 0.0_field_r
     end do
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       thl0av(k) = 0.0_field_r
     end do
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       th0av(k) = 0.0_field_r
     end do
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       qt0av(k) = 0.0_field_r
     end do
 
-    !$acc parallel loop gang(static:1) async wait(1)
+    !$acc parallel loop gang(static:1) wait(1)
     do k = 1, k1
       ql0av(k) = 0.0_field_r
     end do
 
-    !$acc parallel loop gang vector collapse(2) async wait(1)
+    !$acc parallel loop gang vector collapse(2) wait(1)
     do k = 1, k1
       do n = 1, nsv
         sv0av(k,n) = 0.0_field_r
@@ -517,7 +517,7 @@ contains
       end do
     endif
 
-    !$acc parallel loop gang(static:1) async(1)
+    !$acc parallel loop gang(static:1)
     do k = 1, k1
       th0av(k) = thl0av(k) + (rlv / cp) * ql0av(k) / exnf(k)
     end do
@@ -528,13 +528,13 @@ contains
 
     call fromztop
 
-    !$acc parallel loop gang(static:1) async(1)
+    !$acc parallel loop gang(static:1)
     do k = 1, k1
       th0av(k) = thl0av(k) + (rlv / cp) * ql0av(k) / exnf(k)
     end do
 
     if ((timee < 0.01 .or. .not. lconstexner) .and. .not. lbaseexner) then
-      !$acc parallel loop gang(static:1) async(1)
+      !$acc parallel loop gang(static:1)
       do k = 1, k1
         exnf(k) = (presf(k) / pref0)**(rd / cp)
       end do
@@ -547,19 +547,19 @@ contains
     ! 3. Construct density profiles and exner function
 
     if ((timee < 0.01 .or. .not. lconstexner) .and. .not. lbaseexner) then
-      !$acc serial async(1)
+      !$acc serial
       exnh(1) = (ps/pref0)**(rd/cp)
       exnf(1) = (presf(1)/pref0)**(rd/cp)
       !$acc end serial
 
-      !$acc parallel loop async(1)
+      !$acc parallel loop
       do k=2,k1
         exnf(k) = (presf(k)/pref0)**(rd/cp)
         exnh(k) = (presh(k)/pref0)**(rd/cp)
       end do
     endif
 
-    !$acc parallel loop async(1)
+    !$acc parallel loop
     do k=1,k1
       thvf(k) = th0av(k)*exnf(k)*(1+(rv/rd-1)*qt0av(k)-rv/rd*ql0av(k))
       rhof(k) = presf(k)/(rd*thvf(k))
@@ -583,7 +583,7 @@ contains
 
     ! Interpolate theta and qt to half levels
 
-    !$acc parallel loop async(1)
+    !$acc parallel loop
     do k=2,k1
       thetah(k) = (th0av(k)*dzf(k-1) + th0av(k-1)*dzf(k))/(2*dzh(k))
       qth   (k) = (qt0av(k)*dzf(k-1) + qt0av(k-1)*dzf(k))/(2*dzh(k))
@@ -593,7 +593,7 @@ contains
     ! Calculate pressures at full levels
     ! Do this on the CPU for now; these loops are serial so GPU is very slow!
 
-    !$acc update self(thetah, qth, qlh, th0av, qt0av, ql0av) async(1)
+    !$acc update self(thetah, qth, qlh, th0av, qt0av, ql0av)
     !$acc wait
 
     thvh(1) = th0av(1)*(1+(rv/rd-1)*qt0av(1)-rv/rd*ql0av(1))
@@ -619,7 +619,7 @@ contains
       presh(k) = presh(k)**(1/rdocp)
     end do
 
-    !$acc update device(thvh, presf, thvf, presh) async(1)
+    !$acc update device(thvh, presf, thvf, presh)
 
     call timer_toc(routine)
 
@@ -746,7 +746,7 @@ contains
 
     call timer_tic(routine, 1)
 
-    !$acc parallel loop gang async(stream) &
+    !$acc parallel loop gang &
     !$acc private(b, qli, qsat, qti, Tl)
     do k = 1, k1
       ! Find lowest thl and highest qt in the slab.
@@ -818,7 +818,7 @@ contains
 
     call timer_tic(routine, 1)
 
-    !$acc parallel loop gang vector collapse(3) async(stream) &
+    !$acc parallel loop gang vector collapse(3) &
     !$acc private(b, qli, qsat, qti, Tl)
     do k = 1, k1
       do j = 2, j1
@@ -875,7 +875,7 @@ contains
     real(field_r) :: interp_w !< Interpolation temperature [K]
     integer       :: tlo      !< Index of temperature in esat lookuptable
 
-    !$acc parallel loop collapse(3) async(1) &
+    !$acc parallel loop collapse(3) &
     !$acc private(qsat, T, interp_w, tlo, esi)
     do k = 1, k1
       do j = 2, j1
@@ -928,7 +928,7 @@ contains
     if (lkappa) then
       call halflev_kappa(phi, phi_half)
     else
-      !$acc parallel loop collapse(3) async(stream)
+      !$acc parallel loop collapse(3)
       do k = 2, k1
         do j = 2, j1
           do i = 2, i1
@@ -939,7 +939,7 @@ contains
       end do
     end if
 
-    !$acc parallel loop collapse(2) async(stream)
+    !$acc parallel loop collapse(2)
     do j = 2, j1
       do i = 2, i1
         phi_half(i,j,1) = phi_surf

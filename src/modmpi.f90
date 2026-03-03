@@ -474,7 +474,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels async
+    !$acc kernels
     a(:,sy-jh:sy-1,:) = a(:,ey-jh+1:ey,:)
     a(:,ey+1:ey+jh,:) = a(:,sy:sy+jh-1,:)
     !$acc end kernels
@@ -525,7 +525,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels async
+    !$acc kernels
     a(sx-ih:sx-1,:,:) = a(ex-ih+1:ex,:,:)
     a(ex+1:ex+ih,:,:) = a(sx:sx+ih-1,:,:)
     !$acc end kernels
@@ -859,7 +859,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels async
+    !$acc kernels
     a(:,sy-jh:sy-1,:) = a(:,ey-jh+1:ey,:)
     a(:,ey+1:ey+jh,:) = a(:,sy:sy+jh-1,:)
     !$acc end kernels
@@ -910,7 +910,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels async
+    !$acc kernels
     a(sx-ih:sx-1,:,:) = a(ex-ih+1:ex,:,:)
     a(ex+1:ex+ih,:,:) = a(sx:sx+ih-1,:,:)
     !$acc end kernels

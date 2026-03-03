@@ -1230,7 +1230,7 @@ contains
         end do
       end if
     else
-      !$acc parallel loop collapse(2) async(1)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           thlflux(i,j) = wtsurf
@@ -1239,7 +1239,7 @@ contains
       end do
 
       if (nsv > 0) then
-        !$acc parallel loop collapse(3) async(2)
+        !$acc parallel loop collapse(3)
         do n = 1, nsv
           do j = 2, j1
             do i = 2, i1
