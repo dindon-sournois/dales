@@ -187,7 +187,7 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(3) default(present) async wait(1)
+    !$acc parallel loop collapse(3) async wait(1)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -197,7 +197,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
+    !$acc parallel loop collapse(4) async wait(1)
     do s = 1, this%nspecies 
       do k = 1, kmax 
         do j = 2, j1
@@ -231,7 +231,7 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(3) default(present) async wait(1)
+    !$acc parallel loop collapse(3) async wait(1)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -240,7 +240,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
+    !$acc parallel loop collapse(4) async wait(1)
     do s = 1, this%nspecies
       do k = 1, kmax
         do j = 2, j1
@@ -325,7 +325,7 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
+    !$acc parallel loop collapse(4) async wait(1)
     do s = 1, this%nspecies 
       do k = 1, kmax 
         do j = 2, j1
@@ -359,7 +359,7 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
+    !$acc parallel loop collapse(4) async wait(1)
     do s = 1, this%nspecies
       do k = 1, kmax
         do j = 2, j1

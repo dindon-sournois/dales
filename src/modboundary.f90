@@ -215,7 +215,7 @@ contains
   select case(igrw_damp)
   case(0) !do nothing
   case(1)
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     do k=ksp,kmax
       up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(u0av(k)-cu))*tsc(k)
       vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(v0av(k)-cv))*tsc(k)
@@ -225,7 +225,7 @@ contains
     end do
     !$acc end kernels
     if(lcoriol) then
-      !$acc kernels default(present) async(1)
+      !$acc kernels async(1)
       do k=ksp,kmax
         up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(ug(k)-cu))*((1./(geodamptime*rnu0))*tsc(k))
         vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(vg(k)-cv))*((1./(geodamptime*rnu0))*tsc(k))
@@ -233,7 +233,7 @@ contains
       !$acc end kernels
     end if
   case(2)
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     do k=ksp,kmax
       up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(ug(k)-cu))*tsc(k)
       vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(vg(k)-cv))*tsc(k)
@@ -243,7 +243,7 @@ contains
     end do
     !$acc end kernels
   case(3)
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     do k=ksp,kmax
       up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(u0av(k)-cu))*tsc(k)
       vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(v0av(k)-cv))*tsc(k)
@@ -253,7 +253,7 @@ contains
     end do
     !$acc end kernels
   case(-1)
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     up(:,:,:) = up(:,:,:) - unudge * ( sum((u0av(1:kmax) - ug(1:kmax)) * dzf(1:kmax)) / sum(dzf(1:kmax)) ) / rdt
     vp(:,:,:) = vp(:,:,:) - unudge * ( sum((v0av(1:kmax) - vg(1:kmax)) * dzf(1:kmax)) / sum(dzf(1:kmax)) ) / rdt
     !$acc end kernels
@@ -266,13 +266,13 @@ contains
   ! Originally done in subroutine tqaver, now using averages from modthermodynamics
 
   if ( .not. lopenbc ) then
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     thl0(2:i1,2:j1,kmax) = thl0av(kmax)
     qt0 (2:i1,2:j1,kmax) = qt0av(kmax)
     !$acc end kernels
 
     if (nsv > 0) then
-      !$acc kernels default(present) async(1)
+      !$acc kernels async(1)
       do n=1,nsv
         sv0(2:i1,2:j1,kmax,n) = sv0av(kmax,n)
       end do
@@ -307,7 +307,7 @@ contains
   ! Calculate new gradient over several of the top levels, to be used
   ! to extrapolate thl and qt to level k1 !JvdD
   
-  !$acc serial default(present)
+  !$acc serial
   dtheta = sum((thl0av(kmax-kav+1:kmax)-thl0av(kmax-kav:kmax-1))/ &
              dzh(kmax-kav+1:kmax))/kav
   dqt    = sum((qt0av (kmax-kav+1:kmax)-qt0av (kmax-kav:kmax-1))/ &
@@ -315,14 +315,14 @@ contains
   !$acc end serial
 
   if ( nsv > 0 ) then
-    !$acc parallel loop default(present)
+    !$acc parallel loop
     do n=1,nsv
       dsv(n) = sum((sv0av(kmax-kav+1:kmax,n)-sv0av(kmax-kav:kmax-1,n))/ &
                  dzh(kmax-kav:kmax-1))/kav
     enddo
   endif
   
-  !$acc kernels default(present) 
+  !$acc kernels 
   thl0(:,:,k1) = thl0(:,:,kmax) + dtheta*dzh(k1)
   qt0(:,:,k1)  = qt0 (:,:,kmax) + dqt*dzh(k1)
 
@@ -331,7 +331,7 @@ contains
   !$acc end kernels
   
   if ( nsv > 0) then
-    !$acc kernels default(present)
+    !$acc kernels
     do n=1,nsv
       sv0(:,:,k1,n) = sv0(:,:,kmax,n) + dsv(n)*dzh(k1)
       svm(:,:,k1,n) = svm(:,:,kmax,n) + dsv(n)*dzh(k1)
@@ -347,7 +347,7 @@ contains
     use modglobal, only : kmax,k1,e12min,lrigidlid
     use modfields, only : u0,v0,w0,e120,um,vm,wm,e12m
     implicit none
-    !$acc kernels default(present)
+    !$acc kernels
     u0(:,:,k1)   = u0(:,:,kmax)
     v0(:,:,k1)   = v0(:,:,kmax)
     w0(:,:,k1)   = 0.0
@@ -355,12 +355,12 @@ contains
     !$acc end kernels
 
     if (lrigidlid) then
-        !$acc kernels default(present)
+        !$acc kernels
         e120(:,:,k1) = e120(:,:,kmax)
         !$acc end kernels
     endif
     
-    !$acc kernels default(present)
+    !$acc kernels
     um(:,:,k1)   = um(:,:,kmax)
     vm(:,:,k1)   = vm(:,:,kmax)
     wm(:,:,k1)   = 0.0
@@ -368,7 +368,7 @@ contains
     !$acc end kernels
 
     if (lrigidlid) then
-        !$acc kernels default(present)
+        !$acc kernels
         e12m(:,:,k1) = e12m(:,:,kmax)
         !$acc end kernels
     endif

@@ -265,7 +265,7 @@ contains
     m_cos => modes_f(iCOS)
     m_inc => modes_h(iINC)
     
-    !$acc parallel loop collapse(3) default(present) &
+    !$acc parallel loop collapse(3) &
     !$acc private(dm, fn, n_act, w0, dncdt, fm, tend_n, tend_m, st)
     do k = 1, kmax
       do j = 2, j1
@@ -391,7 +391,7 @@ contains
     m_inc => modes_h(iINC)
     m_inr => modes_h(iINR)
 
-    !$acc parallel loop collapse(4) default(present) private(dqadt)
+    !$acc parallel loop collapse(4) private(dqadt)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -464,7 +464,7 @@ contains
     m_cos => modes_f(iCOS)
     m_inr => modes_h(iINR)
 
-    !$acc parallel loop collapse(3) default(present) &
+    !$acc parallel loop collapse(3) &
     !$acc private(f_evp, eps, evapm, evapn, dn, dm, fn, fm)
     do k = 1, kmax
       do j = 2, j1
@@ -561,7 +561,7 @@ contains
     m_cos => modes_f(iCOS)
     m_inc => modes_h(iINC)
 
-    !$acc parallel loop collapse(3) default(present) &
+    !$acc parallel loop collapse(3) &
     !$acc private(f_evp, eps, evapm, evapn, dn, dm, fn, fm)
     do k = 1, kmax
       do j = 2, j1
@@ -605,7 +605,7 @@ contains
     end do
 
     if (rk3step == 3) then
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1
@@ -674,7 +674,7 @@ contains
     n_spl = ceiling(9.9 * delt / minval(dzf))
     dt_spl = delt / real(n_spl, kind=field_r)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -684,7 +684,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(4) default(present)
+    !$acc parallel loop collapse(4)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -696,7 +696,7 @@ contains
     end do
 
     do ts = 1, n_spl
-      !$acc parallel loop collapse(3) default(present) private(sed_nr)
+      !$acc parallel loop collapse(3) private(sed_nr)
       do k = qrbase, qrroof
         do j = 2, j1 
           do i = 2, i1
@@ -736,7 +736,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(4) default(present)
+    !$acc parallel loop collapse(4)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1

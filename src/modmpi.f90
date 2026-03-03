@@ -436,7 +436,7 @@ contains
     allocate(sendn(nssize),sends(nssize),recvn(nssize),recvs(nssize))
     !$acc enter data copyin(sendn, sends, recvn, recvs)
 
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, jh
         do i = 1, xl
@@ -460,7 +460,7 @@ contains
     call MPI_WAIT(reqrn, status, mpierr)
 
     ! Write back buffers
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, jh
         do i = 1, xl
@@ -474,7 +474,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels default(present) async
+    !$acc kernels async
     a(:,sy-jh:sy-1,:) = a(:,ey-jh+1:ey,:)
     a(:,ey+1:ey+jh,:) = a(:,sy:sy+jh-1,:)
     !$acc end kernels
@@ -487,7 +487,7 @@ contains
     allocate(sende(ewsize),sendw(ewsize),recve(ewsize),recvw(ewsize))
     !$acc enter data copyin(sende, sendw, recve, recvw)
 
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, yl
         do i = 1, ih
@@ -511,7 +511,7 @@ contains
     call MPI_WAIT(reqre, status, mpierr)
 
     ! Write back buffers
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, yl
         do i = 1, ih
@@ -525,7 +525,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels default(present) async
+    !$acc kernels async
     a(sx-ih:sx-1,:,:) = a(ex-ih+1:ex,:,:)
     a(ex+1:ex+ih,:,:) = a(sx:sx+ih-1,:,:)
     !$acc end kernels
@@ -820,7 +820,7 @@ contains
     allocate(sendn(nssize),sends(nssize),recvn(nssize),recvs(nssize))
     !$acc enter data copyin(sendn, sends, recvn, recvs)
 
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, jh
         do i = 1, xl
@@ -845,7 +845,7 @@ contains
 
 
     ! Write back buffers
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, jh
         do i = 1, xl
@@ -859,7 +859,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels default(present) async
+    !$acc kernels async
     a(:,sy-jh:sy-1,:) = a(:,ey-jh+1:ey,:)
     a(:,ey+1:ey+jh,:) = a(:,sy:sy+jh-1,:)
     !$acc end kernels
@@ -872,7 +872,7 @@ contains
     allocate(sende(ewsize),sendw(ewsize),recve(ewsize),recvw(ewsize))
     !$acc enter data copyin(sende, sendw, recve, recvw)
 
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, yl
         do i = 1, ih
@@ -896,7 +896,7 @@ contains
     call MPI_WAIT(reqre, status, mpierr)
 
     ! Write back buffers
-    !$acc parallel loop collapse(3) default(present) private(ii)
+    !$acc parallel loop collapse(3) private(ii)
     do k = 1, zl
       do j = 1, yl
         do i = 1, ih
@@ -910,7 +910,7 @@ contains
   else
 
     ! Single processor, make sure the field is periodic
-    !$acc kernels default(present) async
+    !$acc kernels async
     a(sx-ih:sx-1,:,:) = a(ex-ih+1:ex,:,:)
     a(ex+1:ex+ih,:,:) = a(sx:sx+ih-1,:,:)
     !$acc end kernels
@@ -1080,7 +1080,7 @@ contains
 
 
     if (present(on_gpu)) then
-      !$acc kernels default(present)
+      !$acc kernels
       do k = kbs, kes
         aver(k) = aver(k) + sum(var(ibs:ies, jbs:jes, k))
       end do
@@ -1116,7 +1116,7 @@ contains
     integer           :: k
 
     if (present(on_gpu)) then
-      !$acc kernels default(present)
+      !$acc kernels
       do k = kbs, kes
         aver(k) = aver(k) + sum(var(ibs:ies, jbs:jes, k))
       end do
@@ -1164,7 +1164,7 @@ contains
     allocate(sum2d(kf-ks+1,5))
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4, sum_lcl5)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4, sum_lcl5)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1206,7 +1206,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*5, MPI_REAL4, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     aver3(:) = sum2d(:,3)
@@ -1246,7 +1246,7 @@ contains
     allocate(sum2d(kf-ks+1,4))
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1284,7 +1284,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*4, MPI_REAL4, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     aver3(:) = sum2d(:,3)
@@ -1321,7 +1321,7 @@ contains
 
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2, sum_lcl3)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1355,7 +1355,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*3, MPI_REAL4, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     aver3(:) = sum2d(:,3)
@@ -1389,7 +1389,7 @@ contains
 
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1419,7 +1419,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*2, MPI_REAL4, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     !$acc end kernels
@@ -1459,7 +1459,7 @@ contains
 
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4, sum_lcl5)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4, sum_lcl5)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1501,7 +1501,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*5, MPI_REAL8, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     aver3(:) = sum2d(:,3)
@@ -1542,7 +1542,7 @@ contains
 
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1580,7 +1580,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*4, MPI_REAL8, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     aver3(:) = sum2d(:,3)
@@ -1617,7 +1617,7 @@ contains
 
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2, sum_lcl3)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1651,7 +1651,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*3, MPI_REAL8, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     aver3(:) = sum2d(:,3)
@@ -1685,7 +1685,7 @@ contains
 
     if (present(on_gpu)) then
       !$acc enter data create(sum2d)
-      !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2)
+      !$acc parallel loop gang private(sum_lcl1, sum_lcl2)
       do k = kbs, kes
         sum_lcl1 = 0.0
         sum_lcl2 = 0.0
@@ -1715,7 +1715,7 @@ contains
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*2, MPI_REAL8, MPI_SUM, comm3d, mpierr)
     !$acc end host_data
 
-    !$acc kernels default(present)
+    !$acc kernels
     aver1(:) = sum2d(:,1)
     aver2(:) = sum2d(:,2)
     !$acc end kernels

@@ -122,7 +122,7 @@ contains
     !$acc&                  lambdag, precep, &
     !$acc&                  ccrz, ccsz, ccgz, ccrz2, ccsz2, ccgz2)
 
-    !$acc kernels default(present)
+    !$acc kernels
     precep=0
     !$acc end kernels
 
@@ -170,14 +170,14 @@ contains
     qrsmall=0
     ! reset microphysics tendencies
 
-    !$acc kernels default(present)
+    !$acc kernels
     qrp=0
     thlpmcr=0
     qtpmcr=0
     !$acc end kernels
 
     ! Density corrected fall speed parameters, see Tomita 2008
-    !$acc parallel loop default(present)
+    !$acc parallel loop
     do k=1,k1
        ccrz(k)=ccr*(1.29/rhobf(k))**0.5
        ccsz(k)=ccs*(1.29/rhobf(k))**0.5
@@ -189,7 +189,7 @@ contains
        ccgz2(k) = gam2dg*.27*n0rg*sqrt(ccgz(k)/2.e-5)
     end do
 
-    !$acc parallel loop collapse(3) default(present) reduction(+: qrsum,qrsmall)
+    !$acc parallel loop collapse(3) reduction(+: qrsum,qrsmall)
     do k=1,k1
     do j=2,j1
     do i=2,i1
@@ -211,7 +211,7 @@ contains
 
 
     if(l_warm) then !partitioning and determination of intercept parameter
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
       do j=2,j1
       do i=2,i1
@@ -220,7 +220,7 @@ contains
       enddo
       enddo
     else
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
       do j=2,j1
       do i=2,i1
@@ -231,7 +231,7 @@ contains
     end if
 
     if(l_warm) then !partitioning and determination of intercept parameter
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
       do j=2,j1
       do i=2,i1
@@ -246,7 +246,7 @@ contains
       enddo
       enddo
     elseif(l_graupel) then
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
       do j=2,j1
       do i=2,i1
@@ -261,7 +261,7 @@ contains
       enddo
       enddo
     else
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
       do j=2,j1
       do i=2,i1
@@ -337,7 +337,7 @@ contains
     call timer_tic(routine//'/finalize', 1)
 
     ! apply final microphysics tendency
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -371,7 +371,7 @@ contains
 
     call timer_tic(routine, 1)
     if(l_berry.eqv..true.) then ! Berry/Hsie autoconversion
-    !$acc parallel loop collapse(3) default(present) private(qll,qli,ddisp,lwc,autl,tc,times,auti,aut)
+    !$acc parallel loop collapse(3) private(qll,qli,ddisp,lwc,autl,tc,times,auti,aut)
     do k=1,kmax
     do j=2,j1
     do i=2,i1
@@ -394,7 +394,7 @@ contains
       enddo
       enddo
     else ! Lin/Kessler autoconversion as in Khairoutdinov and Randall, 2006
-      !$acc parallel loop collapse(3) default(present) private(qll,qli,tc,autl,auti,aut)
+      !$acc parallel loop collapse(3) private(qll,qli,tc,autl,auti,aut)
       do k=1,kmax
       do j=2,j1
       do i=2,i1
@@ -435,7 +435,7 @@ contains
     integer:: i,j,k
 
     call timer_tic(routine, 1)
-    !$acc parallel loop collapse(3) default(present) private(qll,qli,qrr,qrs,qrg,&
+    !$acc parallel loop collapse(3) private(qll,qli,qrr,qrs,qrg,&
     !$acc&             gaccrl,gaccsl,gaccgl,gaccri,gaccsi,gaccgi,accr,accs,accg,acc)
     do k=1,kmax
     do j=2,j1
@@ -494,7 +494,7 @@ contains
     integer:: i,j,k
 
     call timer_tic(routine, 1)
-    !$acc parallel loop collapse(3) default(present) &
+    !$acc parallel loop collapse(3) &
     !$acc& private(ssl,ssi,ventr,vents,ventg,thfun,evapdepr,evapdeps,evapdepg,devap)
     do k=1,kmax
     do j=2,j1
@@ -552,11 +552,11 @@ contains
     n_spl = ceiling(wfallmax*delt/(minval(dzh)*courantp))
     dt_spl = delt/real(n_spl) !fixed time step
 
-    !$acc kernels default(present)
+    !$acc kernels
     sed_qr = 0 ! reset sedimentation fluxes
     !$acc end kernels
 
-    !$acc parallel loop collapse(3) default(present) private(vtr,vts,vtg,vtf)
+    !$acc parallel loop collapse(3) private(vtr,vts,vtg,vtf)
     do k=1,kmax
     do j=2,j1
     do i=2,i1
@@ -578,7 +578,7 @@ contains
     enddo
 
     !  advect precipitation using upwind scheme
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k=1,kmax
     do j=2,j1
     do i=2,i1
@@ -592,11 +592,11 @@ contains
       DO jn = 2 , n_spl
 
         ! reset fluxes at each step of loop
-        !$acc kernels default(present)
+        !$acc kernels
         sed_qr = 0
         !$acc end kernels
 
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k=1,kmax
         do j=2,j1
         do i=2,i1
@@ -618,7 +618,7 @@ contains
         enddo
         enddo
 
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k=1,kmax
         do j=2,j1
         do i=2,i1
@@ -632,7 +632,7 @@ contains
     ENDIF
 
     ! no thl and qt tendencies build in, implying no heat transfer between precipitation and air
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k=1,kmax
     do j=2,j1
     do i=2,i1
@@ -657,7 +657,7 @@ contains
 
     real(field_r) :: corr !< Correction value [-/s]
 
-    !$acc parallel loop collapse(3) default(present) private(corr) async(1)
+    !$acc parallel loop collapse(3) private(corr) async(1)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -686,7 +686,7 @@ contains
     s2 = size(field, 2)
     s3 = size(field, 3)
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) async(1)
     do k = 1, s3
       do j = 1, s2
         do i = 1, s1
@@ -709,7 +709,7 @@ contains
     s2 = size(src, 2)
     s3 = size(src, 3)
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) async(1)
     do k = 1, s3
       do j = 1, s2
         do i = 1, s1

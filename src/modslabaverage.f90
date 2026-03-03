@@ -81,7 +81,7 @@ contains
       norm_fac = 1.0_real32 / (imax * jmax)
     end if
 
-    !$acc parallel loop gang default(present)
+    !$acc parallel loop gang
     do k = ks, ke
       fld_sum = 0
       !$acc loop vector collapse(2) reduction(+: fld_sum)
@@ -142,7 +142,7 @@ contains
       norm_fac = 1.0_real64 / (imax * jmax)
     end if
 
-    !$acc parallel loop gang default(present)
+    !$acc parallel loop gang
     do k = ks, ke
       fld_sum = 0
       !$acc loop vector collapse(2) reduction(+: fld_sum)
@@ -210,7 +210,7 @@ contains
 
       !$acc data create(n_cells_tot)
 
-      !$acc parallel loop gang default(present)
+      !$acc parallel loop gang
       do k = ks, ke
         fld_sum = 0
         n_cells = 0
@@ -235,7 +235,7 @@ contains
         !$acc end host_data
       end if
 
-      !$acc parallel loop gang default(present)
+      !$acc parallel loop gang
       do k = ks, ke
         avg(k) = merge(avg(k) / n_cells_tot(k), fillvalue_, n_cells_tot(k) > 0)
       end do
@@ -293,7 +293,7 @@ contains
 
       !$acc data create(n_cells_tot)
 
-      !$acc parallel loop gang default(present)
+      !$acc parallel loop gang
       do k = ks, ke
         fld_sum = 0
         n_cells = 0
@@ -318,7 +318,7 @@ contains
         !$acc end host_data
       end if
 
-      !$acc parallel loop gang default(present)
+      !$acc parallel loop gang
       do k = ks, ke
         avg(k) = merge(avg(k) / n_cells_tot(k), fillvalue_, n_cells_tot(k) > 0)
       end do

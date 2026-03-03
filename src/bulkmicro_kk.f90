@@ -85,7 +85,7 @@ contains
 
     call timer_tic('bulkmicro_kk/autoconversion', 1)
 
-    !$acc parallel loop collapse(3) default(present) private(au)
+    !$acc parallel loop collapse(3) private(au)
     do k = qcbase, qcroof
       do j = 2, j1
         do i = 2, i1
@@ -148,7 +148,7 @@ contains
 
     call timer_tic('bulkmicro_kk/accretion', 1)
 
-    !$acc parallel loop collapse(3) default(present) private(ac)
+    !$acc parallel loop collapse(3) private(ac)
     do k = max(qrbase, qcbase), min(qcroof, qrroof)
       do j = 2, j1
         do i = 2, i1
@@ -224,7 +224,7 @@ contains
 
     call timer_tic('bulkmicro_kk/evaporation', 1)
 
-    !$acc parallel loop collapse(3) default(present) private(S, G, evap, Nevap)
+    !$acc parallel loop collapse(3) private(S, G, evap, Nevap)
     do k = qrbase, qrroof
       do j = 2, j1
         do i = 2, i1
@@ -440,7 +440,7 @@ contains
     real(field_r), allocatable :: qr_spl(:,:,:), Nr_spl(:,:,:)
     real(field_r), allocatable :: qr_tmp(:,:,:), Nr_tmp(:,:,:)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -465,7 +465,7 @@ contains
 
     do jn = 1, n_spl ! time splitting loop
       if (jn == 1) then
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, k1
           do j = 2, j1
             do i = 2, i1
@@ -478,7 +478,7 @@ contains
         end do
       else
         !Copy from tmp into spl
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, k1
           do j = 2, j1
             do i = 2, i1
@@ -495,7 +495,7 @@ contains
 
       ! Compute precep
       if (jn == 1) then
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = qrbase, qrroof
           do j = 2, j1
             do i = 2, i1
@@ -516,7 +516,7 @@ contains
         sedimbase = sedimbase + 1
         k = 1
 
-        !$acc parallel loop collapse(2) default(present) private(sed_qr, sed_Nr)
+        !$acc parallel loop collapse(2) private(sed_qr, sed_Nr)
         do j = 2, j1
           do i = 2, i1
             if (qr_spl(i,j,k) > qrmin) then
@@ -533,7 +533,7 @@ contains
         enddo
       end if ! qrbase == 1
 
-      !$acc parallel loop collapse(3) default(present) private(sed_qr, sed_Nr)
+      !$acc parallel loop collapse(3) private(sed_qr, sed_Nr)
       do k = sedimbase, qrroof
         do j = 2, j1
           do i = 2, i1
@@ -565,7 +565,7 @@ contains
 
     delt_inv = 1 / delt
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = qrbase, qrroof
       do j = 2, j1
         do i = 2, i1

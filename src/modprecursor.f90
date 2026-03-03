@@ -336,7 +336,7 @@ contains
 
     ! North
     if (myidy == 0) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) async
       do k = 1, kmax
         do j = 1, nudgedepthgr
           do i = 2, i1
@@ -349,7 +349,7 @@ contains
 
     ! South
     if (myidy == nprocy - 1) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) async
       do k = 1, kmax
         do j = j1 - nudgedepthgr + 1, j1
           do i = 2, i1
@@ -363,7 +363,7 @@ contains
 
     ! West
     if (myidx == 0) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) async
       do k = 1, kmax
         do j = 2, j1
           do i = 1, nudgedepthgr
@@ -376,7 +376,7 @@ contains
 
     ! East
     if (myidx == nprocx - 1) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) async
       do k = 1, kmax
         do j = 2, j1
           do i = i1 - nudgedepthgr + 1, i1

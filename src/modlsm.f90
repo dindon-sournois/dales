@@ -230,12 +230,12 @@ subroutine calc_liquid_reservoir
 
     rk3coef = rdt / (4. - dble(rk3step))
     if(rk3step == 1) then
-       !$acc kernels default(present) async(1)
+       !$acc kernels async(1)
        wlm(:,:) = wl(:,:)
        !$acc end kernels
     endif
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2, j1
         do i=2, i1
             wl_tend_dew = 0
@@ -305,12 +305,12 @@ subroutine calc_theta_mean(tile)
     integer :: i, j, k, si
     real :: theta_lim
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     tile%phiw_mean(:,:) = 0.
     !$acc end kernels
 
     do k=1, kmax_soil
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) async(1)
         do j=2,j1
             do i=2,i1
                 si = soil_index(i,j,k)
@@ -345,7 +345,7 @@ subroutine calc_canopy_resistance_js
 
     k = kmax_soil
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             ! si = soil_index(i,j,k)
@@ -357,7 +357,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
 
@@ -372,7 +372,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
 
@@ -391,7 +391,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             si = soil_index(i,j,k)
@@ -404,7 +404,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             ! Calculate canopy and soil resistance
@@ -829,7 +829,7 @@ subroutine calc_stability
 
   ! Calculate properties shared by all tiles:
   ! Absolute wind speed difference, and virtual potential temperature atmosphere
-  !$acc parallel loop collapse(2) default(present) async(1)
+  !$acc parallel loop collapse(2) async(1)
   do j=2,j1
       do i=2,i1
           du = 0.5*(u0(i,j,1) + u0(i+1,j,1)) + cu
@@ -858,7 +858,7 @@ subroutine calc_obuk_ustar_ra(tile)
     integer :: i, j
     real :: thvs
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             !if (tile%frac(i,j) > 0) then
@@ -879,7 +879,7 @@ subroutine calc_obuk_ustar_ra(tile)
         end do
     end do
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             !if (tile%frac(i,j) > 0) then
@@ -911,12 +911,12 @@ subroutine calc_tile_bcs(tile)
     real :: rhocp_i(1), rholv_i(1)
 #endif
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     rhocp_i(1) = 1. / (rhof(1) * cp)
     rholv_i(1) = 1. / (rhof(1) * rlv)
     !$acc end kernels
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2, j1
         do i=2, i1
            ! if (tile%frac(i,j) > 0) then
@@ -996,7 +996,7 @@ subroutine calc_water_bcs(tile)
     integer :: i, j
     real :: esats
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2, j1
       do i=2, i1
         !if (tile%frac(i,j) > 0) then
@@ -1056,7 +1056,7 @@ subroutine calc_bulk_bcs
 #endif
     real, pointer :: ustar_3D(:,:,:)
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     rhocp_i(1) = 1. / (rhof(1) * cp)
     rholv_i(1) = 1. / (rhof(1) * rlv)
     !$acc end kernels
@@ -1072,7 +1072,7 @@ subroutine calc_bulk_bcs
       endif
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             H(i,j) = 0
@@ -1087,7 +1087,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             do ilu=1,nlu
@@ -1111,7 +1111,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
 
@@ -1122,7 +1122,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
 
@@ -1138,7 +1138,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
 
@@ -1152,7 +1152,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
 
@@ -1168,7 +1168,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
 
@@ -1237,7 +1237,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
     logical::acc
     if (iinterp == iinterp_amean) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) async(1) if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = 0.5*(field(i,j,k-1) + field(i,j,k))
@@ -1246,7 +1246,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
         end do
     else if (iinterp == iinterp_gmean) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) async(1) if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = sqrt(field(i,j,k-1) * field(i,j,k))
@@ -1255,7 +1255,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
         end do
     else if (iinterp == iinterp_hmean) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) async(1) if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = ((dz_soil(k-1)+dz_soil(k))*field(i,j,k-1)*field(i,j,k)) / &
@@ -1265,7 +1265,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
         end do
     else if (iinterp == iinterp_max) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) async(1) if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = max(field(i,j,k-1), field(i,j,k))
@@ -1291,7 +1291,7 @@ subroutine calc_thermal_properties
 
     ! Calculate diffusivity heat
     do k=1,kmax_soil
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) async(1)
         do j=2,j1
             do i=2,i1
                 si = soil_index(i,j,k)
@@ -1332,7 +1332,7 @@ subroutine calc_hydraulic_properties
 
     ! Calculate diffusivity and conductivity soil moisture
     do k=1,kmax_soil
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) async(1)
         do j=2,j1
             do i=2,i1
                 si = soil_index(i,j,k)
@@ -1365,11 +1365,11 @@ subroutine calc_hydraulic_properties
 
     ! Optionally, set free drainage bottom BC
     if (lfreedrainage) then
-        !$acc kernels default(present) async(1)
+        !$acc kernels async(1)
         gammash(:,:,1) = gammash(:,:,2)
         !$acc end kernels
     else
-        !$acc kernels default(present) async(1)
+        !$acc kernels async(1)
         gammash(:,:,1) = 0.
         !$acc end kernels
     end if
@@ -1388,14 +1388,14 @@ subroutine calc_root_water_extraction
     real :: phiw_rf, phi_frac, LE
     real, parameter :: fac = 1./(rhow * rlv)
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     phiw_source = 0
     !$acc end kernels
     do ilu=1,nlu
       if ((.not. tile(ilu)%lveg).or.(tile(ilu)%lushort == "slb")) then
           cycle
       else
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) async(1)
         do j=2, j1
           do i=2, i1
               LE = tile(ilu)%frac(i,j) * tile(ilu)%LE(i,j)
@@ -1432,14 +1432,14 @@ subroutine integrate_t_soil
 
     rk3coef = rdt / (4. - dble(rk3step))
     if(rk3step == 1) then
-       !$acc kernels default(present) async(1)
+       !$acc kernels async(1)
        tsoilm(:,:,:) = tsoil(:,:,:)
        !$acc end kernels
     endif
 
     ! Top soil layer
     k = kmax_soil
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             si = soil_index(i,j,k)
@@ -1452,7 +1452,7 @@ subroutine integrate_t_soil
 
     ! Bottom soil layer
     k = 1
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             tend = ((lambdah(i,j,k+1) * (tsoil(i,j,k+1) - tsoil(i,j,k)) * dzhi_soil(k+1)))*dzi_soil(k)
@@ -1463,7 +1463,7 @@ subroutine integrate_t_soil
 
     ! Interior
     do k=2,kmax_soil-1
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) async(1)
         do j=2,j1
             do i=2,i1
                 tend = ((lambdah(i,j,k+1) * (tsoil(i,j,k+1) - tsoil(i,j,k  )) * dzhi_soil(k+1)) &
@@ -1491,7 +1491,7 @@ subroutine integrate_theta_soil
 
     rk3coef = rdt / (4. - dble(rk3step))
     if(rk3step == 1) then
-       !$acc kernels default(present) async(1)
+       !$acc kernels async(1)
        phiwm(:,:,:) = phiw(:,:,:)
        !$acc end kernels
     endif
@@ -1500,7 +1500,7 @@ subroutine integrate_theta_soil
 
      ! Top soil layer
     k = kmax_soil
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
           do ilu=1,nlu
@@ -1516,7 +1516,7 @@ subroutine integrate_theta_soil
 
     ! Bottom soil layer
     k = 1
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) async(1)
     do j=2,j1
         do i=2,i1
             tend = ((lambdash(i,j,k+1) * (phiw(i,j,k+1) - phiw(i,j,k)) * dzhi_soil(k+1)))*dzi_soil(k) &
@@ -1528,7 +1528,7 @@ subroutine integrate_theta_soil
 
     ! Interior
     do k=2,kmax_soil-1
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) async(1)
         do j=2,j1
             do i=2,i1
                 tend = ((lambdash(i,j,k+1) * (phiw(i,j,k+1) - phiw(i,j,k  )) * dzhi_soil(k+1)) &

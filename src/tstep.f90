@@ -132,7 +132,7 @@ subroutine tstep_update
         pecletold = peclettot
         peclettotl = 0.0
         cfl_sq_l = -1.0
-        !$acc parallel loop collapse(3) default(present) reduction(max:cfl_sq_l, peclettotl)
+        !$acc parallel loop collapse(3) reduction(max:cfl_sq_l, peclettotl)
         do k = 1, kmax
           do j = 2, j1
             do i = 2, i1
@@ -179,7 +179,7 @@ subroutine tstep_update
       if (ladaptive) then
         peclettotl = 1e-5
         cfl_sq_l = -1.0
-        !$acc parallel loop collapse(3) default(present) reduction(max:cfl_sq_l, peclettotl)
+        !$acc parallel loop collapse(3) reduction(max:cfl_sq_l, peclettotl)
         do k = 1, kmax
           do j = 2, j1
             do i = 2, i1
@@ -254,7 +254,7 @@ subroutine tstep_integrate
   rk3coef = rdt / (4 - dble(rk3step))
 
   if(rk3step /= 3) then
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) async(1)
     do k = 1, k1
       do j = 2, j2     ! i2, j2, k1 here to include one ghost cell,
         do i = 1, i2   ! needed for u0, v0, w0 with open boundaries
@@ -270,7 +270,7 @@ subroutine tstep_integrate
 
     ! Scalars
     if (nsv > 0) then
-      !$acc parallel loop collapse(4) default(present) async(2)
+      !$acc parallel loop collapse(4) async(2)
       do n = 1, nsv
         do k = 1, kmax
           do j = 2, j1
@@ -284,7 +284,7 @@ subroutine tstep_integrate
     !$acc wait(1,2)
 
   else ! step 3 - store result in both ..0 and ..m
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) async(1)
     do k = 1, k1
       do j = 2, j2     ! i2, j2, k1 here to include one ghost cell,
         do i = 1, i2   ! needed for u0, v0, w0 with open boundaries
@@ -306,7 +306,7 @@ subroutine tstep_integrate
 
     ! Scalars
     if (nsv > 0) then
-      !$acc parallel loop collapse(4) default(present) async(2)
+      !$acc parallel loop collapse(4) async(2)
       do n = 1, nsv
         do k = 1, kmax
           do j = 2, j1
@@ -335,7 +335,7 @@ subroutine reset_tendencies()
   call timer_tic(routine, 0)
 
   ! set all tendencies to zero
-  !$acc parallel loop collapse(3) default(present) async(1)
+  !$acc parallel loop collapse(3) async(1)
   do k = 1, k1
     do j = 2, j2     ! i2, j2 here to include one ghost cell,
       do i = 2, i2   ! needed for up, vp with open boundaries
@@ -351,7 +351,7 @@ subroutine reset_tendencies()
 
   ! Scalars
   if (nsv > 0) then
-    !$acc parallel loop collapse(4) default(present) async(2)
+    !$acc parallel loop collapse(4) async(2)
     do n = 1, nsv
       do k = 1, k1
         do j = 2, j1

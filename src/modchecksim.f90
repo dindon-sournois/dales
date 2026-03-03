@@ -259,7 +259,7 @@ contains
       velmag_max,    &
       ekm_max
 
-    !$acc parallel loop gang default(present) &
+    !$acc parallel loop gang &
     !$acc private(velx_max, vely_max, velz_max, velmag_max, ekm_max)
     do k = 1, kmax
       velx_max = 0
@@ -317,7 +317,7 @@ contains
     divmax = 0.
     divtot = 0.
 
-    !$acc parallel loop collapse(3) default(present) private(div) &
+    !$acc parallel loop collapse(3) private(div) &
     !$acc reduction(max:divmax) reduction(+:divtot)
     do k=1,kmax
       do j=2,j1

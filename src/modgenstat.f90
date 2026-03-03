@@ -572,7 +572,7 @@ contains
     !---    ------------------------------
     !--------------------------------------------------------
 
-    !$acc kernels default(present)
+    !$acc kernels
     qlhav = 0.0
     u2av = 0.0
     v2av = 0.0
@@ -633,7 +633,7 @@ contains
     ! 2.1 SLAB AVERAGES OF PROGNOSTIC VARIABLES
     !------------------------------------------
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) async(1)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -643,7 +643,7 @@ contains
       enddo
     enddo
 
-    !$acc parallel loop default(present) async(1)
+    !$acc parallel loop async(1)
     do k = 1, k1
       cfracav(k) = cfracav(k)+count(ql0(2:i1,2:j1,k)>0)
     end do
@@ -664,7 +664,7 @@ contains
       enddo
     end if
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     umav    = umav    / ijtot + cu
     vmav    = vmav    / ijtot + cv
     wmav    = wmav    / ijtot
@@ -707,7 +707,7 @@ contains
     cthl = (exnh(1)*cp/rlv)*((1-den)/den)
     cqt = 1./den
 
-    !$acc parallel loop collapse(2) default(present) private(upcu, vpcv, ilratio) &
+    !$acc parallel loop collapse(2) private(upcu, vpcv, ilratio) &
 #if 0
     !$acc& reduction(+: qlhav(1), wthlsub(1), wqtsub(1), wthvsub(1), uwsub(1), vwsub(1), hurav(1), clwav(1), cliav(1)) async(1)
 #else
@@ -742,7 +742,7 @@ contains
       end do
     end do
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     qlhav(1) = qlhav_
     wthlsub(1) = wthlsub_
     wqtsub(1) = wqtsub_
@@ -758,7 +758,7 @@ contains
     !     HIGHER LAYERS
     !-------------------------------------------
 
-    !$acc parallel loop gang default(present) &
+    !$acc parallel loop gang &
     !$acc& private(qlhav_s, wqlsub_s, wqlres_s, wthlsub_s, wthlres_s, wthvsub_s, wthvres_s, &
     !$acc&         wqtsub_s, wqtres_s, uwres_s, vwres_s, uwsub_s, vwsub_s, &
     !$acc&         hurav_s, clwav_s, cliav_s, plwav_s, pliav_s) async(1)
@@ -897,7 +897,7 @@ contains
     iqr = get_tracer_index("qr")
 
     if (iqr > 0) then
-       !$acc parallel loop gang default(present) private(plwav_s, pliav_s, ilratio) async(1)
+       !$acc parallel loop gang private(plwav_s, pliav_s, ilratio) async(1)
        do k = 1, kmax
           if (imicro == imicro_sice .or. imicro == imicro_sice2) then
              !$acc loop collapse(2) &
@@ -944,7 +944,7 @@ contains
         if (iadv_sv==iadv_kappa .and. .not. lopenbc) then
            call halflev_kappa(sv0(:,:,:,n),sv0h)
         else
-          !$acc parallel loop collapse(3) default(present) async(1)
+          !$acc parallel loop collapse(3) async(1)
           do k = 2, k1
             do j = 2, j1
               do i = 2, i1    ! note: sv0h only defined and only used for k=2...
@@ -956,7 +956,7 @@ contains
 
         !$acc wait(1)
 
-        !$acc parallel loop default(present) private(wsvres_s)
+        !$acc parallel loop private(wsvres_s)
         do k = 2, kmax
           wsvres_s = 0.0
           !$acc loop collapse(2) reduction(+: wsvres_s)
@@ -1040,7 +1040,7 @@ contains
     !------------
     ! 4 NORMALIZE
     !------------
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     cfracav = cfracav / ijtot
     qlhav   = qlhav  /ijtot
 
@@ -1084,7 +1084,7 @@ contains
     !---------------------------------
     ! 5 ADD SLAB AVERAGES TO TIME MEAN
     !---------------------------------
-    !$acc kernels default(present) async(1)
+    !$acc kernels async(1)
     umn     = umn     + umav
     vmn     = vmn     + vmav
     wmn     = wmn     + wmav
@@ -1163,7 +1163,7 @@ contains
       c = c_in
     end if
 
-    !$acc parallel loop default(present) private(prof_s) async
+    !$acc parallel loop private(prof_s) async
     do k = 1, k1
       prof_s = 0.0
       !$acc loop collapse(2) reduction(+: prof_s)
@@ -1203,7 +1203,7 @@ contains
       convq   = 86400*1000.
       allocate(tmn   (k1), thmn  (k1))
 
-      !$acc kernels default(present)
+      !$acc kernels
       umn    = umn    /nsamples
       vmn    = vmn    /nsamples
       wmn    = wmn    /nsamples
@@ -1273,7 +1273,7 @@ contains
   !     2.0  Construct other time averaged fields
   !     ------------------------------------------
 
-      !$acc kernels default(present) copy(thmn, tmn)
+      !$acc kernels copy(thmn, tmn)
       thmn = thlmn + (rlv/cp)*qlmn/exnf
       tmn  = thmn*exnf
       !$acc end kernels
@@ -1584,7 +1584,7 @@ contains
 
     end if ! end if(myid==0)
 
-      !$acc kernels default(present)
+      !$acc kernels
       qlmnlast=qlmn
       wthvtmnlast=wthvtmn
 

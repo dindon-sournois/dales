@@ -400,7 +400,7 @@ module modcufft
       call check_exitcode(istat)
       call transposer%x_to_z(px, p, workspace_0)
       
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
         do j=2,j1
           do i=2,i1
@@ -426,7 +426,7 @@ module modcufft
       sz_2 = dim(2)
       sz_3 = dim(3)
 
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do k = 1, sz_3
         do j = 1, sz_2
           arr(2,j,k) = arr(len+1,j,k)
@@ -448,7 +448,7 @@ module modcufft
       sz_2 = dim(2)
       sz_3 = dim(3)
 
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do k = 1, sz_3
         do j = 1, sz_2
           arr(len+1,j,k) = arr(2,j,k)
