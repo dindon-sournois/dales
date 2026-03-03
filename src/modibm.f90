@@ -339,7 +339,7 @@ contains
     deallocate(tixw_p, tixw_m, tiyw_p, tiyw_m, tizw_p)
 
     !> Finally, copy data to GPU
-    !$acc enter data copyin(fluid_mask, iobst, ixw_p, ixw_m, iyw_p, iyw_m, izw_p)
+    !!$acc enter data copyin(fluid_mask, iobst, ixw_p, ixw_m, iyw_p, iyw_m, izw_p)
 
     call timer_toc('modibm/initibm')
 
@@ -350,7 +350,7 @@ contains
     !< Step out of further subroutine when IBM is switched off
     if (.not. (lapply_ibm)) return
 
-    !$acc exit data delete(fluid_mask, iobst, ixw_p, ixw_m, iyw_p, iyw_m, izw_p)
+    !!$acc exit data delete(fluid_mask, iobst, ixw_p, ixw_m, iyw_p, iyw_m, izw_p)
 
     deallocate(iobst)
     deallocate(ixw_p)

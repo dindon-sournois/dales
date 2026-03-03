@@ -334,9 +334,9 @@ contains
       call D_MPI_BCAST(tsvnudge, nsv * k1 * ntnudge, 0, comm3d, mpierr)
     end if
 
-    !$acc enter data copyin(timenudge, unudge, vnudge, wnudge, thlnudge, &
-    !$acc&                  qtnudge, tunudge, tvnudge, twnudge, tthlnudge, &
-    !$acc&                  tqtnudge, svnudge, tsvnudge)
+    !!$acc enter data copyin(timenudge, unudge, vnudge, wnudge, thlnudge, &
+    !!$acc&                  qtnudge, tunudge, tvnudge, twnudge, tthlnudge, &
+    !!$acc&                  tqtnudge, svnudge, tsvnudge)
 
     call timer_toc(routine)
   end subroutine initnudge
@@ -460,7 +460,7 @@ contains
       end do
     end if
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc(routine)
   end subroutine nudge

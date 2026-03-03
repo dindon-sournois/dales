@@ -95,10 +95,10 @@ contains
 
     ! TODO: experiment with non-blocking allreduce
     if (do_global) then
-      !$acc host_data use_device(avg)
+      !!!$acc host_data use_device(avg)
       call mpi_allreduce(mpi_in_place, avg, ke, mpi_real4, mpi_sum, &
                          comm3d, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
     end if
 
   end subroutine slabavg_r4
@@ -155,10 +155,10 @@ contains
     end do
 
     if (do_global) then
-      !$acc host_data use_device(avg)
+      !!!$acc host_data use_device(avg)
       call mpi_allreduce(mpi_in_place, avg, ke, mpi_real8, mpi_sum, &
                          comm3d, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
     end if
 
   end subroutine slabavg_r8
@@ -208,7 +208,7 @@ contains
     block
       integer :: n_cells_tot(ks:ke)
 
-      !$acc data create(n_cells_tot)
+      !!$acc data create(n_cells_tot)
 
       !$acc parallel loop gang
       do k = ks, ke
@@ -227,12 +227,12 @@ contains
       end do
 
       if (do_global) then
-        !$acc host_data use_device(avg, n_cells_tot)
+        !!!$acc host_data use_device(avg, n_cells_tot)
         call mpi_allreduce(mpi_in_place, avg, ke, mpi_real4, mpi_sum, comm3d, &
                            mpierr)
         call mpi_allreduce(mpi_in_place, n_cells_tot, ke, mpi_integer, &
                            mpi_sum, comm3d, mpierr)
-        !$acc end host_data
+        !!$acc end host_data
       end if
 
       !$acc parallel loop gang
@@ -240,7 +240,7 @@ contains
         avg(k) = merge(avg(k) / n_cells_tot(k), fillvalue_, n_cells_tot(k) > 0)
       end do
 
-      !$acc end data
+      !!$acc end data
 
     end block
 
@@ -291,7 +291,7 @@ contains
     block
       integer :: n_cells_tot(ks:ke)
 
-      !$acc data create(n_cells_tot)
+      !!$acc data create(n_cells_tot)
 
       !$acc parallel loop gang
       do k = ks, ke
@@ -310,12 +310,12 @@ contains
       end do
 
       if (do_global) then
-        !$acc host_data use_device(avg, n_cells_tot)
+        !!!$acc host_data use_device(avg, n_cells_tot)
         call mpi_allreduce(mpi_in_place, avg, ke, mpi_real8, mpi_sum, comm3d, &
                            mpierr)
         call mpi_allreduce(mpi_in_place, n_cells_tot, ke, mpi_integer, &
                            mpi_sum, comm3d, mpierr)
-        !$acc end host_data
+        !!$acc end host_data
       end if
 
       !$acc parallel loop gang
@@ -323,7 +323,7 @@ contains
         avg(k) = merge(avg(k) / n_cells_tot(k), fillvalue_, n_cells_tot(k) > 0)
       end do
 
-      !$acc end data
+      !!$acc end data
 
     end block
 

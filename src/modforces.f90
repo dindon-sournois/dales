@@ -135,7 +135,7 @@ contains
   wp(:,:,1) = 0
   !$acc end kernels
 
-  !$acc wait
+  !!$acc wait
 
   call timer_toc('modforces/forces')
 
@@ -216,7 +216,7 @@ contains
         wp(i,j,1) = 0.0
       end do
     end do
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
   else ! lopenbc
     ! Efficient fused kernel for periodic bc
     !$acc parallel loop collapse(3)
@@ -253,7 +253,7 @@ contains
         wp(i,j,1) = 0.0
       end do
     end do
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
   end if
 
   call timer_toc('modforces/coriolis')
@@ -330,7 +330,7 @@ contains
       end do
     end do
   end if
-  !$acc wait
+  !!$acc wait
 
   !$acc parallel loop collapse(3)
   do k = 1, kmax
@@ -363,7 +363,7 @@ contains
       end do
     end do
   end if
-  !$acc wait
+  !!$acc wait
 
   call timer_toc('modforces/lstend')
 

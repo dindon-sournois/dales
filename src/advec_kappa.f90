@@ -326,7 +326,7 @@ subroutine vadvecc_kappa(a_in,a_out)
       end do
     end do
   end do
-  !$acc wait
+  !!$acc wait
 
 end subroutine vadvecc_kappa
 
@@ -373,7 +373,7 @@ subroutine  halflev_kappa(a_in,a_out)
         a_out(i,j,2) = (1/rhobh(2))*(cf + rlim(d1,d2))
       end do
     end do
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
 
   end subroutine halflev_kappa
 

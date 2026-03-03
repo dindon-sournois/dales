@@ -217,10 +217,10 @@ contains
 
    end if
 
-   !$acc enter data copyin(lwuav, lwdav, swdav, swdirav, swdifav, swuav, lwucaav, lwdcaav, swdcaav, swucaav, &
-   !$acc&                  thllwtendav, thltendav,thlswtendav, thllwtendcaav, thlswtendcaav, &
-   !$acc&                  lwumn, lwdmn, swdmn, swdirmn, swdifmn, swumn, lwucamn, lwdcamn, swdcamn, swucamn, &
-   !$acc&                  thllwtendmn, thltendmn, thlswtendmn, thlradlsmn, thllwtendcamn, thlswtendcamn)
+   !!$acc enter data copyin(lwuav, lwdav, swdav, swdirav, swdifav, swuav, lwucaav, lwdcaav, swdcaav, swucaav, &
+   !!$acc&                  thllwtendav, thltendav,thlswtendav, thllwtendcaav, thlswtendcaav, &
+   !!$acc&                  lwumn, lwdmn, swdmn, swdirmn, swdifmn, swumn, lwucamn, lwdcamn, swdcamn, swucamn, &
+   !!$acc&                  thllwtendmn, thltendmn, thlswtendmn, thlradlsmn, thllwtendcamn, thlswtendcamn)
 
   end subroutine initradstat
 !> General routine, does the timekeeping
@@ -424,9 +424,9 @@ contains
       thltendmn   = thltendmn   /nsamples
       !$acc end kernels
 
-      !$acc update self(lwumn, lwdmn, swdmn, swumn, thllwtendmn, thlswtendmn, &
-      !$acc&            lwucamn, lwdcamn, swucamn, swdcamn, swdirmn, swdifmn, &
-      !$acc&            thltendmn, thlradlsmn, thllwtendcamn, thlswtendcamn)
+      !!$acc update self(lwumn, lwdmn, swdmn, swumn, thllwtendmn, thlswtendmn, &
+      !!$acc&            lwucamn, lwdcamn, swucamn, swdcamn, swdirmn, swdifmn, &
+      !!$acc&            thltendmn, thlradlsmn, thllwtendcamn, thlswtendcamn)
 
   !     ----------------------
   !     2.0  write the fields
@@ -539,10 +539,10 @@ contains
 
     if(.not.(lstat)) return
 
-    !$acc exit data delete(lwuav, lwdav, swdav, swdirav, swdifav, swuav, lwucaav, lwdcaav, swdcaav, swucaav, &
-    !$acc&                 thllwtendav, thltendav,thlswtendav, thllwtendcaav, thlswtendcaav, &
-    !$acc&                 lwumn, lwdmn, swdmn, swdirmn, swdifmn, swumn, lwucamn, lwdcamn, swdcamn, swucamn, &
-    !$acc&                 thllwtendmn, thltendmn, thlswtendmn, thlradlsmn, thllwtendcamn, thlswtendcamn)
+    !!$acc exit data delete(lwuav, lwdav, swdav, swdirav, swdifav, swuav, lwucaav, lwdcaav, swdcaav, swucaav, &
+    !!$acc&                 thllwtendav, thltendav,thlswtendav, thllwtendcaav, thlswtendcaav, &
+    !!$acc&                 lwumn, lwdmn, swdmn, swdirmn, swdifmn, swumn, lwucamn, lwdcamn, swdcamn, swucamn, &
+    !!$acc&                 thllwtendmn, thltendmn, thlswtendmn, thlradlsmn, thllwtendcamn, thlswtendcamn)
 
     deallocate(lwuav,lwdav,swdav,swdirav,swdifav,swuav)
     deallocate(lwucaav, lwdcaav, swucaav, swdcaav)

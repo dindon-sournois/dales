@@ -207,7 +207,7 @@ contains
     ! Initialize MPI
     call initmpi
 
-    !$acc update device (myidx,myidy)
+    !!$acc update device (myidx,myidy)
 
     ! Ignore user-provided nsv, we take care of it ourselves
     nsv = 0

@@ -38,9 +38,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(buf) if(xlacc)
+    !!!$acc host_data use_device(buf) if(xlacc)
     call MPI_ISEND(buf,count,MPI_REAL4,dest,tag,comm,request,ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ISEND_REAL32_R1
   subroutine D_MPI_ISEND_REAL64_R1(buf, count, dest, tag, comm, request, ierror, lacc)
@@ -56,9 +56,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(buf) if(xlacc)
+    !!!$acc host_data use_device(buf) if(xlacc)
     call MPI_ISEND(buf,count,MPI_REAL8,dest,tag,comm,request,ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ISEND_REAL64_R1
   subroutine D_MPI_ISEND_LOGICAL_R1(buf, count, dest, tag, comm, request, ierror, lacc)
@@ -74,9 +74,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(buf) if(xlacc)
+    !!!$acc host_data use_device(buf) if(xlacc)
     call MPI_ISEND(buf,count,MPI_LOGICAL,dest,tag,comm,request,ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ISEND_LOGICAL_R1
 
@@ -94,9 +94,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(buf) if(xlacc)
+    !!!$acc host_data use_device(buf) if(xlacc)
     call MPI_IRECV(buf,count,MPI_REAL4,source,tag,comm,request,ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_IRECV_REAL32_R1
   subroutine D_MPI_IRECV_REAL64_R1(buf, count, source, tag, comm, request, ierror, lacc)
@@ -112,9 +112,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(buf) if(xlacc)
+    !!!$acc host_data use_device(buf) if(xlacc)
     call MPI_IRECV(buf,count,MPI_REAL8,source,tag,comm,request,ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_IRECV_REAL64_R1
   subroutine D_MPI_IRECV_LOGICAL_R1(buf, count, source, tag, comm, request, ierror, lacc)
@@ -130,9 +130,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(buf) if(xlacc)
+    !!!$acc host_data use_device(buf) if(xlacc)
     call MPI_IRECV(buf,count,MPI_LOGICAL,source,tag,comm,request,ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_IRECV_LOGICAL_R1
   
@@ -330,9 +330,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf, recvbuf, count, MPI_REAL4, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL32_R1
   subroutine D_MPI_ALLREDUCE_REAL32_R2(sendbuf, recvbuf, count, op, comm, ierror, lacc)
@@ -348,9 +348,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf, recvbuf, count, MPI_REAL4, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL32_R2
   subroutine D_MPI_ALLREDUCE_REAL32_R3(sendbuf, recvbuf, count, op, comm, ierror, lacc)
@@ -366,9 +366,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf,recvbuf, count, MPI_REAL4, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL32_R3
   subroutine D_MPI_ALLREDUCE_REAL64_R1(sendbuf, recvbuf, count, op, comm, ierror, lacc)
@@ -384,9 +384,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf, recvbuf, count, MPI_REAL8, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL64_R1
   subroutine D_MPI_ALLREDUCE_REAL64_R2(sendbuf, recvbuf, count, op, comm, ierror, lacc)
@@ -402,9 +402,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf, recvbuf, count, MPI_REAL8, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL64_R2
   subroutine D_MPI_ALLREDUCE_REAL64_R3(sendbuf, recvbuf, count, op, comm, ierror, lacc)
@@ -420,9 +420,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf, recvbuf, count, MPI_REAL8, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL64_R3
   subroutine D_MPI_ALLREDUCE_INT32_R2(sendbuf, recvbuf, count, op, comm, ierror, lacc)
@@ -438,9 +438,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf, recvbuf, count, MPI_INTEGER4, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_INT32_R2
   subroutine D_MPI_ALLREDUCE_INT32_R1(sendbuf, recvbuf, count, op, comm, ierror, lacc)
@@ -456,9 +456,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLREDUCE(sendbuf, recvbuf, count, MPI_INTEGER4, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_INT32_R1
   subroutine D_MPI_ALLREDUCE_REAL32_IP_S(recvbuf, count, op, comm, ierror)
@@ -510,9 +510,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(recvbuf) if(xlacc)
+    !!!$acc host_data use_device(recvbuf) if(xlacc)
     call MPI_ALLREDUCE(MPI_IN_PLACE, recvbuf, count, MPI_REAL8, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL64_IP
   subroutine D_MPI_ALLREDUCE_REAL32_IP_R2(recvbuf, count, op, comm, ierror, lacc)
@@ -528,9 +528,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(recvbuf) if(xlacc)
+    !!!$acc host_data use_device(recvbuf) if(xlacc)
     call MPI_ALLREDUCE(MPI_IN_PLACE, recvbuf, count, MPI_REAL4, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL32_IP_R2
   subroutine D_MPI_ALLREDUCE_REAL64_IP_R2(recvbuf, count, op, comm, ierror, lacc)
@@ -546,9 +546,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(recvbuf) if(xlacc)
+    !!!$acc host_data use_device(recvbuf) if(xlacc)
     call MPI_ALLREDUCE(MPI_IN_PLACE, recvbuf, count, MPI_REAL8, op, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLREDUCE_REAL64_IP_R2
 
@@ -565,9 +565,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLTOALL(sendbuf, sendcount, MPI_REAL4, recvbuf, recvcount, MPI_REAL4, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLTOALL_REAL32_R1
   subroutine D_MPI_ALLTOALL_REAL64_R1(sendbuf, sendcount, recvbuf, recvcount, comm, ierror, lacc)
@@ -582,9 +582,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
+    !!!$acc host_data use_device(sendbuf, recvbuf) if(xlacc)
     call MPI_ALLTOALL(sendbuf, sendcount, MPI_REAL8, recvbuf, recvcount, MPI_REAL8, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLTOALL_REAL64_R1
   subroutine D_MPI_ALLTOALL_REAL32_IP_R1(recvbuf, recvcount, comm, ierror, lacc)
@@ -599,9 +599,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(recvbuf) if(xlacc)
+    !!!$acc host_data use_device(recvbuf) if(xlacc)
     call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_REAL4, recvbuf, recvcount, MPI_REAL4, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLTOALL_REAL32_IP_R1
   subroutine D_MPI_ALLTOALL_REAL64_IP_R1(recvbuf, recvcount, comm, ierror, lacc)
@@ -616,9 +616,9 @@ contains
     else
       xlacc = .false.
     end if
-    !$acc host_data use_device(recvbuf) if(xlacc)
+    !!!$acc host_data use_device(recvbuf) if(xlacc)
     call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_REAL8, recvbuf, recvcount, MPI_REAL8, comm, ierror)
-    !$acc end host_data
+    !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_ALLTOALL_REAL64_IP_R1
 

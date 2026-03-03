@@ -244,13 +244,13 @@ contains
       if(is_gpu_sync) then
         if(.not.present(nvtx_gpu_stream)) then
 #if   defined(_OPENACC)
-          !$acc wait
+          !!$acc wait
 #elif defined(_CUDA)
           !@cuf istat=cudaDeviceSynchronize()
 #endif
         else
 #if   defined(_OPENACC)
-          !$acc wait(nvtx_gpu_stream)
+          !!$acc wait(nvtx_gpu_stream)
 #elif defined(_CUDA)
           !@cuf istat=cudaStreamSynchronize(nvtx_gpu_stream)
 #endif
@@ -297,13 +297,13 @@ contains
         if(is_gpu_sync) then
           if(.not.present(nvtx_gpu_stream)) then
 #if   defined(_OPENACC)
-            !$acc wait
+            !!$acc wait
 #elif defined(_CUDA)
             !@cuf istat=cudaDeviceSynchronize()
 #endif
           else
 #if   defined(_OPENACC)
-            !$acc wait(nvtx_gpu_stream)
+            !!$acc wait(nvtx_gpu_stream)
 #elif defined(_CUDA)
             !@cuf istat=cudaStreamSynchronize(nvtx_gpu_stream)
 #endif

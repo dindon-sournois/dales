@@ -153,7 +153,7 @@ contains
       select type(mode => modes(imod)%p)
         class is (aerosol_mode_t)
           call connect_modes(mode, modes(iINC)%p, mode%to_hydro)
-          !$acc enter data copyin(mode%to_hydro%cnct)
+          !!$acc enter data copyin(mode%to_hydro%cnct)
       end select
     end do
 
@@ -162,7 +162,7 @@ contains
     sed_qr(:,:,:) = 0
     qlm(:,:,:) = 0
 
-    !$acc enter data copyin(sed_qr(2:i1,2:j1,1:k1), qlm(2:i1,2:j1,1:k1))
+    !!$acc enter data copyin(sed_qr(2:i1,2:j1,1:k1), qlm(2:i1,2:j1,1:k1))
 
     call init_scavenging()
 
@@ -183,7 +183,7 @@ contains
       call modes(imod)%p%prepare(sv0)
     end do
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc(routine)
 
@@ -204,7 +204,7 @@ contains
       call modes(imod)%p%finish(svp)
     end do
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc(routine)
 
@@ -668,8 +668,8 @@ contains
     allocate(qr_spl(2:i1,2:j1,1:k1), nr_spl(2:i1,2:j1,1:k1), &
              qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
 
-    !$acc enter data create(qr_spl(2:i1,2:j1,1:k1), nr_spl(2:i1,2:j1,1:k1), &
-    !$acc                   qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
+    !!$acc enter data create(qr_spl(2:i1,2:j1,1:k1), nr_spl(2:i1,2:j1,1:k1), &
+    !!$acc                   qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
 
     n_spl = ceiling(9.9 * delt / minval(dzf))
     dt_spl = delt / real(n_spl, kind=field_r)
@@ -748,7 +748,7 @@ contains
       end do
     end do
 
-    !$acc exit data delete(qr_spl, nr_spl, qa_spl)
+    !!$acc exit data delete(qr_spl, nr_spl, qa_spl)
 
     deallocate(qr_spl, nr_spl, qa_spl)
     

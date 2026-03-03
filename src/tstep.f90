@@ -281,7 +281,7 @@ subroutine tstep_integrate
         end do
       end do
     endif
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
 
   else ! step 3 - store result in both ..0 and ..m
     !$acc parallel loop collapse(3)
@@ -318,7 +318,7 @@ subroutine tstep_integrate
         end do
       end do
     endif
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
   end if
   call timer_toc('tstep/tstep_integrate')
 end subroutine tstep_integrate
@@ -363,7 +363,7 @@ subroutine reset_tendencies()
     enddo
   endif
 
-  !$acc wait
+  !!$acc wait
 
   call timer_toc(routine)
 

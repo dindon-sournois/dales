@@ -69,7 +69,7 @@ subroutine advection
       call hadvecu_2nd(u0,up,merge(istart+1, istart, (lboundary(1) .and. .not. lperiodic(1))),iend,jstart,jend)
       call hadvecv_2nd(v0,vp,istart,iend,merge(jstart+1, jstart, (lboundary(3) .and. .not. lperiodic(3))),jend)
       call hadvecw_2nd(w0,wp,istart,iend,jstart,jend)
-      !$acc wait(1,2,3)
+      !!$acc wait(1,2,3)
     case(iadv_5th)
       !if (.not. leq) stop "advec_5th does not support a non-uniform vertical grid."
       ibuffer = 2; jbuffer = 2
@@ -82,7 +82,7 @@ subroutine advection
       istart = 2; iend = i1; jstart = 2; jend = j1
       if(lopenbc) call advecw_2nd_boundary_buffer(w0,wp,istart,iend,jstart,jend,ibuffer,jbuffer)
       call hadvecw_5th(w0,wp,istart,iend,jstart,jend)
-      !$acc wait(1,2,3)
+      !!$acc wait(1,2,3)
     case(iadv_52)
       ibuffer = 2; jbuffer = 2
       istart = 2; iend = i1; jstart = 2; jend = j1
@@ -94,7 +94,7 @@ subroutine advection
       istart = 2; iend = i1; jstart = 2; jend = j1
       if(lopenbc) call advecw_2nd_boundary_buffer(w0,wp,istart,iend,jstart,jend,ibuffer,jbuffer)
       call hadvecw_5th(w0,wp,istart,iend,jstart,jend)
-      !$acc wait(1,2,3)
+      !!$acc wait(1,2,3)
     case(iadv_cd6)
       !if (.not. leq) stop "advec_6th does not support a non-uniform vertical grid."
       ibuffer = 2; jbuffer = 2
@@ -107,7 +107,7 @@ subroutine advection
       istart = 2; iend = i1; jstart = 2; jend = j1
       if(lopenbc) call advecw_2nd_boundary_buffer(w0,wp,istart,iend,jstart,jend,ibuffer,jbuffer)
       call hadvecw_6th(w0,wp,istart,iend,jstart,jend)
-      !$acc wait(1,2,3)
+      !!$acc wait(1,2,3)
     case(iadv_62)
       ibuffer = 2; jbuffer = 2
       istart = 2; iend = i1; jstart = 2; jend = j1
@@ -119,19 +119,19 @@ subroutine advection
       istart = 2; iend = i1; jstart = 2; jend = j1
       if(lopenbc) call advecw_2nd_boundary_buffer(w0,wp,istart,iend,jstart,jend,ibuffer,jbuffer)
       call hadvecw_6th(w0,wp,istart,iend,jstart,jend)
-      !$acc wait(1,2,3)
+      !!$acc wait(1,2,3)
     case(iadv_hybrid)
       !if (.not. leq) stop "advec_5th does not support a non-uniform vertical grid."
       call hadvecu_5th(u0,up,istart,iend,jstart,jend)
       call hadvecv_5th(v0,vp,istart,iend,jstart,jend)
       call hadvecw_5th(w0,wp,istart,iend,jstart,jend)
-      !$acc wait(1,2,3)
+      !!$acc wait(1,2,3)
     case(iadv_hybrid_f)
       !if (.not. leq) stop "advec_5th does not support a non-uniform vertical grid."
       call hadvecu_5th(u0,up,istart,iend,jstart,jend)
       call hadvecv_5th(v0,vp,istart,iend,jstart,jend)
       call hadvecw_5th(w0,wp,istart,iend,jstart,jend)
-      !$acc wait(1,2,3)
+      !!$acc wait(1,2,3)
     case(iadv_null)
       ! null advection scheme
       call finish(routine, "Null advection scheme selected for iadv_mom - probably a bad idea.")
@@ -258,7 +258,7 @@ istart = 2; iend = i1; jstart = 2; jend = j1
       call finish(routine,"Unknown advection scheme ") 
     end select
   end do
-  !$acc wait
+  !!$acc wait
   call samptend(tend_hadv)
 
 ! Vertical advection
@@ -298,7 +298,7 @@ istart = 2; iend = i1; jstart = 2; jend = j1
       call vadvecv_5th(v0,vp,istart,iend,jstart,jend)
       call vadvecw_5th(w0,wp,istart,iend,jstart,jend)
   end select
-  !$acc wait
+  !!$acc wait
 
   istart = 2; iend = i1; jstart = 2; jend = j1
   select case(iadv_thl)
@@ -434,7 +434,7 @@ istart = 2; iend = i1; jstart = 2; jend = j1
   end if
   call samptend(tend_vadv)
 
-  !$acc wait
+  !!$acc wait
   call timer_toc('modadvection/advection')
 end subroutine advection
 end module modadvection

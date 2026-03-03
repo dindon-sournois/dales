@@ -72,7 +72,7 @@ contains
       allocate(is_precip(2:i1,2:j1,1:k1))
       allocate(dvr(2:i1,2:j1,1:k1))
 
-      !$acc data create(is_cloud, is_rain, is_precip, dvr)
+      !!$acc data create(is_cloud, is_rain, is_precip, dvr)
 
       if (l_sb) then
         xrmin = xrmin_sb
@@ -103,7 +103,7 @@ contains
       call sample_field('qrmn', qr)
       call sample_field('precmn', precep)
 
-      !$acc end data
+      !!$acc end data
 
       deallocate(is_cloud, is_rain, is_precip, dvr)
 

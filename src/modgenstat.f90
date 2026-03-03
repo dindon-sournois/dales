@@ -485,17 +485,17 @@ contains
 
     end if
 
-    !$acc enter data copyin(umn, vmn, wmn, thlmn, thvmn, qtmn, qlmn, qlhmn, cfracmn, wthlsmn, wthlrmn, wthltmn, &
-    !$acc&                  wthvsmn, wthvrmn, wthvtmn, wqtsmn, wqtrmn, wqttmn, wqlsmn, wqlrmn, wqltmn, &
-    !$acc&                  uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, u2mn, v2mn, w2mn, w2submn, skewmn, &
-    !$acc&                  qt2mn, thl2mn, thv2mn, th2mn, ql2mn, svmmn, svpmn, svpav, svptmn, svptav, &
-    !$acc&                  sv2mn, wsvsmn, wsvrmn, wsvtmn, cszav, cszmn, qlmnlast, wthvtmnlast, qlhav, &
-    !$acc&                  wqlsub, wqlres, wthlsub, wthlres, wqtsub, wqtres, wthvsub, wthvres, wqttot, &
-    !$acc&                  wqltot, wthltot, wthvtot, wsvsub, wsvres, wsvtot, uwres, vwres, uwsub, vwsub, &
-    !$acc&                  uwtot, vwtot, umav, vmav, wmav, thvmav, thlmav, qtmav, qlmav, cfracav, u2av, v2av, &
-    !$acc&                  w2av, w2subav, qt2av, thl2av, thv2av, th2av, svmav, svpav, svptav, sv2av, w3av, &
-    !$acc&                  ql2av, thvmav, thmav, thv0, sv0h, hurav, clwav, cliav, plwav, pliav, taav, &
-    !$acc&                  hurmn, clwmn, climn, plwmn, plimn, tamn)
+    !!$acc enter data copyin(umn, vmn, wmn, thlmn, thvmn, qtmn, qlmn, qlhmn, cfracmn, wthlsmn, wthlrmn, wthltmn, &
+    !!$acc&                  wthvsmn, wthvrmn, wthvtmn, wqtsmn, wqtrmn, wqttmn, wqlsmn, wqlrmn, wqltmn, &
+    !!$acc&                  uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, u2mn, v2mn, w2mn, w2submn, skewmn, &
+    !!$acc&                  qt2mn, thl2mn, thv2mn, th2mn, ql2mn, svmmn, svpmn, svpav, svptmn, svptav, &
+    !!$acc&                  sv2mn, wsvsmn, wsvrmn, wsvtmn, cszav, cszmn, qlmnlast, wthvtmnlast, qlhav, &
+    !!$acc&                  wqlsub, wqlres, wthlsub, wthlres, wqtsub, wqtres, wthvsub, wthvres, wqttot, &
+    !!$acc&                  wqltot, wthltot, wthvtot, wsvsub, wsvres, wsvtot, uwres, vwres, uwsub, vwsub, &
+    !!$acc&                  uwtot, vwtot, umav, vmav, wmav, thvmav, thlmav, qtmav, qlmav, cfracav, u2av, v2av, &
+    !!$acc&                  w2av, w2subav, qt2av, thl2av, thv2av, th2av, svmav, svpav, svptav, sv2av, w3av, &
+    !!$acc&                  ql2av, thvmav, thmav, thv0, sv0h, hurav, clwav, cliav, plwav, pliav, taav, &
+    !!$acc&                  hurmn, clwmn, climn, plwmn, plimn, tamn)
 
     call timer_toc('modgenstat/initgenstat')
 
@@ -648,7 +648,7 @@ contains
       cfracav(k) = cfracav(k)+count(ql0(2:i1,2:j1,k)>0)
     end do
 
-    !$acc wait(1)
+    !!$acc wait(1)
 
     call slabsum(umav  ,1,k1,um  ,2-ih,i1+ih,2-jh,j1+jh,1,k1,2,i1,2,j1,1,k1,on_gpu=.true.)
     call slabsum(vmav  ,1,k1,vm  ,2-ih,i1+ih,2-jh,j1+jh,1,k1,2,i1,2,j1,1,k1,on_gpu=.true.)
@@ -684,7 +684,7 @@ contains
     !     TREAT LOWEST LAYER FIRST
     !-------------------------------------------
 
-    !$acc update self(exnh(1))
+    !!$acc update self(exnh(1))
 
     qls   = 0.0 ! hj: no liquid water at the surface
     tsurf = thls*exnh(1)+(rlv/cp)*qls
@@ -954,7 +954,7 @@ contains
           enddo
         end if
 
-        !$acc wait(1)
+        !!$acc wait(1)
 
         !$acc parallel loop private(wsvres_s)
         do k = 2, kmax
@@ -998,7 +998,7 @@ contains
     !---------------------------
 
     ! MPI communication
-    !$acc wait(1)
+    !!$acc wait(1)
     call D_MPI_ALLREDUCE(qlhav, k1, MPI_SUM, comm3d,mpierr, lacc=.true.)
     call D_MPI_ALLREDUCE(wqlsub, k1, MPI_SUM, comm3d,mpierr, lacc=.true.)
     call D_MPI_ALLREDUCE(wqlres, k1, MPI_SUM, comm3d,mpierr, lacc=.true.)
@@ -1174,7 +1174,7 @@ contains
       end do
       prof(k) = prof_s / ijtot
     end do
-    !$acc wait
+    !!$acc wait
 
   end subroutine calc_moment
 
@@ -1278,14 +1278,14 @@ contains
       tmn  = thmn*exnf
       !$acc end kernels
 
-      !$acc update self(umn, vmn, wmn, thvmn, thlmn, qtmn, qlmn, cfracmn, qlhmn, &
-      !$acc&            wthlsmn, wthlrmn, wthltmn, wqtsmn, wqtrmn, wqttmn, &
-      !$acc&            wqlsmn, wqlrmn, wqltmn, wthvsmn, wthvrmn, wthvtmn, &
-      !$acc&            uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, w2mn, skewmn, &
-      !$acc&            w2submn, qt2mn, v2mn, u2mn, thl2mn, thv2mn, th2mn, ql2mn, &
-      !$acc&            cszmn, cfracmn, hurmn, clwmn, climn, plwmn, plimn, tamn)
+      !!$acc update self(umn, vmn, wmn, thvmn, thlmn, qtmn, qlmn, cfracmn, qlhmn, &
+      !!$acc&            wthlsmn, wthlrmn, wthltmn, wqtsmn, wqtrmn, wqttmn, &
+      !!$acc&            wqlsmn, wqlrmn, wqltmn, wthvsmn, wthvrmn, wthvtmn, &
+      !!$acc&            uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, w2mn, skewmn, &
+      !!$acc&            w2submn, qt2mn, v2mn, u2mn, thl2mn, thv2mn, th2mn, ql2mn, &
+      !!$acc&            cszmn, cfracmn, hurmn, clwmn, climn, plwmn, plimn, tamn)
 
-      !$acc update self(svmmn, svpmn, svptmn, sv2mn, wsvsmn, wsvrmn, wsvtmn) if(nsv > 0)
+      !!$acc update self(svmmn, svpmn, svptmn, sv2mn, wsvsmn, wsvrmn, wsvtmn) if(nsv > 0)
 
   !     ----------------------
   !     2.0  write the fields

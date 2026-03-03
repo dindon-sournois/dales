@@ -176,7 +176,7 @@ contains
     call D_MPI_BCAST(ltskininp                  ,            1, 0, commwrld, istat)
     call D_MPI_BCAST(min_horv                   ,            1, 0, commwrld, istat)
 
-    !$acc update device(min_horv)
+    !!$acc update device(min_horv)
 
   end subroutine surface_read_namelist
 
@@ -209,7 +209,7 @@ contains
     ! 1.0  -   Read LSM-specific namelist
 
 
-    !$acc update device (xpatches, ypatches)
+    !!$acc update device (xpatches, ypatches)
 
     if(lCO2Ags .and. (.not. lrsAgs)) then
       if(myid==0) print *,"WARNING::: You set lCO2Ags to .true., but lrsAgs to .false."
@@ -787,9 +787,9 @@ contains
     ustar = 0 ! need to initialize, otherwise undefined values in the corners in the first exchange
     obl = 1e5 ! initialize since used as starting point for iteration
 
-    !$acc enter data copyin(z0m, z0h, obl, tskin, qskin, Cm, Cs, &
-    !$acc&                  ustar, dudz, dvdz, thlflux, qtflux, &
-    !$acc&                  dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
+    !!$acc enter data copyin(z0m, z0h, obl, tskin, qskin, Cm, Cs, &
+    !!$acc&                  ustar, dudz, dvdz, thlflux, qtflux, &
+    !!$acc&                  dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
 
     call timer_toc('modsurface/initsurface')
   end subroutine initsurface
@@ -1039,12 +1039,12 @@ contains
       horvpatch = sqrt(((Supatch/SNpatch) + cu) **2. + ((Svpatch/SNpatch) + cv) ** 2.)
       horvpatch = max(horvpatch, 0.1)
     else
-      !$acc update self(u0av(1), v0av(1))
+      !!$acc update self(u0av(1), v0av(1))
       horvav = sqrt(u0av(1)**2. + v0av(1)**2.)
       horvav = max(horvav, 0.1)
     end if
 
-    !$acc wait
+    !!$acc wait
 
   end subroutine calc_mean_wind
 
@@ -1081,14 +1081,14 @@ contains
       end do
     end if
 
-    !$acc update self(ustar)
+    !!$acc update self(ustar)
     if ( lopenbc ) then
       call openboundary_excjs(ustar_3D, 2,i1,2,j1,1,1,1,1, &
                              (.not.lboundary(1:4)).or.lperiodic(1:4))
     else
        call excjs(ustar_3D,2,i1,2,j1,1,1,1,1)
     endif
-    !$acc update device(ustar)
+    !!$acc update device(ustar)
   end subroutine calc_friction_velocity
 
   !> Prescribes the friction velocity \f$u_*\f$
@@ -1116,14 +1116,14 @@ contains
       end do
     end if
 
-   !$acc update self(ustar)
+   !!$acc update self(ustar)
     if ( lopenbc ) then
       call openboundary_excjs(ustar_3D, 2,i1,2,j1,1,1,1,1, &
                              (.not.lboundary(1:4)).or.lperiodic(1:4))
     else
        call excjs(ustar_3D,2,i1,2,j1,1,1,1,1)
     endif
-    !$acc update device(ustar)
+    !!$acc update device(ustar)
   end subroutine presc_friction_velocity
 
   !> Calculates the surfaces fluxes using the scalar values at the surface and
@@ -1248,7 +1248,7 @@ contains
           end do
         end do
       end if
-      !$acc wait(1,2)
+      !!$acc wait(1,2)
     end if
 
   end subroutine presc_surface_flux
@@ -1899,9 +1899,9 @@ contains
   subroutine exitsurface
     implicit none
 
-    !$acc exit data delete(z0m, z0h, obl, tskin, qskin, Cm, Cs, &
-    !$acc&                 ustar, dudz, dvdz, thlflux, qtflux, &
-    !$acc&                 dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
+    !!$acc exit data delete(z0m, z0h, obl, tskin, qskin, Cm, Cs, &
+    !!$acc&                 ustar, dudz, dvdz, thlflux, qtflux, &
+    !!$acc&                 dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
 
     return
   end subroutine exitsurface

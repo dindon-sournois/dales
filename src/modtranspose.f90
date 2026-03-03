@@ -130,10 +130,10 @@ contains
         end do
       end do
 
-      !$acc host_data use_device(buffer)
+      !!!$acc host_data use_device(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
 
       !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
@@ -199,10 +199,10 @@ contains
         end do
       end do
 
-      !$acc host_data use_device(buffer)
+      !!!$acc host_data use_device(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
 
       !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
@@ -279,11 +279,11 @@ contains
         end do
       end do
 
-      !$acc host_data use_device(buffer)
+      !!!$acc host_data use_device(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commcol, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
 
       !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocy-1
@@ -360,11 +360,11 @@ contains
         end do
       end do
 
-      !$acc host_data use_device(buffer)
+      !!!$acc host_data use_device(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commcol, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
 
       !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocy-1
@@ -430,11 +430,11 @@ contains
         end do
       end do
 
-      !$acc host_data use_device(buffer)
+      !!!$acc host_data use_device(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commrow, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
 
       !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
@@ -500,11 +500,11 @@ contains
         end do
       end do
 
-      !$acc host_data use_device(buffer)
+      !!!$acc host_data use_device(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commrow, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
 
       !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1

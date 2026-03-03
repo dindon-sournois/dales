@@ -106,7 +106,7 @@ contains
       call fftwinit(p, Fp, d, xyrt, ps,pe,qs,qe)
     else if (solver_id == 200) then
       call fftwinit(p, Fp, d, xyrt, ps,pe,qs,qe)
-      !$acc enter data copyin(p, Fp, d, xyrt)
+      !!$acc enter data copyin(p, Fp, d, xyrt)
       !call cufftinit(p, Fp, d, xyrt, ps, pe, qs, qe)
     else
       ! HYPRE based solver
@@ -129,8 +129,8 @@ contains
     pvp = 0 ! initialize now to not have uninitialized data in the unused halo cells
 
     allocate(a(kmax), b(kmax), c(kmax))
-    !$acc enter data copyin(pup, pvp)
-    !$acc enter data create(pwp, a, b, c)
+    !!$acc enter data copyin(pup, pvp)
+    !!$acc enter data create(pwp, a, b, c)
 
   end subroutine initpois
 
@@ -149,10 +149,10 @@ contains
       call fftwexit(p,Fp,d,xyrt)
     else if (solver_id == 200) then
       !call cufftexit(p, Fp, d, xyrt)
-      !!$acc exit data delete(pup, pvp, pwp, a, b, c)
+      !!!$acc exit data delete(pup, pvp, pwp, a, b, c)
 
       call fftwexit(p,Fp,d,xyrt)
-      !$acc exit data delete(p, Fp, d, xyrt)
+      !!$acc exit data delete(p, Fp, d, xyrt)
     else
       ! HYPRE based solver
       !call fft2dexit(p,Fp,d,xyrt)
@@ -201,11 +201,11 @@ contains
 
       !call cufftb(p, Fp)
 
-      !$acc update host(p, Fp)
+      !!$acc update host(p, Fp)
       call fftwf(p, Fp)
       call solmpj
       call fftwb(p, Fp)
-      !$acc update device(p, Fp)
+      !!$acc update device(p, Fp)
 
     else
       call solve_hypre(psolver, p, converged)
@@ -321,7 +321,7 @@ contains
       end do
     end do
 
-    !$acc wait(1)
+    !!$acc wait(1)
 
     call timer_toc('modpois/fillps')
 
@@ -394,7 +394,7 @@ contains
       end do
     end do
 
-    !$acc wait(1)
+    !!$acc wait(1)
 
     call timer_toc('modpois/tderive')
 
@@ -527,7 +527,7 @@ contains
       end do
     end do
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc('modpois/solmpj')
   end subroutine solmpj

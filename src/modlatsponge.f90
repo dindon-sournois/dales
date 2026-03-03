@@ -46,7 +46,7 @@ contains
     call d_mpi_bcast(llateral_sponge, 1, 0, comm3d, ierr)
     call d_mpi_bcast(nudgedepth, 1, 0, comm3d, ierr)
 
-    !$acc update device(nudgedepth)
+    !!$acc update device(nudgedepth)
 
   end subroutine lateral_sponge_read_namelist
 
@@ -132,7 +132,7 @@ contains
       end do
     end if
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc(routine)
 
