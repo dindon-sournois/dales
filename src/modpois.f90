@@ -106,7 +106,6 @@ contains
       call fftwinit(p, Fp, d, xyrt, ps,pe,qs,qe)
     else if (solver_id == 200) then
       call fftwinit(p, Fp, d, xyrt, ps,pe,qs,qe)
-      !$acc enter data copyin(p, Fp, d, xyrt)
       !call cufftinit(p, Fp, d, xyrt, ps, pe, qs, qe)
     else
       ! HYPRE based solver
@@ -148,11 +147,8 @@ contains
       ! FFTW based solver
       call fftwexit(p,Fp,d,xyrt)
     else if (solver_id == 200) then
-      !call cufftexit(p, Fp, d, xyrt)
-      !!$acc exit data delete(pup, pvp, pwp, a, b, c)
-
       call fftwexit(p,Fp,d,xyrt)
-      !$acc exit data delete(p, Fp, d, xyrt)
+      !call cufftexit(p, Fp, d, xyrt)
     else
       ! HYPRE based solver
       !call fft2dexit(p,Fp,d,xyrt)

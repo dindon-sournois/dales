@@ -65,6 +65,7 @@ save
 
   ! C pointer to the actual (aligned) memory for FFTW
   type (C_ptr)                    :: ptr
+  real(pois_r), pointer,contiguous :: fptr(:)
 
   ! Method 1:
   !   domain composition in two dimensions (nprocx, nprocy)
@@ -108,7 +109,7 @@ contains
     integer,intent(out)        :: ps,pe,qs,qe
 
     integer(kind=8)     :: sz
-    real(pois_r), pointer,contiguous :: fptr(:)
+    !real(pois_r), pointer,contiguous :: fptr(:)
     integer             :: embed(1), kinds(2)
     type (fftw_iodim)   :: dimij(2), dimk(1)
 
@@ -351,6 +352,7 @@ contains
     endif
 
     call fftwinit_factors(xyrt)
+    !$acc enter data copyin(fptr)
 
  end subroutine
 
@@ -379,6 +381,7 @@ contains
    ! so Nullify() doesnt work with them
    Nullify(p, p210, p201, Fp, p_nohalo)
 
+   !$acc exit data delete(fptr)
    call fftw_free(ptr)
 
    deallocate(xyrt, d)
