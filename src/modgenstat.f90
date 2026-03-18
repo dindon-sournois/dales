@@ -708,11 +708,7 @@ contains
     cqt = 1./den
 
     !$acc parallel loop collapse(2) default(present) private(upcu, vpcv, ilratio) &
-#if 0
-    !$acc& reduction(+: qlhav(1), wthlsub(1), wqtsub(1), wthvsub(1), uwsub(1), vwsub(1), hurav(1), clwav(1), cliav(1)) async(1)
-#else
     !$acc& reduction(+: qlhav_, wthlsub_, wqtsub_, wthvsub_, uwsub_, vwsub_, hurav_, clwav_, cliav_) async(1)
-#endif
     do j = 2, j1
       do i = 2, i1
         qlhav_ = qlhav_ + ql0h(i,j,1)
