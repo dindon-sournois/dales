@@ -278,7 +278,7 @@ contains
          write (*,*) 'Radiation', timee, 'Time spent:', wtime, 's'
       end if
     end if
-    
+
     !$acc kernels default(present)
     thlp = thlp + thlprad
     !$acc end kernels
@@ -386,7 +386,7 @@ subroutine radpar
       if (mu > 0.035) then  !factor 0.035 needed for security
         tauc = 0.           ! column-integrated tau cloud
         !cstepif (laero .or. lcloudshading) then ! not sure if I have to define the use of lcldoushading before
-          do k = 1,kmax        
+          do k = 1,kmax
             tau(k) = 0.      ! tau laagje dz
         !cstep    if(laero) then ! there are aerosols
         !cstep      tau(k) = sv0(i,j,k,iDE)
@@ -527,7 +527,7 @@ subroutine radpar
   integer k
 
   call timer_tic('modradiation/radprof', 1)
-    
+
   !$acc kernels default(present)
   do k=1,kmax
     thlprad(2:i1,2:j1,k) = thlprad(2:i1,2:j1,k) + thlpcar(k)

@@ -252,7 +252,7 @@ contains
     if(lsmagorinsky) then
       ! First level
       mlen = csz(1) * delta(1) ! default value when lmason = .false.
-      !$acc parallel loop collapse(2) private(strain2) async(1)
+      !$acc parallel loop collapse(2) private(strain2)
       do i = 2, i1
         do j = 2, j1
 
@@ -295,7 +295,7 @@ contains
       end do
 
       ! Other levels
-      !$acc parallel loop collapse(3) default(present) private(mlen, strain2) async(2)
+      !$acc parallel loop collapse(3) default(present) private(mlen, strain2)
       do k = 2, kmax
         do i = 2, i1
           do j = 2, j1
@@ -405,10 +405,10 @@ contains
          end do
       else if (lD80R) then
          ! D80R scheme
-         ! Y. Dai, S. Basu, B. Maronga, S. R. de Roode, 
+         ! Y. Dai, S. Basu, B. Maronga, S. R. de Roode,
          ! Addressing the grid-size sensitivity issue in large-eddy simulations of stable boundary layers.
          ! Boundary-Layer Meteorology, 178, 63-89 (2021).
-         
+
          !$acc parallel loop collapse(3) default(present)
          do k = 1, kmax
             do j = 2, j1
@@ -417,7 +417,7 @@ contains
                   if (dthvdz(i,j,k) > 0) then
                      zlt(i,j,k) = min(delta(k), 1/(1/(0.4_field_r*zh(k))+1/(cn*e120(i,j,k)/sqrt(grav/thvf(k)*dthvdz(i,j,k)))))
                   end if
-                  
+
                   ekm(i,j,k) = cm * zlt(i,j,k) * e120(i,j,k)
                   ekh(i,j,k) = (ch1 + ch2 * zlt(i,j,k)*deltai(k)) * ekm(i,j,k)
 
@@ -510,7 +510,7 @@ contains
     real(field_r):: tdef2, uwflux, vwflux, local_dudz, local_dvdz, local_dthvdz, horv
     integer i, j, k
 
-    !$acc parallel loop collapse(3) default(present) private(tdef2) async(1)
+    !$acc parallel loop collapse(3) default(present) private(tdef2)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -562,7 +562,7 @@ contains
     !--------------------------------------------
 
     if (sgs_surface_fix) then
-      !$acc parallel loop collapse(2) default(present) private(tdef2,horv,uwflux,vwflux,local_dudz,local_dvdz,local_dthvdz) async(2)
+      !$acc parallel loop collapse(2) default(present) private(tdef2,horv,uwflux,vwflux,local_dudz,local_dvdz,local_dthvdz)
       do j = 2, j1
         do i = 2, i1
           tdef2 = 2 * ( &
@@ -616,7 +616,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present) private(tdef2) async(2)
+      !$acc parallel loop collapse(2) default(present) private(tdef2)
       do j = 2, j1
         do i = 2, i1
           tdef2 = 2. * ( &
@@ -663,7 +663,7 @@ contains
 
     integer i,j,k
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -685,7 +685,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(2) default(present) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = 2, j1
       do i = 2, i1
         a_out(i,j,1) = a_out(i,j,1) &
@@ -716,7 +716,7 @@ contains
 
     integer i,j,k,n
 
-    !$acc parallel loop collapse(4) default(present) async(1)
+    !$acc parallel loop collapse(4) default(present)
     do n = 1, nsv
       do k = 2, kmax
         do j = 2, j1
@@ -740,7 +740,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) async(2)
+    !$acc parallel loop collapse(3) default(present)
     do n = 1, nsv
       do j = 2, j1
         do i = 2, i1
@@ -770,7 +770,7 @@ contains
     real(field_r), intent(inout)  :: a_out(2-ih:i1+ih,2-jh:j1+jh,k1)
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -795,7 +795,7 @@ contains
   !     special treatment for lowest full level: k=1
   !     --------------------------------------------
 
-    !$acc parallel loop collapse(2) default(present) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = 2, j1
       do i = 2, i1
         a_out(i,j,1) = a_out(i,j,1) + &
@@ -826,7 +826,7 @@ contains
     real(field_r)                 :: ucu, upcu
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present) private(emom, emop, empo, emmo) async(1)
+    !$acc parallel loop collapse(3) default(present) private(emom, emop, empo, emmo)
     do k = 2, kmax
       do j = 2, j1
         do i = sx, i1
@@ -870,7 +870,7 @@ contains
   !     special treatment for lowest full level: k=1
   !     --------------------------------------------
 
-    !$acc parallel loop collapse(2) default(present) private(empo, emmo, emop, ucu, upcu, fu) async(2)
+    !$acc parallel loop collapse(2) default(present) private(empo, emmo, emop, ucu, upcu, fu)
     do j = 2, j1
       do i = sx, i1
         empo = 0.25_field_r * ( ekm(i  ,j  ,1)+&
@@ -932,7 +932,7 @@ contains
     real(field_r)                 :: fv, vcv,vpcv
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present) private(eomm, eomp, emmo, epmo) async(3)
+    !$acc parallel loop collapse(3) default(present) private(eomm, eomp, emmo, epmo)
     do k = 2, kmax
       do j = sy, j1
         do i = 2, i1
@@ -977,7 +977,7 @@ contains
   !     special treatment for lowest full level: k=1
   !     --------------------------------------------
 
-    !$acc parallel loop collapse(2) default(present) private(emmo, epmo, eomp, vcv, vpcv, fv) async(4)
+    !$acc parallel loop collapse(2) default(present) private(emmo, epmo, eomp, vcv, vpcv, fv)
     do j = sy, j1
       do i = 2, i1
         emmo = 0.25_field_r * ( ekm(i  ,j  ,1)+ &
@@ -1035,7 +1035,7 @@ contains
     real(field_r)                 :: emom, eomm, eopm, epom
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present) private(emom, eomm, eopm, epom) async(5)
+    !$acc parallel loop collapse(3) default(present) private(emom, eomm, eopm, epom)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1

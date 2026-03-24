@@ -45,7 +45,7 @@ subroutine hadvecc_2nd(a_in,a_out,istart,iend,jstart,jend)
 
   integer :: i,j,k
 
-  !$acc parallel loop collapse(3) default(present) async(1)
+  !$acc parallel loop collapse(3) default(present)
   do k = 1, kmax
     do j = jstart, jend
       do i = istart, iend
@@ -79,7 +79,7 @@ subroutine vadvecc_2nd(a_in,a_out,istart,iend,jstart,jend)
   integer :: i,j,k
 
   if (leq) then ! equidistant grid
-    !$acc parallel loop collapse(2) default(present) wait(1) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = jstart, jend
       do i = istart, iend
         a_out(i,j,1) = a_out(i,j,1)- (1/rhobf(1))*( &
@@ -88,7 +88,7 @@ subroutine vadvecc_2nd(a_in,a_out,istart,iend,jstart,jend)
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) wait(1) async(3)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -101,7 +101,7 @@ subroutine vadvecc_2nd(a_in,a_out,istart,iend,jstart,jend)
     end do
 
   else   ! non-equidistant grid
-    !$acc parallel loop collapse(2) default(present) wait(1) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = jstart, jend
       do i = istart, iend
         a_out(i,j,1) = a_out(i,j,1)- (1/rhobf(1))*( &
@@ -110,7 +110,7 @@ subroutine vadvecc_2nd(a_in,a_out,istart,iend,jstart,jend)
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) wait(1) async(3)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -140,7 +140,7 @@ subroutine hadvecu_2nd(a_in, a_out,istart,iend,jstart,jend)
 
   integer :: i,j,k
 
-  !$acc parallel loop collapse(3) default(present) async(1)
+  !$acc parallel loop collapse(3) default(present)
   do k = 1, kmax
     do j = jstart, jend
       do i = istart, iend
@@ -174,7 +174,7 @@ subroutine vadvecu_2nd(a_in, a_out,istart,iend,jstart,jend)
 
   if (leq) then
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j = jstart, jend
       do i = istart, iend
         a_out(i,j,1) = a_out(i,j,1)-(1/rhobf(1))*( &
@@ -183,7 +183,7 @@ subroutine vadvecu_2nd(a_in, a_out,istart,iend,jstart,jend)
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -197,7 +197,7 @@ subroutine vadvecu_2nd(a_in, a_out,istart,iend,jstart,jend)
 
   else
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j = jstart, jend
       do i = istart, iend
         a_out(i,j,1) = a_out(i,j,1)- (1/rhobf(1))*( &
@@ -206,7 +206,7 @@ subroutine vadvecu_2nd(a_in, a_out,istart,iend,jstart,jend)
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -235,7 +235,7 @@ subroutine hadvecv_2nd(a_in, a_out,istart,iend,jstart,jend)
 
   integer :: i,j,k
 
-  !$acc parallel loop collapse(3) default(present) async(2)
+  !$acc parallel loop collapse(3) default(present)
   do k = 1, kmax
     do j = jstart, jend
       do i = istart, iend
@@ -268,7 +268,7 @@ subroutine vadvecv_2nd(a_in, a_out,istart,iend,jstart,jend)
   integer :: i,j,k
 
   if (leq) then
-    !$acc parallel loop collapse(2) default(present) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = jstart, jend
       do i = istart, iend
         a_out(i,j,1)  = a_out(i,j,1)- (1/rhobf(1))*( &
@@ -277,7 +277,7 @@ subroutine vadvecv_2nd(a_in, a_out,istart,iend,jstart,jend)
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) async(2)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -290,7 +290,7 @@ subroutine vadvecv_2nd(a_in, a_out,istart,iend,jstart,jend)
     end do
 
   else
-    !$acc parallel loop collapse(2) default(present) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = jstart, jend
       do i = istart, iend
         a_out(i,j,1)  = a_out(i,j,1)- (1/rhobf(1))*( &
@@ -300,7 +300,7 @@ subroutine vadvecv_2nd(a_in, a_out,istart,iend,jstart,jend)
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) async(2)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -332,7 +332,7 @@ subroutine hadvecw_2nd(a_in,a_out,istart,iend,jstart,jend)
 
   if (leq) then
 
-    !$acc parallel loop collapse(3) default(present) async(3)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -351,7 +351,7 @@ subroutine hadvecw_2nd(a_in,a_out,istart,iend,jstart,jend)
       end do
     end do
   else
-    !$acc parallel loop collapse(3) default(present) async(3)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -391,7 +391,7 @@ subroutine vadvecw_2nd(a_in,a_out,istart,iend,jstart,jend)
 
   if (leq) then
 
-    !$acc parallel loop collapse(3) default(present) async(3)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend
@@ -405,7 +405,7 @@ subroutine vadvecw_2nd(a_in,a_out,istart,iend,jstart,jend)
       end do
     end do
   else
-    !$acc parallel loop collapse(3) default(present) async(3)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = jstart, jend
         do i = istart, iend

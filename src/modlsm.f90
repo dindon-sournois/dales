@@ -230,12 +230,12 @@ subroutine calc_liquid_reservoir
 
     rk3coef = rdt / (4. - dble(rk3step))
     if(rk3step == 1) then
-       !$acc kernels default(present) async(1)
+       !$acc kernels default(present)
        wlm(:,:) = wl(:,:)
        !$acc end kernels
     endif
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2, j1
         do i=2, i1
             wl_tend_dew = 0
@@ -305,12 +305,12 @@ subroutine calc_theta_mean(tile)
     integer :: i, j, k, si
     real :: theta_lim
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     tile%phiw_mean(:,:) = 0.
     !$acc end kernels
 
     do k=1, kmax_soil
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) default(present)
         do j=2,j1
             do i=2,i1
                 si = soil_index(i,j,k)
@@ -345,7 +345,7 @@ subroutine calc_canopy_resistance_js
 
     k = kmax_soil
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             ! si = soil_index(i,j,k)
@@ -357,7 +357,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
 
@@ -372,7 +372,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
 
@@ -391,7 +391,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             si = soil_index(i,j,k)
@@ -404,7 +404,7 @@ subroutine calc_canopy_resistance_js
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             ! Calculate canopy and soil resistance
@@ -441,28 +441,28 @@ subroutine calc_canopy_resistance_ags
     use modtracers,  only : tracer_prop
 
     implicit none
-    
+
     character(len=*), parameter :: routine = modname//'/calc_canopy_resistance_ags'
 
     ! NOTE: these should become a namelist switches...
     logical, parameter :: lsplitleaf = .false.
     logical, parameter :: lrelaxgc = .false.
-    
 
-    real :: Ts, co2_comp, gm, fmin0, fmin, esatsurf, e, Ds, Dmax, cfrac, co2_abs, ci, to_mgm3, from_mgm3  
+
+    real :: Ts, co2_comp, gm, fmin0, fmin, esatsurf, e, Ds, Dmax, cfrac, co2_abs, ci, to_mgm3, from_mgm3
     real :: Ammax, fstr, Am, Rdark, PAR, alphac, AGSa1, Dstar, tempy, An, gc_inf, gcco2, fw, t_mean, th_mean, rs_co2
     real :: cland, theta_min, theta_rel, denom, temp_an, temp_resp
     integer :: i, j, k, l, si, ilu_bs
 
     ! Fixed constants (** = same in DALES and IFS, !! = different in DALES and IFS)
-    ! Now, constants are put in array with two separate vegetation types: C3 (1) and C4 (2): 
-    
-    ! Define constants: 
+    ! Now, constants are put in array with two separate vegetation types: C3 (1) and C4 (2):
+
+    ! Define constants:
     real :: Q10gm, Q10am, Q10lambda, T1gm, T2gm, T1Am, T2Am, gmin, ad, Kx, alpha0, R10, gm298, Ammax298, f0, co2_comp298, bare_soil_fraction
-    
+
     character(len=3), dimension(3) :: soil_water_types = ['bs ', 'brn', 'ws ']
     character(len=3), dimension(2) :: soil_types = ['bs ', 'brn']
-    
+
     real, dimension(2) :: Q10gm_array = [2.0, 2.0]        ! (**) Parameter to calculate the mesophyll conductance [-]
     real, dimension(2) :: Q10am_array = [2.0, 2.0]        ! (**) Parameter to calculate max primary productivity [-]
     real, dimension(2) :: Q10lambda_array = [1.5, 1.5]    ! (!!) Parameter to calculate the CO2 compensation concentration. (2 in IFS, 1.5 in DALES) [-]
@@ -488,8 +488,8 @@ subroutine calc_canopy_resistance_ags
     real, parameter :: max_safe = 1.0e25
     real, parameter :: min_safe = -1.0e25
     real, parameter :: gc_max_threshold = 20.0           ! mm s⁻¹ (CO₂) (tune if needed)
-    
-   
+
+
     real, parameter :: max_resp_flux = 1.5      ! Max realistic respiration (mg/m²/s) (tune if needed)
     real, parameter :: min_resp_flux = 0.0      ! Respiration must be ≥ 0
 
@@ -507,7 +507,7 @@ subroutine calc_canopy_resistance_ags
 
     ! Vegetation specific constants
     ! TODO: link to lookup table IFS
-    ! Vegetation specific constants  
+    ! Vegetation specific constants
     real, dimension(2) :: gm298_array = [3.0, 7.0]        ! Mesophyll conductance at 298 K [mm s-1] NOTE: Much lower than DALES...
     real, dimension(2) :: Ammax298_array = [2.2, 1.7]     ! CO2 maximal primary productivity [mg CO2 m-2 s-1]
     real, dimension(2) :: f0_array = [0.89, 0.85]         ! Maximum value Cfrac (constant or equation in IFS)
@@ -523,11 +523,11 @@ subroutine calc_canopy_resistance_ags
 
     ! Find CO2 index and set conversions
     do l = 1, nsv
-    
+
         ! Check for either co2 or co2sum tracers
         if (trim(tracer_prop(l)%tracname) == 'co2') then
         !if (trim(tracer_prop(l)%tracname) == 'co2' .or. trim(tracer_prop(l)%tracname) == 'co2sum') then
-        
+
             ! Handle emission vs. non-emission cases
             !if (l_emission .and. (svco2sum .ge. 1)) then
                 !co2_index = svco2sum
@@ -537,28 +537,28 @@ subroutine calc_canopy_resistance_ags
                     co2_index = tracer_prop(l)%trac_idx
                 endif
             !endif
-        
+
             if (trim(tracer_prop(l)%unit) == 'ppb') then
                 to_mgm3 = rhof(1) * Mco2 / Mair * 1.e-3  ! convert ppb (1e-9) to mg/m3
                 from_mgm3 = 1.0 / to_mgm3
 
             elseif (trim(tracer_prop(l)%unit) == 'ppm') then
                 to_mgm3 = rhof(1) * Mco2 / Mair          ! convert ppm (1e-6) to mg/m3
-                from_mgm3 = 1.0 / to_mgm3 
+                from_mgm3 = 1.0 / to_mgm3
             else
                 call finish(routine, 'ERROR: CO2 has unsupported unit - ', trim(tracer_prop(l)%unit), 'CO2 must use either ppm or ppb units')
             endif
         endif
     enddo
 
-    
+
     do j = 2, j1
         do i = 2, i1
-            
+
             ! Initialize CO2 fluxes
             resp_co2(i,j) = 0.0
             an_co2(i,j) = 0.0
-        
+
             ! Get atmospheric CO2 concentration
             co2_abs = svm(i,j,1,co2_index)*to_mgm3  !(in mg/m³)
 
@@ -580,16 +580,16 @@ subroutine calc_canopy_resistance_ags
 
             ! Water stress function:
             fw = Cw * wsmax / (th_mean + wsmin)
-            
+
             ! Loop over land use types
             do ilu = 1, nlu
                 if (tile(ilu)%lushort == "slb") then; cycle; endif
-               
+
                if  (tile(ilu)%lveg .and. trim(tile(ilu)%lushort) /= 'aqu') then
                ! For vegetation tiles only, excluding aquatic
 
                 select case (trim(tile(ilu)%lushort))
-                !C3 and C4 types  
+                !C3 and C4 types
                 ! C3 type:
                   case ('fbd', 'fce', 'sem', 'urb', 'brn', 'crp', 'ara')
                         Q10gm = Q10gm_array(1)
@@ -608,7 +608,7 @@ subroutine calc_canopy_resistance_ags
                         Ammax298 = Ammax298_array(1)
                         f0 = f0_array(1)
                         co2_comp298 = co2_comp298_array(1)
-                       
+
                    ! C4 type:
                    case ('grs')
                          Q10gm = Q10gm_array(2)
@@ -659,7 +659,7 @@ subroutine calc_canopy_resistance_ags
                 ! "The mesophyll conductance gm describes the transport of CO2 from the substomatal cavities to the mesophyll cells where the carbon is fixed."
                 ! NOTE: The old DALES LSM used the atmospheric `thl`, IFS uses the surface temperature.
                 gm = gm298 * Q10gm**(0.1 * (Ts - 298.0)) / ((1. + exp(0.3 * (T1gm - Ts))) * (1. + exp(0.3 * (Ts - T2gm)))) / 1000.
-                
+
                 ! Calculate CO2 concentration inside the leaf (ci)
                 ! NOTE: Differs from IFS
                 fmin0 = gmin/nuco2q - (1./9.)*gm
@@ -679,10 +679,10 @@ subroutine calc_canopy_resistance_ags
 
                 ! Coupling factor (IFS eq. 8.101)
                 cfrac = max(0.01, f0 * (1.0 - Ds/Dmax) + fmin * (Ds/Dmax))
-                
 
-                    
-                ! CO2 concentration in leaf (IFS eq. ???): 
+
+
+                ! CO2 concentration in leaf (IFS eq. ???):
                 ci = cfrac * (co2_abs - co2_comp) + co2_comp
 
                 ! Max gross primary production in high light conditions (Ag) (IFS eq. 8.94)
@@ -695,7 +695,7 @@ subroutine calc_canopy_resistance_ags
 
                 ! Gross assimilation rate (Am, IFS eq. 8.97)
                 Am = Ammax * (1 - exp(-(gm * (ci - co2_comp) / Ammax)))
-                
+
                 if(ieee_is_nan(Am)) then
                     tile(ilu)%rs(i,j) = 0.0
                 else
@@ -707,10 +707,10 @@ subroutine calc_canopy_resistance_ags
 
                     ! Light use efficiency
                     alphac = alpha0 * (co2_abs - co2_comp) / (co2_abs + 2*co2_comp)
-                      
+
                     if (lsplitleaf) then
                         call finish(routine, 'Splitleaf A-Gs not (yet) implemented!')
-                        
+
                     else
                         ! Calculate upscaling from leaf to canopy: net flow CO2 into the plant (An)
                         AGSa1  = 1.0 / (1 - f0)
@@ -719,12 +719,12 @@ subroutine calc_canopy_resistance_ags
 
                         An = (Am + Rdark) * (1 - 1.0 / (Kx * tile(ilu)%lai(i,j)) * (E1(tempy * exp(-Kx * tile(ilu)%lai(i,j))) - E1(tempy)))
                         gc_inf = tile(ilu)%lai(i,j) * (gmin/nuco2q + AGSa1 * fstr * An / ((co2_abs - co2_comp) * (1 + Ds / Dstar)))
-                        
+
                         ! At nighttime it might become unrealistic, so I put this here to prevent it being lower than gmin:
                         ! Cap the value at a realistic:
-                    
+
                         gc_inf = min(max(gc_inf, tile(ilu)%lai(i,j) * gmin), tile(ilu)%lai(i,j) * gc_max_threshold)
-                    
+
                     endif
 
                     if (lrelaxgc) then
@@ -751,40 +751,40 @@ subroutine calc_canopy_resistance_ags
 
                     ! Calculate plant (autotrophic) respiration and assimilation for this tile (mg/m2/s)
                     resp_co2(i,j) = resp_co2(i,j) + tile(ilu)%frac(i,j) * R10 * (1.-fw) * exp(Eact0 / (283.15 * 8.314) * (1.0 - 283.15 / t_mean))
-                    
+
                     ! Calculate net plant assimilation (mg/m2/s)
                     an_co2(i,j) = an_co2(i,j) + tile(ilu)%frac(i,j) * (-(co2_abs - ci) / (tile(ilu)%ra(i,j) + rs_co2))
-                                                                        
+
                endif
-               
+
             ! Bare soil - use soil resistance ! f2b: reduction soil resistance as f(theta)
             else if (any(soil_types == trim(tile(ilu)%lushort))) then
                 theta_min = theta_wp(si)
                 theta_rel = (phiw(i,j,kmax_soil) - theta_min) / max(1e-9, theta_fc(si) - theta_min)
                 f2b(i,j) = 1.0 / min(1.0, max(1e-9, theta_rel))
                 tile(ilu)%rs(i,j) = tile(ilu)%rs_min(i,j) / f2b(i,j)
-                    
+
                 ! Calculate soil (heterotrophic) respiration (mg/m2/s)
                 resp_co2(i,j) = resp_co2(i,j) + tile(ilu)%frac(i,j) * R_soil * &
                     (1/f2b(i,j)) * &  ! Soil moisture scaling
                     exp(Eact_soil / (283.15 * 8.314) * (1.0 - 283.15 / t_mean))
-                    
+
                 cycle
-               
-            else if (trim(tile(ilu)%lushort) == 'ws' .or. trim(tile(ilu)%lushort) == 'aqu') then     
+
+            else if (trim(tile(ilu)%lushort) == 'ws' .or. trim(tile(ilu)%lushort) == 'aqu') then
                 ! Water leaf surface - zero resistance
                 tile(ilu)%rs(i,j) = 0.0
                 cycle
-            else 
+            else
                 ! Non-vegetated, non-soil, non-water tiles (e.g., urban, ice) get minimum resistance
-                tile(ilu)%rs(i,j) = tile(ilu)%rs_min(i,j) 
+                tile(ilu)%rs(i,j) = tile(ilu)%rs_min(i,j)
             endif
-            
+
         enddo !end loop over nlu
 
         ! Set CO2 fluxes (svflux):
         ! Final check to be physically reasonable:
-        
+
         ! --- Check respiration (should be positive, reasonable) ---
         if (resp_co2(i,j) /= resp_co2(i,j) .or. resp_co2(i,j) > max_resp_flux .or. resp_co2(i,j) < min_resp_flux) then
             print *, "WARNING: Unrealistic resp_co2:", resp_co2(i,j), "→ substituting 0"
@@ -796,23 +796,23 @@ subroutine calc_canopy_resistance_ags
             print *, "WARNING: Unrealistic an_co2:", an_co2(i,j), "→ substituting 0"
             an_co2(i,j) = 0.0
         endif
-        
-        
+
+
         resp_co2(i,j) = resp_co2(i,j)* from_mgm3 ! Convert mg/m²/s to unit m/s (unit are units of CO2 in the model)
         an_co2(i,j) = an_co2(i,j) * from_mgm3    ! Convert mg/m²/s to unit m/s (unit are units of CO2 in the model)
-        
+
         if (svco2ags .ge. 1) then
             svflux(i,j,svco2ags) = resp_co2(i,j)  !Kinematic scalar flux [unit m/s]
         else if (svco2veg .ge. 1) then
             svflux(i,j,svco2veg) = an_co2(i,j)  !Kinematic scalar flux [unit m/s]
-        endif 
-        
-        svflux(i,j,co2_index) = resp_co2(i,j) + an_co2(i,j)  !Kinematic scalar flux [unit m/s] 
-        
+        endif
 
-        enddo 
-    enddo 
-    
+        svflux(i,j,co2_index) = resp_co2(i,j) + an_co2(i,j)  !Kinematic scalar flux [unit m/s]
+
+
+        enddo
+    enddo
+
 end subroutine calc_canopy_resistance_ags
 
 !
@@ -829,7 +829,7 @@ subroutine calc_stability
 
   ! Calculate properties shared by all tiles:
   ! Absolute wind speed difference, and virtual potential temperature atmosphere
-  !$acc parallel loop collapse(2) default(present) async(1)
+  !$acc parallel loop collapse(2) default(present)
   do j=2,j1
       do i=2,i1
           du = 0.5*(u0(i,j,1) + u0(i+1,j,1)) + cu
@@ -858,7 +858,7 @@ subroutine calc_obuk_ustar_ra(tile)
     integer :: i, j
     real :: thvs
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             !if (tile%frac(i,j) > 0) then
@@ -879,7 +879,7 @@ subroutine calc_obuk_ustar_ra(tile)
         end do
     end do
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             !if (tile%frac(i,j) > 0) then
@@ -911,12 +911,12 @@ subroutine calc_tile_bcs(tile)
     real :: rhocp_i(1), rholv_i(1)
 #endif
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     rhocp_i(1) = 1. / (rhof(1) * cp)
     rholv_i(1) = 1. / (rhof(1) * rlv)
     !$acc end kernels
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2, j1
         do i=2, i1
            ! if (tile%frac(i,j) > 0) then
@@ -996,7 +996,7 @@ subroutine calc_water_bcs(tile)
     integer :: i, j
     real :: esats
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2, j1
       do i=2, i1
         !if (tile%frac(i,j) > 0) then
@@ -1056,7 +1056,7 @@ subroutine calc_bulk_bcs
 #endif
     real, pointer :: ustar_3D(:,:,:)
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     rhocp_i(1) = 1. / (rhof(1) * cp)
     rholv_i(1) = 1. / (rhof(1) * rlv)
     !$acc end kernels
@@ -1072,7 +1072,7 @@ subroutine calc_bulk_bcs
       endif
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             H(i,j) = 0
@@ -1087,7 +1087,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             do ilu=1,nlu
@@ -1111,7 +1111,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
 
@@ -1122,7 +1122,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
 
@@ -1138,7 +1138,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
 
@@ -1152,7 +1152,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
 
@@ -1168,7 +1168,7 @@ subroutine calc_bulk_bcs
         enddo
     enddo
 
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
 
@@ -1237,7 +1237,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
     logical::acc
     if (iinterp == iinterp_amean) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) default(present)  if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = 0.5*(field(i,j,k-1) + field(i,j,k))
@@ -1246,7 +1246,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
         end do
     else if (iinterp == iinterp_gmean) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) default(present)  if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = sqrt(field(i,j,k-1) * field(i,j,k))
@@ -1255,7 +1255,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
         end do
     else if (iinterp == iinterp_hmean) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) default(present)  if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = ((dz_soil(k-1)+dz_soil(k))*field(i,j,k-1)*field(i,j,k)) / &
@@ -1265,7 +1265,7 @@ subroutine interpolate_soil(fieldh, field, iinterp, acc)
         end do
     else if (iinterp == iinterp_max) then
         do k=2,kmax_soil
-            !$acc parallel loop collapse(2) default(present) async(1) if(acc)
+            !$acc parallel loop collapse(2) default(present)  if(acc)
             do j=2,j1
                 do i=2,i1
                     fieldh(i,j,k) = max(field(i,j,k-1), field(i,j,k))
@@ -1291,7 +1291,7 @@ subroutine calc_thermal_properties
 
     ! Calculate diffusivity heat
     do k=1,kmax_soil
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) default(present)
         do j=2,j1
             do i=2,i1
                 si = soil_index(i,j,k)
@@ -1332,7 +1332,7 @@ subroutine calc_hydraulic_properties
 
     ! Calculate diffusivity and conductivity soil moisture
     do k=1,kmax_soil
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) default(present)
         do j=2,j1
             do i=2,i1
                 si = soil_index(i,j,k)
@@ -1365,11 +1365,11 @@ subroutine calc_hydraulic_properties
 
     ! Optionally, set free drainage bottom BC
     if (lfreedrainage) then
-        !$acc kernels default(present) async(1)
+        !$acc kernels default(present)
         gammash(:,:,1) = gammash(:,:,2)
         !$acc end kernels
     else
-        !$acc kernels default(present) async(1)
+        !$acc kernels default(present)
         gammash(:,:,1) = 0.
         !$acc end kernels
     end if
@@ -1388,14 +1388,14 @@ subroutine calc_root_water_extraction
     real :: phiw_rf, phi_frac, LE
     real, parameter :: fac = 1./(rhow * rlv)
 
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     phiw_source = 0
     !$acc end kernels
     do ilu=1,nlu
       if ((.not. tile(ilu)%lveg).or.(tile(ilu)%lushort == "slb")) then
           cycle
       else
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) default(present)
         do j=2, j1
           do i=2, i1
               LE = tile(ilu)%frac(i,j) * tile(ilu)%LE(i,j)
@@ -1432,14 +1432,14 @@ subroutine integrate_t_soil
 
     rk3coef = rdt / (4. - dble(rk3step))
     if(rk3step == 1) then
-       !$acc kernels default(present) async(1)
+       !$acc kernels default(present)
        tsoilm(:,:,:) = tsoil(:,:,:)
        !$acc end kernels
     endif
 
     ! Top soil layer
     k = kmax_soil
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             si = soil_index(i,j,k)
@@ -1452,7 +1452,7 @@ subroutine integrate_t_soil
 
     ! Bottom soil layer
     k = 1
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             tend = ((lambdah(i,j,k+1) * (tsoil(i,j,k+1) - tsoil(i,j,k)) * dzhi_soil(k+1)))*dzi_soil(k)
@@ -1463,7 +1463,7 @@ subroutine integrate_t_soil
 
     ! Interior
     do k=2,kmax_soil-1
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) default(present)
         do j=2,j1
             do i=2,i1
                 tend = ((lambdah(i,j,k+1) * (tsoil(i,j,k+1) - tsoil(i,j,k  )) * dzhi_soil(k+1)) &
@@ -1491,7 +1491,7 @@ subroutine integrate_theta_soil
 
     rk3coef = rdt / (4. - dble(rk3step))
     if(rk3step == 1) then
-       !$acc kernels default(present) async(1)
+       !$acc kernels default(present)
        phiwm(:,:,:) = phiw(:,:,:)
        !$acc end kernels
     endif
@@ -1500,7 +1500,7 @@ subroutine integrate_theta_soil
 
      ! Top soil layer
     k = kmax_soil
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
           do ilu=1,nlu
@@ -1516,7 +1516,7 @@ subroutine integrate_theta_soil
 
     ! Bottom soil layer
     k = 1
-    !$acc parallel loop collapse(2) default(present) async(1)
+    !$acc parallel loop collapse(2) default(present)
     do j=2,j1
         do i=2,i1
             tend = ((lambdash(i,j,k+1) * (phiw(i,j,k+1) - phiw(i,j,k)) * dzhi_soil(k+1)))*dzi_soil(k) &
@@ -1528,7 +1528,7 @@ subroutine integrate_theta_soil
 
     ! Interior
     do k=2,kmax_soil-1
-        !$acc parallel loop collapse(2) default(present) async(1)
+        !$acc parallel loop collapse(2) default(present)
         do j=2,j1
             do i=2,i1
                 tend = ((lambdash(i,j,k+1) * (phiw(i,j,k+1) - phiw(i,j,k  )) * dzhi_soil(k+1)) &
@@ -2809,7 +2809,7 @@ subroutine check_value_validity
         call check_array(tile(ilu)%z0m, 'tile('//tile(ilu)%lushort//')%z0m', routine,[real(0, kind=rkind), real(zf(1),kind=rkind)], stop_if_invalid=.true.)
       end if
     end do
-    
+
 end subroutine check_value_validity
 !
 ! Read the input table with the (van Genuchten) soil parameters

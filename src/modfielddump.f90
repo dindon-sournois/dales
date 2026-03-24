@@ -119,7 +119,7 @@ contains
       if ((iqr == 0).and.((lplw.or.lpli))) then
         print *, "lplw or lpli are true but there is no qr tracer. Turning plw and pli output off."
         lplw = .false.
-        lpli = .false. 
+        lpli = .false.
       endif
     end if
     call D_MPI_BCAST(ncoarse     ,1,0,comm3d,ierr)
@@ -280,10 +280,10 @@ contains
            ind_sv(n) = ind
            ind = ind + 1
            write (csvname(1:3),'(i3.3)') n
-           call ncinfo(ncname(ind_sv(n),:), tracer_prop(n)%tracname, tracer_prop(n)%traclong, tracer_prop(n)%unit, 'tttt')    
+           call ncinfo(ncname(ind_sv(n),:), tracer_prop(n)%tracname, tracer_prop(n)%traclong, tracer_prop(n)%unit, 'tttt')
         end if
      end do
-     
+
       nvar = ind - 1 ! total number of fields actually in use
 
       call open_nc(trim(output_prefix)//fname,  ncid,nrec,n1=ceiling(1.0*imax/ncoarse),n2=ceiling(1.0*jmax/ncoarse),n3=khigh-klow+1)
@@ -343,18 +343,18 @@ contains
     iqr = get_tracer_index("qr")
 
 
-    !!$acc update self(u0) if(lu) async
-    !!$acc update self(v0) if(lv) async
-    !!$acc update self(w0) if(lw) async
-    !!$acc update self(qt0) if(lqt) async
-    !!$acc update self(ql0) if(lql) async
-    !!$acc update self(thl0) if(lthl) async
-    !!$acc update self(sv0) if(any(lsv)) async
-    !!$acc update self(thv0h, thvh) if(lbuoy) async
-    !!$acc update self(e120) if(le12) async
-    !!$acc update self(ekm) if(lekm) async
-    !!$acc update self(ekh) if(lekh) async
-    !!$acc wait    
+    !!$acc update self(u0) if(lu)
+    !!$acc update self(v0) if(lv)
+    !!$acc update self(w0) if(lw)
+    !!$acc update self(qt0) if(lqt)
+    !!$acc update self(ql0) if(lql)
+    !!$acc update self(thl0) if(lthl)
+    !!$acc update self(sv0) if(any(lsv))
+    !!$acc update self(thv0h, thvh) if(lbuoy)
+    !!$acc update self(e120) if(le12)
+    !!$acc update self(ekm) if(lekm)
+    !!$acc update self(ekh) if(lekh)
+    !!$acc wait
 
     if (lbinary) allocate(field(2-ih:i1+ih,2-jh:j1+jh,k1))
     if (lnetcdf) allocate(vars(ceiling(1.0*imax/ncoarse),ceiling(1.0*jmax/ncoarse),khigh-klow+1,nvar))

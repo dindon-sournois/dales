@@ -18,7 +18,7 @@ module modprecursor
   use modtimer,        only: timer_tic, timer_toc
   use modprecision,    only: field_r
 
-  implicit none 
+  implicit none
 
   private
 
@@ -51,7 +51,7 @@ module modprecursor
   integer :: statid = 1 !< ID of the simulation that should output statistics
   integer :: refid = 1  !< ID of the reference simulation (undisturbed)
   integer :: turid = 1  !< ID of the disturbed simulation
-  
+
   real(field_r), allocatable :: umsave(:,:,:)
   real(field_r), allocatable :: vmsave(:,:,:)
   real(field_r), allocatable :: wmsave(:,:,:)
@@ -66,16 +66,16 @@ module modprecursor
   real(field_r), allocatable :: ql0save(:,:,:)
   real(field_r), allocatable :: ql0hsave(:,:,:)
   real(field_r), allocatable :: e120save(:,:,:)
-  real(field_r), allocatable :: dthvdzsave(:,:,:)  
-  real(field_r), allocatable :: ekmsave(:,:,:)  
-  real(field_r), allocatable :: tmp0save(:,:,:)  
-  real(field_r), allocatable :: eslsave(:,:,:)  
-  real(field_r), allocatable :: qvslsave(:,:,:)  
-  real(field_r), allocatable :: qvsisave(:,:,:)  
-  real(field_r), allocatable :: thv0hsave(:,:,:)  
-  real(field_r), allocatable :: presfsave(:)  
-  real(field_r), allocatable :: preshsave(:)  
-  real(field_r), allocatable :: thvhsave(:)  
+  real(field_r), allocatable :: dthvdzsave(:,:,:)
+  real(field_r), allocatable :: ekmsave(:,:,:)
+  real(field_r), allocatable :: tmp0save(:,:,:)
+  real(field_r), allocatable :: eslsave(:,:,:)
+  real(field_r), allocatable :: qvslsave(:,:,:)
+  real(field_r), allocatable :: qvsisave(:,:,:)
+  real(field_r), allocatable :: thv0hsave(:,:,:)
+  real(field_r), allocatable :: presfsave(:)
+  real(field_r), allocatable :: preshsave(:)
+  real(field_r), allocatable :: thvhsave(:)
   real(field_r), allocatable :: u0avsave(:)
   real(field_r), allocatable :: v0avsave(:)
   real(field_r), allocatable :: thl0avsave(:)
@@ -117,7 +117,7 @@ contains
                + nudge_fac_ * (nudge_target - field) / dt
 
   end function calc_nudged_tend
-  
+
   !> Read precursor namelist options.
   subroutine precursor_read_namelist(nml_filename)
 
@@ -293,7 +293,7 @@ contains
   end subroutine swap_fields
 
   !> Nudge the fields at the lateral boundaries towards the saved values.
-  subroutine precursor_nudge_boundary 
+  subroutine precursor_nudge_boundary
 
     character(len=*), parameter :: routine = modname//'/precursor_nudge_boundary'
 
@@ -336,7 +336,7 @@ contains
 
     ! North
     if (myidy == 0) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) default(present)
       do k = 1, kmax
         do j = 1, nudgedepthgr
           do i = 2, i1
@@ -349,7 +349,7 @@ contains
 
     ! South
     if (myidy == nprocy - 1) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) default(present)
       do k = 1, kmax
         do j = j1 - nudgedepthgr + 1, j1
           do i = 2, i1
@@ -363,7 +363,7 @@ contains
 
     ! West
     if (myidx == 0) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) default(present)
       do k = 1, kmax
         do j = 2, j1
           do i = 1, nudgedepthgr
@@ -376,7 +376,7 @@ contains
 
     ! East
     if (myidx == nprocx - 1) then
-      !$acc parallel loop gang vector collapse(3) default(present) async
+      !$acc parallel loop gang vector collapse(3) default(present)
       do k = 1, kmax
         do j = 2, j1
           do i = i1 - nudgedepthgr + 1, i1
@@ -419,7 +419,7 @@ contains
     real(field_r), allocatable, intent(inout) :: b(:,:,:,:)
 
     real(field_r), allocatable :: temp(:,:,:,:)
-    
+
     call move_alloc(a, temp)
     call move_alloc(b, a)
     call move_alloc(temp, b)

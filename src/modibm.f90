@@ -39,20 +39,20 @@ module modibm
   use modtimer
   use modlogging,      only : finish, warning, message
 
-  
+
   implicit none
   save
   private
   character(len=*), parameter :: modname = 'modibm'
-  
+
   public :: ixw_p, ixw_m, iyw_p, iyw_m, izw_p, iobst
-  
+
   !< Later extendable to put different wall types in fortran types
   integer :: Nxwalls_plus, Nywalls_plus, Nzwalls_plus, Nxwalls_min, Nywalls_min, Nzwalls_min, Nobst
   integer, allocatable :: ixw_p(:,:), ixw_m(:,:), iyw_p(:,:), iyw_m(:,:), izw_p(:,:)!, izw_m(:,:)
   integer, allocatable :: iobst(:,:)
   logical, allocatable :: fluid_mask(:,:,:) !< Logical which is .false. for internal building points
-  
+
   !< Additional parameters
   real(field_r) :: dx_half, dy_half, Cm_xwall, Cm_ywall, Cd_xwall, Cd_ywall, Cm_zwall, Cd_zwall, z_MO
 
@@ -101,8 +101,8 @@ contains
 
       ! Do some checks for conflicting settings and warn/stop further execution
       if ( lapply_ibm ) then
-        if (abs(cu) > 0) call finish(routine, 'Domain translation not allowed with IBM, set cu to zero')  
-        if (abs(cv) > 0) call finish(routine, 'Domain translation not allowed with IBM, set cv to zero')  
+        if (abs(cu) > 0) call finish(routine, 'Domain translation not allowed with IBM, set cu to zero')
+        if (abs(cv) > 0) call finish(routine, 'Domain translation not allowed with IBM, set cv to zero')
 
         if (ibas_prf .ne. 2) then
           ibas_prf = 2
@@ -110,7 +110,7 @@ contains
               'ibas_pr is overwritten to 2 (Boussinesq approximation with constant density) ' // &
               'height dependent density gives probles with correction of vertical advective '  // &
               'tendencies at the top of obstacles'  &
-          )  
+          )
         end if
 
         !< check for use of 2nd order advection. Ideally, IBM should work with kappa advection for tracers, IMPLEMENT later.
@@ -119,21 +119,21 @@ contains
           call finish(routine, &
               'Current IBM implementation only works with 2nd order advection. '  // &
               'Proper check for kappa advection of scalars to be implemented'&
-          )  
+          )
         end if
 
         if ( lanisotrop ) then
           call warning(routine, &
-              'WARNING: you are using IBM with anisotropic grids in x,y-direction '  // & 
+              'WARNING: you are using IBM with anisotropic grids in x,y-direction '  // &
               'while possible, this may cause unexpected results (blending effects)' &
-          )  
+          )
         end if
 
         if ( .not.(lsmagorinsky) ) then
           call warning(routine, &
               'WARNING: subgrid TKE (e120) is not (yet) explicitly corrected for walls. '  // &
               'This includes production, destruction and dissipation terms in sgs-tke budget' &
-          )  
+          )
         end if
 
         !! Check doesn't work currently, related to order in startup routine
@@ -193,7 +193,7 @@ contains
         call init_ibm_from_nc(bc_height)
       else
 
-       call message(routine, 'Reading inputfile ibm.inp.', cexpnr) 
+       call message(routine, 'Reading inputfile ibm.inp.', cexpnr)
 
         open (ifinput,file='ibm.inp.'//cexpnr)
           do k=1,7
@@ -209,10 +209,10 @@ contains
 
         close(ifinput)
 
-        call message(routine,'Succesfully read inputfile in modibm') 
+        call message(routine,'Succesfully read inputfile in modibm')
 
       end if
-    end if 
+    end if
     !> Broadcast building heights to all ranks
     call D_MPI_BCAST(bc_height, (itot+1)*(jtot+1), 0, comm3d, mpierr)
 
@@ -318,7 +318,7 @@ contains
     !> Should be same.
     if (no /= Nobst) then
       call finish(routine, &
-          'ERROR: Number of identified obstacle points during wall determination and prior stage do not match!')  
+          'ERROR: Number of identified obstacle points during wall determination and prior stage do not match!')
     end if
 
     !> Copy temporary arrays with indices into final ones
@@ -381,7 +381,7 @@ contains
 
     write(input_file(9:11), '(i3.3)') iexpnr
 
-    call message(routine, "Reading IBM input: ", input_file) 
+    call message(routine, "Reading IBM input: ", input_file)
     call message(routine, "Expecting dimensions x,y and variable bc_height(:,:)")
     call check( nf90_open(input_file, nf90_nowrite, ncid), input_file, __LINE__)
     ! check if dimensions of ibm.inp_xxx.nc agree with the DALES domain
@@ -427,7 +427,7 @@ contains
     real(field_r)     :: uspeed, ucc, vcc, z_MO
     real(field_r)     :: tau_vu_plus, tau_vu_min, tau_wu_min, tau_wu_plus, tau_uv_min, tau_uv_plus, tau_wv_min, tau_wv_plus
     real              :: Lob
-    
+
     if (.not. lapply_ibm) return
 
     call timer_tic('modibm/applyibm',0)
@@ -522,7 +522,7 @@ contains
         Cd_zwall = fkar**2 / (log(z_MO / z0m_wall)) / (log(z_MO / z0h_wall))
       else
         retval = calc_obl_iter(thl0(i,j,k), qt0(i,j,k), real(thlroof), &
-                               real(qtroof), z_MO, real(z0m_wall), real(z0h_wall), & 
+                               real(qtroof), z_MO, real(z0m_wall), real(z0h_wall), &
                                ucc, vcc, Lob)
 
         Cm_zwall = fkar**2 / (log(z_MO / z0m_wall) - psim(z_MO / Lob) + psim(z0m_wall / Lob))** 2
@@ -536,7 +536,7 @@ contains
 
       ! SvdL: tentative fix for vertical diffusion of temperature over z-walls. Do theck later. Also here, 0.5 comes from interpolation of ekm.
       thlp(i,j,k) = thlp(i,j,k) + 0.5_field_r * rhobh(k)/rhobf(k) * ( ( ( dzf(k-1) * ekm(i,j,k) ) + ( dzf(k ) * ekm(i,j,k-1)) )* dzhi(k)  ) * ( thl0(i,j,k) - thl0(i-1,j,k) ) * dzhi(k) * dzfi(k)
-      
+
       !> not sure yet how to properly include zero flux conditions (... copy relevant isurf parts from modsurface.f90 here)
       ! if flux = constant, it is just the flux to feed into here. Yet, roof temperatures should still be diagnosed somehow (requiring energy balance)
       ! doubting wheter rhobh(k)/rhobf(k) are truly correct here, i.e., at right positions..

@@ -62,7 +62,7 @@ contains
   !!
   !! @return minimum buffer size for transposing.
   pure function transpose_get_buffer_size(this) result(size)
-    
+
     class(t_transposer), intent(in) :: this
 
     integer(longint) :: size_x, size_y, size_z, size_z2, size
@@ -117,14 +117,14 @@ contains
       n1 = imax
       n2 = jmax
       n3 = this%konx
-      
+
       !$acc parallel loop collapse(4) default(present) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
             do i = 1, n1
               ii = i + (j-1)*n1 + (k-1)*n1*n2 + n*n1*n2*n3
-              if (k+n*n3 <= kmax) buffer(ii) = pz(i+1,j+1,k+n*n3) 
+              if (k+n*n3 <= kmax) buffer(ii) = pz(i+1,j+1,k+n*n3)
             end do
           end do
         end do
@@ -182,7 +182,7 @@ contains
         end do
       end do
     else
-      
+
       n1 = imax
       n2 = jmax
       n3 = this%konx

@@ -428,7 +428,7 @@ contains
     real(field_r), intent(inout) :: qtpmcr(2-ih:,2-jh:,:) !< Total water mixing ratio tendency [kg/kg/s]
     real(field_r), intent(inout) :: thlpmcr(2:,2:,:)      !< Liquid water potential temperature tendency [K/s]
     real(field_r), intent(inout) :: qrp(2:,2:,:)          !< Rain water mixing ratio tendency [kg/kg/s]
-    
+
     character(len=*), parameter :: routine = modname//"/accrete"
     real(field_r) :: qll,qli,qrr,qrs,qrg,&
                      gaccrl,gaccsl,gaccgl,gaccri,gaccsi,gaccgi,accr,accs,accg,acc
@@ -532,13 +532,13 @@ contains
   end subroutine evapdep
 
   subroutine precipitate(qr, rhof, rhobf, dzh, delt, qrp, precep)
-    
+
     real(field_r), intent(in) :: qr(2:,2:,:) !< Rain water mixing ratio [kg/kg]
     real(field_r), intent(in) :: rhof(:)     !< Air density at full levels [kg/m3]
     real(field_r), intent(in) :: rhobf(:)    !< Base state air density at full levels [kg/m3]
     real(field_r), intent(in) :: dzh(:)      !< Grid thickness of half levels [m]
     real(field_r), intent(in) :: delt        !< Time step size [s]
-    
+
     real(field_r), intent(inout) :: qrp(2:,2:,:)    !< Rain water mixing ratio tendency [kg/kg/s]
     real(field_r), intent(inout) :: precep(2:,2:,:) !< Precipitation rate [kg/kg/s]
 
@@ -657,7 +657,7 @@ contains
 
     real(field_r) :: corr !< Correction value [-/s]
 
-    !$acc parallel loop collapse(3) default(present) private(corr) async(1)
+    !$acc parallel loop collapse(3) default(present) private(corr)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -672,13 +672,13 @@ contains
 
   end subroutine clip_tendency
 
-  ! These are also available from modmicroutil, but to help with inlining we 
+  ! These are also available from modmicroutil, but to help with inlining we
   ! redefine them here.
 
   subroutine zero_field(field)
 
     real(field_r), intent(inout) :: field(:,:,:)
-    
+
     integer :: i, j, k
     integer :: s1, s2, s3
 
@@ -686,7 +686,7 @@ contains
     s2 = size(field, 2)
     s3 = size(field, 3)
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 1, s3
       do j = 1, s2
         do i = 1, s1
@@ -709,7 +709,7 @@ contains
     s2 = size(src, 2)
     s3 = size(src, 3)
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 1, s3
       do j = 1, s2
         do i = 1, s1

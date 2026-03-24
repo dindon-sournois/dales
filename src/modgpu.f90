@@ -9,7 +9,7 @@ save
 #if defined(_OPENACC)
 contains
 
-  !> @brief Copies fields and arrays to GPU  
+  !> @brief Copies fields and arrays to GPU
   subroutine update_gpu
     use modfields, only: um, u0, up, vm, v0, vp, wm, w0, wp, &
                          thlm, thl0, thlp, qtm, qt0, qtp, &
@@ -79,7 +79,7 @@ contains
     !!$acc update device(tskin, qskin, ra, rs, obl)
 
   end subroutine update_gpu_surface
-  
+
   !> @brief Copies data from GPU to host, mostly for debugging
   subroutine update_host
     use modfields, only: um, u0, up, vm, v0, vp, wm, w0, wp, &
@@ -159,7 +159,7 @@ contains
   subroutine allocate_workspace(n)
     use modmpi, only: nprocs
     implicit none
-    
+
     integer, intent(in) :: n
 
     allocate(workspace_0(n))

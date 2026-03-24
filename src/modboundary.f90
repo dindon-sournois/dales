@@ -53,7 +53,7 @@ contains
                                 ifnamopt, fname_options, checknamelisterror           !GT added
     use modmpi,    only : myid, comm3d, d_mpi_bcast                             !GT added
     use fortran_support, only : nnml_output
-    
+
     implicit none
 
     real    :: zspb, zspt
@@ -62,17 +62,17 @@ contains
     namelist/NAMBOUNDSET/ lboundopen, fillvalues        !GT added
 
     call timer_tic('modboundary/initboundary', 0)
-    
+
     if (myid == 0) then
       open(ifnamopt,file=fname_options,status='old',iostat=ierr)
       read (ifnamopt,nml=NAMBOUNDSET,iostat=ierr)
       call checknamelisterror(ierr, ifnamopt, 'NAMBOUNDSET')
       write(nnml_output, NAMBOUNDSET)
       close(ifnamopt)
-    endif 
+    endif
 
     call d_mpi_bcast(lboundopen,          1,  0, comm3d, ierr)  !GT added
-    call d_mpi_bcast(fillvalues,        nsv,  0, comm3d, ierr)  !GT added 
+    call d_mpi_bcast(fillvalues,        nsv,  0, comm3d, ierr)  !GT added
 
 
     allocate(tsc(k1))
@@ -92,8 +92,8 @@ contains
 
    allocate(dsv(nsv))
 
-   !!$acc enter data copyin(tsc) async
-   !!$acc enter data create(dsv) async
+   !!$acc enter data copyin(tsc)
+   !!$acc enter data create(dsv)
 
    call timer_toc('modboundary/initboundary')
 
@@ -119,7 +119,7 @@ contains
     call cyclicm
     call cyclich
     call setboundaries          !was uncommented GT
-  
+
     call topm
     call toph
 
@@ -128,7 +128,7 @@ contains
 !> Cleans up after the run
   subroutine exitboundary
     implicit none
-    
+
     !!$acc exit data delete(tsc, dsv)
     deallocate(tsc, dsv)
   end subroutine exitboundary
@@ -181,7 +181,7 @@ contains
   do n=1,nsv
     call closeboundaries(sv0(:, :, 1:k1, n), 2,i1,ih, 2,j1,jh, 1,k1, fillvalues(n))             !GT changes 0. (given BC) to fillvalues(n)
     call closeboundaries(svm(:, :, 1:k1, n), 2,i1,ih, 2,j1,jh, 1,k1, fillvalues(n))             !GT changes 0. (given BC) to fillvalues(n)
-  enddo     
+  enddo
 
   end subroutine setboundaries
 
@@ -215,7 +215,7 @@ contains
   select case(igrw_damp)
   case(0) !do nothing
   case(1)
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     do k=ksp,kmax
       up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(u0av(k)-cu))*tsc(k)
       vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(v0av(k)-cv))*tsc(k)
@@ -225,7 +225,7 @@ contains
     end do
     !$acc end kernels
     if(lcoriol) then
-      !$acc kernels default(present) async(1)
+      !$acc kernels default(present)
       do k=ksp,kmax
         up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(ug(k)-cu))*((1./(geodamptime*rnu0))*tsc(k))
         vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(vg(k)-cv))*((1./(geodamptime*rnu0))*tsc(k))
@@ -233,7 +233,7 @@ contains
       !$acc end kernels
     end if
   case(2)
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     do k=ksp,kmax
       up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(ug(k)-cu))*tsc(k)
       vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(vg(k)-cv))*tsc(k)
@@ -243,7 +243,7 @@ contains
     end do
     !$acc end kernels
   case(3)
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     do k=ksp,kmax
       up(:,:,k)  = up(:,:,k)-(u0(:,:,k)-(u0av(k)-cu))*tsc(k)
       vp(:,:,k)  = vp(:,:,k)-(v0(:,:,k)-(v0av(k)-cv))*tsc(k)
@@ -253,7 +253,7 @@ contains
     end do
     !$acc end kernels
   case(-1)
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     up(:,:,:) = up(:,:,:) - unudge * ( sum((u0av(1:kmax) - ug(1:kmax)) * dzf(1:kmax)) / sum(dzf(1:kmax)) ) / rdt
     vp(:,:,:) = vp(:,:,:) - unudge * ( sum((v0av(1:kmax) - vg(1:kmax)) * dzf(1:kmax)) / sum(dzf(1:kmax)) ) / rdt
     !$acc end kernels
@@ -266,13 +266,13 @@ contains
   ! Originally done in subroutine tqaver, now using averages from modthermodynamics
 
   if ( .not. lopenbc ) then
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     thl0(2:i1,2:j1,kmax) = thl0av(kmax)
     qt0 (2:i1,2:j1,kmax) = qt0av(kmax)
     !$acc end kernels
 
     if (nsv > 0) then
-      !$acc kernels default(present) async(1)
+      !$acc kernels default(present)
       do n=1,nsv
         sv0(2:i1,2:j1,kmax,n) = sv0av(kmax,n)
       end do
@@ -306,7 +306,7 @@ contains
 ! **  Top conditions :
   ! Calculate new gradient over several of the top levels, to be used
   ! to extrapolate thl and qt to level k1 !JvdD
-  
+
   !$acc serial default(present)
   dtheta = sum((thl0av(kmax-kav+1:kmax)-thl0av(kmax-kav:kmax-1))/ &
              dzh(kmax-kav+1:kmax))/kav
@@ -321,15 +321,15 @@ contains
                  dzh(kmax-kav:kmax-1))/kav
     enddo
   endif
-  
-  !$acc kernels default(present) 
+
+  !$acc kernels default(present)
   thl0(:,:,k1) = thl0(:,:,kmax) + dtheta*dzh(k1)
   qt0(:,:,k1)  = qt0 (:,:,kmax) + dqt*dzh(k1)
 
   thlm(:,:,k1) = thlm(:,:,kmax) + dtheta*dzh(k1)
   qtm(:,:,k1)  = qtm (:,:,kmax) + dqt*dzh(k1)
   !$acc end kernels
-  
+
   if ( nsv > 0) then
     !$acc kernels default(present)
     do n=1,nsv
@@ -359,7 +359,7 @@ contains
         e120(:,:,k1) = e120(:,:,kmax)
         !$acc end kernels
     endif
-    
+
     !$acc kernels default(present)
     um(:,:,k1)   = um(:,:,kmax)
     vm(:,:,k1)   = vm(:,:,kmax)

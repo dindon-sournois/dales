@@ -101,7 +101,7 @@ module modchecksim
     peclettot(:)
 
 contains
-  
+
   !> Read checksim namelist.
   subroutine checksim_read_namelist(nml_filename)
     use fortran_support, only: nnml_output
@@ -149,13 +149,13 @@ contains
     call timer_toc(routine)
 
   end subroutine initchecksim
-  
+
   subroutine initETA_stat
 
     wtime = MPI_Wtime()
     prevtimeleft = timeleft
     prevntrun = ntrun
-    
+
   end subroutine initETA_stat
 
   !> Deallocate checksim arrays.
@@ -169,7 +169,7 @@ contains
 
   !> Run checksim. Timekeeping, and output
   subroutine checksim
-    
+
     character(len=*), parameter :: routine = modname//'/checksim'
 
     character(len=20) :: timeday
@@ -348,7 +348,7 @@ contains
 
     call check_array(qtp, "qtp", step, [-0.01_field_r, 0.01_field_r], stop_if_invalid=lstop, dump_if_invalid=.true.)
     call check_array(thlp, "thlp", step, [-20.0_field_r, 20.0_field_r], stop_if_invalid=lstop, dump_if_invalid=.true.)
-  
+
   end subroutine checktend
 
   subroutine check_array_1d_int(array, name, step, threshold, lacc, stop_if_invalid)
@@ -528,7 +528,7 @@ contains
     character(len=11) :: cval
 
     if (present(stop_if_invalid)) stop_if_invalid_ = stop_if_invalid
-  
+
     do j = 1, size(array, dim=2)
       do i = 1, size(array, dim=1)
         val = array(i,j)
@@ -700,7 +700,7 @@ contains
   end subroutine check_array_3d_r4
 
   subroutine check_array_3d_r8(array, name, step, threshold, lacc, stop_if_invalid, dump_if_invalid)
-    
+
     character(len=*), parameter :: routine = modname//'/check_array_3d_r8'
 
     real(real64),     intent(in) :: array(:,:,:)
@@ -786,7 +786,7 @@ contains
 
   !> Dumps values of prognostic variables at specified location.
   !!
-  !! @param[in] loc (i,j,k) location to print variables for. 
+  !! @param[in] loc (i,j,k) location to print variables for.
   subroutine dump_state(loc)
 
     integer, intent(in) :: loc(3)

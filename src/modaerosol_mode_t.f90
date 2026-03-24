@@ -104,7 +104,7 @@ module modaerosol_mode_t
       itrac_q(maxspecies)
     real(field_r), pointer :: &
       q(:,:,:,:),             &
-      qp(:,:,:,:) 
+      qp(:,:,:,:)
   contains
     procedure :: init => hydrometeor_mode_init
     procedure :: prepare => hydrometeor_mode_prepare
@@ -121,7 +121,7 @@ contains
 
     class(aerosol_mode_t), intent(inout) :: &
       this
-    
+
     integer, intent(in) :: &
       imode_type
 
@@ -187,7 +187,7 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(3) default(present) async wait(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -197,9 +197,9 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
-    do s = 1, this%nspecies 
-      do k = 1, kmax 
+    !$acc parallel loop collapse(4) default(present)
+    do s = 1, this%nspecies
+      do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
             this%q(s,i,j,k) = max(sv(i,j,k,this%itrac_q(s)), 0.0_field_r)
@@ -231,7 +231,7 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(3) default(present) async wait(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -240,7 +240,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
+    !$acc parallel loop collapse(4) default(present)
     do s = 1, this%nspecies
       do k = 1, kmax
         do j = 2, j1
@@ -280,7 +280,7 @@ contains
     this%nspecies = count(lspecies)
 
     i = 1
-    do s = 1, maxspecies    
+    do s = 1, maxspecies
       if (lspecies(s)) then
         this%itype(i) = s
         i = i + 1
@@ -325,9 +325,9 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
-    do s = 1, this%nspecies 
-      do k = 1, kmax 
+    !$acc parallel loop collapse(4) default(present)
+    do s = 1, this%nspecies
+      do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
             this%q(s,i,j,k) = max(sv(i,j,k,this%itrac_q(s)), 0.0_field_r)
@@ -340,7 +340,7 @@ contains
     call timer_toc(routine)
 
   end subroutine hydrometeor_mode_prepare
-  
+
   !> Copy out tendencies.
   !!
   !! @param[inout] svp Tracer tendency array.
@@ -359,7 +359,7 @@ contains
 
     call timer_tic(routine, 3)
 
-    !$acc parallel loop collapse(4) default(present) async wait(1)
+    !$acc parallel loop collapse(4) default(present)
     do s = 1, this%nspecies
       do k = 1, kmax
         do j = 2, j1
@@ -394,7 +394,7 @@ contains
     allocate(connection%cnct(2,from%nspecies))
 
     do sf = 1, from%nspecies
-      do st = 1, to%nspecies 
+      do st = 1, to%nspecies
         if (from%itype(sf) == to%itype(st)) then
           connection%cnct(1,sf) = sf
           connection%cnct(2,sf) = st

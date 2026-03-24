@@ -246,7 +246,7 @@ contains
       kinds, &       ! kind
       FFTW_MEASURE & ! flags (FFTW_MEASURE or FFTW_ESTIMATE)
     )
-    
+
     embed(1) = jtot
      if (lperiodic(3)) then
         kinds(1) = FFTW_HC2R
@@ -427,7 +427,7 @@ contains
     real(pois_r), pointer :: p(:,:,:)
     real(pois_r), pointer :: Fp(:,:,:)
     real :: norm
-    
+
     !Fp(:,:,:) = Fp(:,:,:) / sqrt(ijtot)
 
     if (method == 1) then

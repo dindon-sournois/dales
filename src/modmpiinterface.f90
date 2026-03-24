@@ -135,7 +135,7 @@ contains
     !!$acc end host_data
     if (ierror /= MPI_SUCCESS) call abort
   end subroutine D_MPI_IRECV_LOGICAL_R1
-  
+
 !>D_MPI_RECV
   subroutine D_MPI_RECV_REAL32_R1(buf, count, source, tag, comm, status, ierror)
     implicit none

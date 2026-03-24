@@ -173,7 +173,7 @@ contains
               trim(timer_names(i)),  ";", &
               timing_results_acc(i,3:3), ";", &
               timer_counts(i) , ";", &
-              timing_results_acc(i,3:3)/timer_counts(i) 
+              timing_results_acc(i,3:3)/timer_counts(i)
       end do
       close(file)
 
@@ -277,7 +277,7 @@ contains
     !@cuf integer :: istat
 
     if (.not. ltimer) return
-    
+
     if(present(ierror)) ierror = 0
     idx = timer_search(timer_name)
     if (idx > 0) then

@@ -166,7 +166,7 @@ contains
 
     profiles = 0
 
-    !!$acc enter data copyin(profiles) create(slab_average) async
+    !!$acc enter data copyin(profiles) create(slab_average)
 
     if (lprocblock) then
       my_task_writes = .true. ! All MPI ranks write to a file
@@ -258,7 +258,7 @@ contains
 
       call slabavg(field, nh, slab_average, local=lprocblock)
 
-      !$acc parallel loop vector default(present) async
+      !$acc parallel loop vector default(present)
       do k = 1, kmax
         profiles(k,idx) = profiles(k,idx) + slab_average(k)
       end do
@@ -292,7 +292,7 @@ contains
 
       call slabavg(field, mask, nh, slab_average, local=lprocblock)
 
-      !$acc parallel loop vector default(present) async
+      !$acc parallel loop vector default(present)
       do k = 1, kmax
         profiles(k,idx) = profiles(k,idx) + slab_average(k)
       end do
@@ -322,7 +322,7 @@ contains
       end if
 
       ! Reset averages
-      !$acc parallel loop collapse(2) default(present) async
+      !$acc parallel loop collapse(2) default(present)
       do n = 1, nvar
         do k = 1, kmax
           profiles(k,n) = 0

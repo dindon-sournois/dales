@@ -890,7 +890,7 @@ end subroutine slurb_bulk_deallocations
     !
     !-- Set initial guess for temperature for subsurface layers.
     t(LBOUND( t, 1 )+1:UBOUND( t, 1 )-1) = (t_bc_1 + t_bc_2) / 2.0_field_r
- 
+
     !
     !-- Gauss-Seidel iteration.
     DO  ix = 1, 1000

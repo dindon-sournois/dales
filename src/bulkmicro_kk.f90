@@ -269,7 +269,7 @@ contains
   elemental function calc_sed_qr_kk(qr, nr, rho) result(sed_qr)
 
     real(field_r), intent(in) :: qr, nr, rho
-    
+
     real(field_r) :: xr, dvr, wfall_qr, sed_qr
 
     !$acc routine seq
@@ -293,7 +293,7 @@ contains
   elemental function calc_sed_nr_kk(qr, nr, rho) result(sed_nr)
 
     real(field_r), intent(in) :: qr, nr, rho
-    
+
     real(field_r) :: xr, dvr, wfall_nr, sed_nr
 
     !$acc routine seq

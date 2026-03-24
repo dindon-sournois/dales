@@ -473,7 +473,7 @@ module modbulkmicro
       end if
 
       if(laerosol) call aerosol_scavenging_rain(qr, nr, rhof, delt)
-    
+
     end if
 
     !$acc parallel loop collapse(3) default(present)

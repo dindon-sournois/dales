@@ -40,7 +40,7 @@ module modaerosol_common
   real(field_r), parameter :: &
     aerosol_densities(maxspecies) = [1841, 2165, 1800, 1300, 2560], &
     sigma_g_modes(maxmodes) = [1.59, 1.59, 1.59, 2.0, 1.59, 1.59, 2.0, 1.5, 1.5]
-  
+
   ! Indices of modes in mode list.
   integer, parameter :: &
     iNUS = 1, & ! Nucleation mode.

@@ -1230,7 +1230,7 @@ contains
         end do
       end if
     else
-      !$acc parallel loop collapse(2) default(present) async(1)
+      !$acc parallel loop collapse(2) default(present)
       do j = 2, j1
         do i = 2, i1
           thlflux(i,j) = wtsurf
@@ -1239,7 +1239,7 @@ contains
       end do
 
       if (nsv > 0) then
-        !$acc parallel loop collapse(3) default(present) async(2)
+        !$acc parallel loop collapse(3) default(present)
         do n = 1, nsv
           do j = 2, j1
             do i = 2, i1
@@ -1370,7 +1370,7 @@ contains
         end do
       end do
       oblav = -1.e10
-    else 
+    else
       !$acc serial default(present) copy(oblav)
       retval = calc_obl_iter(thl0av(1), qt0av(1), real(thls), real(qts), &
                              zf(1), z0mav, z0hav, u0av(1), v0av(1), oblav)
@@ -1380,7 +1380,7 @@ contains
         !$acc parallel loop collapse(2) default(present)
         do j = 2, j1
           do i = 2, i1
-            upcu = 0.5_real64 * (u0(i,j,1) + u0(i+1,j,1)) + cu 
+            upcu = 0.5_real64 * (u0(i,j,1) + u0(i+1,j,1)) + cu
             vpcv = 0.5_real64 * (v0(i,j,1) + v0(i,j+1,1)) + cv
             retval = calc_obl_iter(thl0(i,j,1), qt0(i,j,1), real(tskin(i,j)), &
                                    real(qskin(i,j)), zf(1), z0m(i,j), &
@@ -1452,7 +1452,7 @@ contains
         Lend = L + 0.001 * L
 
         fx = Rib - calc_rib_from_obl(z, L, z0h, z0m)
-        
+
         fxdif = (- calc_rib_from_obl(z, Lstart, z0h, z0m) &
                 + calc_rib_from_obl(z, Lend, z0h, z0m)) / (Lstart - Lend)
 
@@ -1477,7 +1477,7 @@ contains
   !!
   !! See Heus et al. (2010) equation 28.
   elemental function calc_rib_from_obl(z, L, z0h, z0m) result(fac)
-    
+
     real(field_r), intent(in) :: z   !< Height [m]
     real(real64),  intent(in) :: L   !< Obukhov length [m]
     real(real64),  intent(in) :: z0h !< Roughness length for heat [m]

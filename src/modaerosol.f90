@@ -264,7 +264,7 @@ contains
     m_acs => modes_f(iACS)
     m_cos => modes_f(iCOS)
     m_inc => modes_h(iINC)
-    
+
     !$acc parallel loop collapse(3) default(present) &
     !$acc private(dm, fn, n_act, w0, dncdt, fm, tend_n, tend_m, st)
     do k = 1, kmax
@@ -357,7 +357,7 @@ contains
         end do
       end do
     end do
- 
+
     call timer_toc(routine)
 
   end subroutine aerosol_activation
@@ -412,7 +412,7 @@ contains
 
   !> Computes the resuspension of aerosol particles by evaporating rain droplets.
   !!
-  !! Aerosols are resuspended over the ACS and COS modes. Only rain drops that 
+  !! Aerosols are resuspended over the ACS and COS modes. Only rain drops that
   !! fully evaporate should resuspend an aerosol particle, so the resuspended
   !! aerosol mass is corrected using a correction factor.
   !!
@@ -478,7 +478,7 @@ contains
             eps = (1 - exp(-2 * sqrt(f_evp)) * (1 + 2 * sqrt(f_evp) &
                   + 2 * f_evp + (4.0_field_r/3) * f_evp**(3.0_field_r/2))) &
                   * (1 - f_evp) + f_evp * f_evp
-          
+
             evapm(:) = eps * f_evp * m_inr%q(:,i,j,k) / delt
             evapn = max(0.0_field_r, -1 * nrp(i,j,k))
 
@@ -577,7 +577,7 @@ contains
           eps = (1 - exp(-2 * sqrt(f_evp)) * (1 + 2 * sqrt(f_evp) &
                 + 2 * f_evp + (4.0_field_r/3) * f_evp**(3.0_field_r/2))) &
                 * (1 - f_evp) + f_evp * f_evp
-          
+
           evapm(:) = eps * f_evp * m_inc%q(:,i,j,k) / delt
           evapn = f_evp * nc(i,j,k) / delt
 
@@ -698,7 +698,7 @@ contains
     do ts = 1, n_spl
       !$acc parallel loop collapse(3) default(present) private(sed_nr)
       do k = qrbase, qrroof
-        do j = 2, j1 
+        do j = 2, j1
           do i = 2, i1
             if (qr_spl(i,j,k) > qrmin .and. nr_spl(i,j,k) > 0) then
               if (l_sb) then
@@ -751,11 +751,11 @@ contains
     !!$acc exit data delete(qr_spl, nr_spl, qa_spl)
 
     deallocate(qr_spl, nr_spl, qa_spl)
-    
+
     call timer_toc(routine)
 
   end subroutine aerosol_sedimentation_rain
-  
+
   !> Compute scavenging of aerosols by rain drops.
   subroutine aerosol_scavenging_rain(qr, nr, rho, delt)
 

@@ -245,7 +245,7 @@ contains
         ! Surface values
         fname4(11:18) = cmyid
         fname4(20:22) = cexpnr
-        
+
         nvar4 = 145
         nvars3d4 = 21
         nvar4 = nvar4 + nvars3d4
@@ -426,7 +426,7 @@ contains
         call ncinfo(ncname4( nvar4-nvars3d4+20,:),'t_win_b', 'temperature win b ', 't_win_b', 'tttts_slurb')
         call ncinfo(ncname4( nvar4-nvars3d4+21,:),'t_road', 'temperature road a ', 't_road', 'tttts_slurb')
 
-        
+
 
 
         call open_nc(trim(output_prefix)//fname4,  ncid4,nrec4,n1=imax,n2=jmax,ns=4)
@@ -597,7 +597,7 @@ contains
 
 
   end subroutine wrtsurf
-  
+
   subroutine wrtslurb
     use modglobal, only : imax,jmax,i1,j1,rtimee,rlv,cp
     use modfields, only : rhof

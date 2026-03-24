@@ -1,5 +1,5 @@
 module modcufft
-  use, intrinsic :: iso_c_binding 
+  use, intrinsic :: iso_c_binding
 
   use modtimer
   use modmpi
@@ -17,7 +17,7 @@ module modcufft
 
   save
     real :: norm_fac !< Normalization factor
-    integer :: istat !< cuFFT return status 
+    integer :: istat !< cuFFT return status
 
     real(pois_r), allocatable, target :: p_halo(:) !< Pressure with halos
     real(pois_r), allocatable, target :: p_nohalo(:)
@@ -65,7 +65,7 @@ module modcufft
       ! Number of complex coefficients
       nphix = itot/2 + 1
       nphiy = jtot/2 + 1
-      
+
       sz = max(kmax * imax * jmax, &
                konx * (2 * nphix) * jmax, &
                konx * imax * (2 * nphiy))
@@ -183,7 +183,7 @@ module modcufft
 
       ! Determine the workspace needed for FFTs and transposes
       max_worksize = -1
-      
+
       istat = cufftGetSize(planx, worksize)
       max_worksize = max(max_worksize, worksize)
       istat = cufftGetSize(planxi, worksize)
@@ -192,7 +192,7 @@ module modcufft
       max_worksize = max(max_worksize, worksize)
       istat = cufftGetSize(planyi, worksize)
       max_worksize = max(max_worksize, worksize)
-      
+
       ! max_worksize is in bytes, so convert it to number of elements by dividing by the size of a real number
       worksize = max_worksize / (storage_size(1._pois_r) / 8)
 
@@ -251,7 +251,7 @@ module modcufft
       istat = cufftDestroy(planxi)
       istat = cufftDestroy(plany)
       istat = cufftDestroy(planyi)
-      
+
     end subroutine cufftexit
 
     subroutine init_factors(xyrt)
@@ -261,13 +261,13 @@ module modcufft
       real(pois_r) :: xrt(itot), yrt(jtot)
       integer :: iswap(itot), jswap(jtot)
       integer i,j,nh
-      
+
       ! cuFFT orders the Fourier coefficients like this:
-      !   
+      !
       !   r[0],i[0],r[1],i[1],r[2],i[2],...,r[n/2],i[n/2],r[n/2+1],i[n/2+1]
-      ! 
+      !
       ! i[0] and i[n/2+1] are 0, so data is reordered like this:
-      ! 
+      !
       !   r[0],r[n/2+1],r[1],i[1],...,r[n/2],i[n/2]
       !
       ! TODO: this needs to work for uneven number of grid points too
@@ -324,7 +324,7 @@ module modcufft
 
     end subroutine init_factors
 
-    !< Forward transforms 
+    !< Forward transforms
     subroutine cufftf(p, Fp)
       use cufft
 
@@ -334,7 +334,7 @@ module modcufft
       integer :: i, j, k, ii
 
       call timer_tic('modcufft/cufftf', 1)
-      
+
       call transposer%z_to_x(p, px, workspace_0)
 
       !!!$acc host_data use_device(px)
@@ -344,10 +344,10 @@ module modcufft
       istat = cufftExecD2Z(planx, px, px)
 #endif
       !!$acc end host_data
-      
+
       call postprocess_f_fft(px, (/2*nphix, jmax, konx/), itot)
       call transposer%x_to_y(px, py, workspace_0)
-      
+
       !!!$acc host_data use_device(py)
 #if POIS_PRECISION==32
       istat = cufftExecR2C(plany, py, py)
@@ -368,7 +368,7 @@ module modcufft
       use cufft
 
       implicit none
-      
+
       real(pois_r), pointer :: p(:,:,:), Fp(:,:,:)
       integer :: i, j, k, ii
 
@@ -399,7 +399,7 @@ module modcufft
 
       call check_exitcode(istat)
       call transposer%x_to_z(px, p, workspace_0)
-      
+
       !$acc parallel loop collapse(3) default(present)
       do k=1,kmax
         do j=2,j1
@@ -432,7 +432,7 @@ module modcufft
           arr(2,j,k) = arr(len+1,j,k)
         end do
       end do
-    
+
     end subroutine postprocess_f_fft
 
     !< Preprocess signal before inverse FFT
@@ -463,7 +463,7 @@ module modcufft
       implicit none
       integer, intent(in) :: istat
       character(len=*), parameter :: routine = modname//'/check_exitcode'
-      
+
       if ( istat /= 0 ) then
         call finish(routine, "cuFFT returned nonzero exitcode: ", istat)
       end if

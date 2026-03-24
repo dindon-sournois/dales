@@ -79,7 +79,7 @@ contains
 
   ! Apply pressure gradient calculated from geostrophic wind speeds (lcoriol) or imposed pressure gradient (lpressgrad)
   if (lcoriol .or. lpressgrad) then
-    !$acc kernels default(present) async(1)
+    !$acc kernels default(present)
     do k = 1, kmax
       up(:,:,k) = up(:,:,k) - dpdxl(k)      ! LS pressure gradient force in x,y directions;
       vp(:,:,k) = vp(:,:,k) - dpdyl(k)
@@ -88,7 +88,7 @@ contains
   end if
 
   if (imicro == imicro_bulk3) then
-     !$acc parallel loop collapse(3) default(present) async(2)
+     !$acc parallel loop collapse(3) default(present)
      do k = 2, kmax
         do j = 2, j1
            do i = 2, i1
@@ -106,7 +106,7 @@ contains
      ! we check if tracer qr exists, otherwise we don't use it. Should be functionally identical to checking microphysics schem.
      iqr = get_tracer_index("qr")
      if(iqr>0) then
-        !$acc parallel loop collapse(3) default(present) async(2)
+        !$acc parallel loop collapse(3) default(present)
         do k = 2, kmax
           do j = 2, j1
             do i = 2, i1
@@ -117,7 +117,7 @@ contains
         end do
      else
         ! just buoyancy, no precipitation
-        !$acc parallel loop collapse(3) default(present) async(2)
+        !$acc parallel loop collapse(3) default(present)
         do k = 2, kmax
           do j = 2, j1
             do i = 2, i1
@@ -131,7 +131,7 @@ contains
 !     --------------------------------------------
 !     special treatment for lowest full level: k=1
 !     --------------------------------------------
-  !$acc kernels default(present) async(3)
+  !$acc kernels default(present)
   wp(:,:,1) = 0
   !$acc end kernels
 
@@ -175,7 +175,7 @@ contains
   call timer_tic('modforces/coriolis', 0)
 
   if ( lopenbc ) then
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 1, kmax
       do j = 2, j1
         do i = sx, i1
@@ -186,7 +186,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 1, kmax
       do j = sy, j1
         do i = 2, i1
@@ -196,7 +196,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -210,7 +210,7 @@ contains
     ! --------------------------------------------
     ! special treatment for lowest full level: k=1
     ! --------------------------------------------
-    !$acc parallel loop collapse(2) default(present) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = 2, j1
       do i = 2, i1
         wp(i,j,1) = 0.0
@@ -219,7 +219,7 @@ contains
     !!$acc wait(1,2)
   else ! lopenbc
     ! Efficient fused kernel for periodic bc
-    !$acc parallel loop collapse(3) default(present) async(1)
+    !$acc parallel loop collapse(3) default(present)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -240,7 +240,7 @@ contains
     ! --------------------------------------------
     ! special treatment for lowest full level: k=1
     ! --------------------------------------------
-    !$acc parallel loop collapse(2) default(present) async(2)
+    !$acc parallel loop collapse(2) default(present)
     do j = 2, j1
       do i = 2, i1
         up(i,j,1) = up(i,j,1)  + cv*om23 &
@@ -295,7 +295,7 @@ contains
 
   call timer_tic('modforces/lstend', 0)
 
-  !$acc parallel loop collapse(3) default(present) async(1)
+  !$acc parallel loop collapse(3) default(present)
   do k = 1, kmax
     do j = 2, j1
       do i = 2, i1
@@ -313,7 +313,7 @@ contains
   end do
 
   if (lmomsubs) then
-    !$acc parallel loop collapse(3) default(present) async(2)
+    !$acc parallel loop collapse(3) default(present)
     do k = 1, kmax
       do j = 1, j1
         do i = 1, i1
@@ -332,7 +332,7 @@ contains
   end if
   !!$acc wait
 
-  !$acc parallel loop collapse(3) default(present) async(1)
+  !$acc parallel loop collapse(3) default(present)
   do k = 1, kmax
     do j = 2, j1
       do i = 2, i1
@@ -346,7 +346,7 @@ contains
 
   ! Only do above for scalars if there are any scalar fields
   if (nsv > 0) then
-    !$acc parallel loop collapse(4) default(present) async(2)
+    !$acc parallel loop collapse(4) default(present)
     do n = 1, nsv
       do k = 1, kmax
         do j = 1, j1

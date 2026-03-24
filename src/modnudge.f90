@@ -129,7 +129,7 @@ contains
         call nchandle_error(nf90_get_var(ncid, varid, timenudge(1:)))
       end if
       call D_MPI_BCAST(timenudge, ntnudge + 1, 0, comm3d, mpierr)
-      
+
       if (lunudge) then
         allocate(unudge(k1,ntnudge), tunudge(k1,ntnudge))
         if (myid == 0) then
@@ -371,7 +371,7 @@ contains
     dtp = (timenudge(t + 1) - rtimee) / (timenudge(t + 1) - timenudge(t))
 
     if (lunudge) then
-      !$acc parallel loop collapse(3) private(currtnudge) default(present) async
+      !$acc parallel loop collapse(3) private(currtnudge) default(present)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -385,7 +385,7 @@ contains
     end if
 
     if (lvnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge) async
+      !$acc parallel loop collapse(3) default(present) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -399,7 +399,7 @@ contains
     end if
 
     if (lwnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge) async
+      !$acc parallel loop collapse(3) default(present) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -413,7 +413,7 @@ contains
     end if
 
     if (lthlnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge) async
+      !$acc parallel loop collapse(3) default(present) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -427,7 +427,7 @@ contains
     end if
 
     if (lqtnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge) async
+      !$acc parallel loop collapse(3) default(present) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -444,7 +444,7 @@ contains
       do n = 1, nsv
         if (tracer_prop(n) % lnudge) then
           !$acc parallel loop collapse(3) default(present) private(currtnudge) &
-          !$acc& async
+          !$acc&
           do k = 1, kmax
             do j = 2, j1
               do i = 2, i1
@@ -452,7 +452,7 @@ contains
                                  tsvnudge(k,t,n) * dtp + &
                                  tsvnudge(k,t + 1,n) * dtm)
                 svp(i,j,k,n) = svp(i,j,k,n) - (sv0av(k,n) - (svnudge(k,t,n) &
-                               * dtp + svnudge(k,t + 1,n) * dtm)) / currtnudge 
+                               * dtp + svnudge(k,t + 1,n) * dtm)) / currtnudge
               end do
             end do
           end do
@@ -472,7 +472,7 @@ contains
     deallocate(timenudge)
 
     if (allocated(tnudge)) deallocate(tnudge)
-    
+
     if (lunudge) then
       deallocate(unudge, tunudge)
     end if
