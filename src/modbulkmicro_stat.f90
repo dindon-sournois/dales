@@ -82,7 +82,7 @@ contains
         xrmax = xrmax_kk
       end if
 
-      !$acc parallel loop collapse(3) default(present) private(xr)
+      !$acc parallel loop collapse(3) private(xr)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1

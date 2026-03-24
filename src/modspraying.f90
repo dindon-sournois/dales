@@ -137,7 +137,7 @@ contains
       if (lwater_spraying) then
         dqldt_spraying = water_spray_rate / (rhobf(k_spray) * cell_volume)
 
-        !$acc serial default(present)
+        !$acc serial
         qtp(i_spray,j_spray,k_spray) = qtp(i_spray,j_spray,k_spray) &
           + (1-qt0(i_spray,j_spray,k_spray)) * dqldt_spraying
 
@@ -156,7 +156,7 @@ contains
           dn = salt_spray_rate / (2165.0 * pi / 6 * (75e-9)**3)
           dn = dn / cell_volume ! Number concentrations are in #/m3
 
-          !$acc serial default(present)
+          !$acc serial
           svp(i_spray,j_spray,k_spray,isv_salt) = &
             svp(i_spray,j_spray,k_spray,isv_salt) + dm
 
@@ -167,7 +167,7 @@ contains
           dsvdt_spraying = salt_spray_rate / (rhobf(k_spray) * cell_volume) &
             * (1 - sv0(i_spray,j_spray,k_spray,isv_salt) / salinity)
 
-          !$acc serial default(present)
+          !$acc serial
           svp(i_spray,j_spray,k_spray,isv_salt) = &
             svp(i_spray,j_spray,k_spray,isv_salt) + dsvdt_spraying
           !$acc end serial

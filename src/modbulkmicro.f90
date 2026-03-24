@@ -185,7 +185,7 @@ module modbulkmicro
     real :: qrsum_neg, qrsum, Nrsum_neg, Nrsum
     real(field_r), allocatable :: qrp_tmp(:,:,:), nrp_tmp(:,:,:), ncp_tmp(:,:,:), qlp_tmp(:,:,:)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -200,7 +200,7 @@ module modbulkmicro
     enddo
 
     if (laerosol) then
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1
@@ -228,7 +228,7 @@ module modbulkmicro
       qrsum = 0.0
       Nrsum_neg = 0.0
       Nrsum = 0.00
-      !$acc parallel loop collapse(3) default(present) reduction(+: qrsum_neg, qrsum, Nrsum_neg, Nrsum)
+      !$acc parallel loop collapse(3) reduction(+: qrsum_neg, qrsum, Nrsum_neg, Nrsum)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1
@@ -264,7 +264,7 @@ module modbulkmicro
     qrroof = 1 - 1
     qcbase = k1 + 1
     qcroof = 1 - 1
-    !$acc parallel loop collapse(3) default(present) reduction(min:qrbase,qcbase)
+    !$acc parallel loop collapse(3) reduction(min:qrbase,qcbase)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -282,7 +282,7 @@ module modbulkmicro
     qcbase = max(1, qcbase)
 
     if (qrbase.le.k1 .or. qcbase.le.k1) then
-      !$acc parallel loop collapse(3) default(present) reduction(max:qrroof,qcroof)
+      !$acc parallel loop collapse(3) reduction(max:qrroof,qcroof)
       do k = min(qrbase,qcbase), k1
         do j = 2, j1
           do i = 2, i1
@@ -444,7 +444,7 @@ module modbulkmicro
       !*********************************************************************
       ! remove negative values and non physical low values
       !*********************************************************************
-      !$acc parallel loop collapse(3) default(present) private(qr_cor, Nr_cor)
+      !$acc parallel loop collapse(3) private(qr_cor, Nr_cor)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1
@@ -476,7 +476,7 @@ module modbulkmicro
 
     end if
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -492,7 +492,7 @@ module modbulkmicro
     if (laerosol) then
       call aerosol_finish
 
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1
@@ -550,7 +550,7 @@ module modbulkmicro
 
     csed = c_St*(3./(4.*pi*rhow))**(2./3.)*exp(5.*log(sig_g)**2.)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = qcbase, qcroof
       do j = 2, j1
         do i = 2, i1
@@ -607,7 +607,7 @@ module modbulkmicro
 
     !!$acc enter data create(qr_spl, nr_spl)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -619,7 +619,7 @@ module modbulkmicro
 
     do ts = 1, n_spl ! Time splitting loop
       ! TODO: check if compiler succesfully unswitches and inlines function calls.
-      !$acc parallel loop gang vector collapse(3) default(present)
+      !$acc parallel loop gang vector collapse(3)
       do k = qrbase, qrroof
         do j = 2, j1
           do i = 2, i1
@@ -654,7 +654,7 @@ module modbulkmicro
       qrbase = max(1, qrbase - 1)
     end do
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = qrbase, qrroof
       do j = 2, j1
         do i = 2, i1

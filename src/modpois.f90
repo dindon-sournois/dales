@@ -269,7 +269,7 @@ contains
   ! TODO: allocate these in initpois
   rk3coef_inv = (4. - dble(rk3step)) / rdt
 
-  !$acc parallel loop collapse(3) default(present)
+  !$acc parallel loop collapse(3)
   do k=1,kmax
     do j=2,ey ! openbc needs these to i2,j2. Periodic bc needs them to i1,j1
       do i=2,ex
@@ -289,7 +289,7 @@ contains
 
   !**************************************************************
 
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j=2,j1
       do i=2,i1
         pwp(i,j,1)  = 0.
@@ -306,7 +306,7 @@ contains
       call excjs( pvp           , 2,i1,2,j1,1,kmax,ih,jh)
     endif
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k=1,kmax
       do j=2,j1
         do i=2,i1
@@ -371,7 +371,7 @@ contains
   ! **  pressure gradients.  ***************************************
   !*****************************************************************
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k=1,kmax
       do j=2,j1
         do i=2,i1
@@ -381,7 +381,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k=2,kmax
       do j=2,j1
         do i=2,i1
@@ -441,7 +441,7 @@ contains
 
   ! Generate tridiagonal matrix
 
-    !$acc parallel loop default(present)
+    !$acc parallel loop
     do k=1,kmax
       ! SB fixed the coefficients
       a(k)=rhobh(k)  /(dzf(k)*dzh(k  ))
@@ -449,7 +449,7 @@ contains
       b(k)=-(a(k)+c(k))
     end do
 
-    !$acc serial default(present)
+    !$acc serial
     b(1   )=b(1)+a(1)        ! -c(1)
     a(1   )=0.
     b(kmax)=b(kmax)+c(kmax)  ! -a(kmax)
@@ -469,7 +469,7 @@ contains
     ! c'(1) = c(1) / b(1)
     ! d'(1) = d(1) / b(1)
 
-    !$acc parallel loop collapse(2) default(present) private(z)
+    !$acc parallel loop collapse(2) private(z)
     do j=qs,qe
       do i=ps,pe
         z        = 1./(b(1)+rhobf(1)*xyrt(i,j))
@@ -481,7 +481,7 @@ contains
     ! Upward sweep i=2..(n-1)
     ! c'(i) = c(i) / [ b(i) - c'(i-1) a(i) ]
     ! d'(i) = [ d(i) - d'(i-1) a(i) ] / [ b(i) - c'(i-1) a(i) ]
-    !$acc parallel loop collapse(2) default(present) private(bbk, z)
+    !$acc parallel loop collapse(2) private(bbk, z)
     do  j=qs,qe
       do  i=ps,pe
         !$acc loop seq
@@ -497,7 +497,7 @@ contains
     ! Upward sweep i=n and backsubstitution i=n
     ! x(n) = d'(n)
 
-    !$acc parallel loop collapse(2) default(present) private(bbk, z)
+    !$acc parallel loop collapse(2) private(bbk, z)
     do j=qs,qe
       do i=ps,pe
         bbk = b(kmax) + rhobf(kmax)*xyrt(i,j)
@@ -513,7 +513,7 @@ contains
     ! Backsubstitution i=n-1..1
     ! x(i) = d'(i) - c'(i) x(i+1)
 
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j=qs,qe
       do i=ps,pe
         !$acc loop seq

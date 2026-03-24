@@ -104,7 +104,7 @@ contains
     if (ltimer) call timer_tic(routine, 2)
 
     if (nprocs == 1) then
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
         do j=1,jtot
           do i=1,itot
@@ -118,7 +118,7 @@ contains
       n2 = jmax
       n3 = this%konx
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -135,7 +135,7 @@ contains
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
       !!$acc end host_data
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -173,7 +173,7 @@ contains
     if (ltimer) call timer_tic(routine, 2)
 
     if (nprocs == 1) then
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -187,7 +187,7 @@ contains
       n2 = jmax
       n3 = this%konx
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -204,7 +204,7 @@ contains
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
       !!$acc end host_data
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -242,7 +242,7 @@ contains
     if (ltimer) call timer_tic(routine, 2)
 
     if (nprocs == 1) then
-      !$acc parallel loop collapse(3) default(present) private(ii)
+      !$acc parallel loop collapse(3) private(ii)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -252,7 +252,7 @@ contains
         end do
       end do
 
-      !$acc parallel loop collapse(3) default(present) private(ii)
+      !$acc parallel loop collapse(3) private(ii)
       do k = 1, kmax
         do j = 1, jtot
          do i = 1, itot
@@ -267,7 +267,7 @@ contains
       n2 = jmax
       n3 = this%konx
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocy-1
         do k = 1, n3
           do j = 1, n2
@@ -285,7 +285,7 @@ contains
                         commcol, mpierr)
       !!$acc end host_data
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocy-1
         do k = 1, n3
           do i = 1, n1
@@ -323,7 +323,7 @@ contains
     if (ltimer) call timer_tic(routine, 2)
 
     if (nprocs == 1) then
-      !$acc parallel loop collapse(3) default(present) private(ii)
+      !$acc parallel loop collapse(3) private(ii)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -333,7 +333,7 @@ contains
         end do
       end do
 
-      !$acc parallel loop collapse(3) default(present) private(ii)
+      !$acc parallel loop collapse(3) private(ii)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -348,7 +348,7 @@ contains
       n2 = jmax
       n3 = this%konx
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocy-1
         do k = 1, n3
           do i = 1, n1
@@ -366,7 +366,7 @@ contains
                         commcol, mpierr)
       !!$acc end host_data
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocy-1
         do k = 1, n3
           do j = 1, n2
@@ -404,7 +404,7 @@ contains
     if (ltimer) call timer_tic(routine, 2)
 
     if (nprocs == 1) then
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -418,7 +418,7 @@ contains
       n2 = this%iony
       n3 = this%konx
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do i = 1, n2
@@ -436,7 +436,7 @@ contains
                         commrow, mpierr)
       !!$acc end host_data
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n1
@@ -474,7 +474,7 @@ contains
     if (ltimer) call timer_tic(routine, 2)
 
     if (nprocs == 1) then
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k=1,kmax
         do j=1,jtot
           do i=1,itot
@@ -488,7 +488,7 @@ contains
       n2 = this%iony
       n3 = this%konx
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n1
@@ -506,7 +506,7 @@ contains
                         commrow, mpierr)
       !!$acc end host_data
 
-      !$acc parallel loop collapse(4) default(present) private(ii)
+      !$acc parallel loop collapse(4) private(ii)
       do n = 0, nprocx-1
         do k = 1, n3
           do i = 1, n2

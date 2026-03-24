@@ -124,7 +124,7 @@ contains
 
     k_au = k_c / (20 * x_s)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = qcbase, qcroof
       do j = 2, j1
         do i = 2, i1
@@ -206,7 +206,7 @@ contains
 
     call timer_tic('bulkmicro_sb/accretion', 1)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = max(qrbase,qcbase), min(qrroof, qcroof)
       do j = 2, j1
         do i = 2, i1
@@ -231,7 +231,7 @@ contains
 
     if (qrbase > qrroof) return
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = qrbase, qrroof
       do j = 2, j1
         do i = 2, i1
@@ -318,7 +318,7 @@ contains
 
     call timer_tic('bulkmicro_sb/evaporation', 1)
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = qrbase, qrroof
       do j = 2, j1
         do i = 2, i1
@@ -611,7 +611,7 @@ contains
 
     real(field_r), save :: dt_spl
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -636,7 +636,7 @@ contains
 
     do jn = 1, n_spl ! time splitting loop
       if (jn == 1) then
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, k1
           do j = 2, j1
             do i = 2, i1
@@ -649,7 +649,7 @@ contains
         end do
       else
         !Copy from tmp into spl
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, k1
           do j = 2, j1
             do i = 2, i1
@@ -668,7 +668,7 @@ contains
       ! Compute precep
       if (jn == 1) then
         if (l_lognormal) then
-          !$acc parallel loop collapse(3) default(present) private(Dgr)
+          !$acc parallel loop collapse(3) private(Dgr)
           do k = qrbase, qrroof
             do j = 2, j1
               do i = 2, i1
@@ -688,7 +688,7 @@ contains
             end do
           end do
         else ! l_lognormal
-          !$acc parallel loop collapse(3) default(present)
+          !$acc parallel loop collapse(3)
           do k = qrbase, qrroof
             do j = 2, j1
               do i = 2, i1
@@ -718,7 +718,7 @@ contains
         sedimbase = sedimbase + 1
         k = 1
           if (l_lognormal) then
-            !$acc parallel loop collapse(2) default(present) private(Dgr)
+            !$acc parallel loop collapse(2) private(Dgr)
             do j = 2, j1
               do i = 2, i1
                 if (qr_spl(i,j,k) > qrmin) then
@@ -745,7 +745,7 @@ contains
               end do
             end do
           else ! l_lognormal
-            !$acc parallel loop collapse(2) default(present)
+            !$acc parallel loop collapse(2)
             do j = 2, j1
               do i = 2, i1
                 if (qr_spl(i,j,k) > qrmin) then
@@ -769,7 +769,7 @@ contains
       end if ! qrbase == 1
 
       if (l_lognormal) then
-        !$acc parallel loop collapse(3) default(present) private(Dgr)
+        !$acc parallel loop collapse(3) private(Dgr)
         do k = sedimbase, qrroof
           do j = 2, j1
             do i = 2, i1
@@ -805,7 +805,7 @@ contains
           end do
         end do
       else
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = sedimbase, qrroof
           do j = 2, j1
             do i = 2, i1
@@ -844,7 +844,7 @@ contains
 
     delt_inv = 1.0 / delt
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = qrbase, qrroof
       do j = 2, j1
         do i = 2, i1

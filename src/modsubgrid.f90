@@ -295,7 +295,7 @@ contains
       end do
 
       ! Other levels
-      !$acc parallel loop collapse(3) default(present) private(mlen, strain2)
+      !$acc parallel loop collapse(3) private(mlen, strain2)
       do k = 2, kmax
         do i = 2, i1
           do j = 2, j1
@@ -358,7 +358,7 @@ contains
     else
       ! choose one of ldelta, ldelta+lmason, lanisotropic, or none of them for Deardorff length scale adjustment
       if (ldelta .and. .not. lmason) then
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, kmax
             do j = 2, j1
               do i = 2, i1
@@ -373,7 +373,7 @@ contains
             end do
         end do
       else if (ldelta .and. lmason) then ! delta scheme with Mason length scale correction
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, kmax
             do j = 2, j1
               do i = 2, i1
@@ -389,7 +389,7 @@ contains
             end do
         end do
       else if (lanisotrop) then ! Anisotropic diffusion,  https://doi.org/10.1029/2022MS003095
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, kmax
             do j = 2, j1
               do i = 2, i1
@@ -409,7 +409,7 @@ contains
          ! Addressing the grid-size sensitivity issue in large-eddy simulations of stable boundary layers.
          ! Boundary-Layer Meteorology, 178, 63-89 (2021).
 
-         !$acc parallel loop collapse(3) default(present)
+         !$acc parallel loop collapse(3)
          do k = 1, kmax
             do j = 2, j1
                do i = 2, i1
@@ -427,7 +427,7 @@ contains
             end do
          end do
       else ! Deardorff lengthscale correction
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do k = 1, kmax
             do j = 2, j1
               do i = 2, i1
@@ -469,7 +469,7 @@ contains
       call excjs( ekh           , 2,i1,2,j1,1,k1,ih,jh)
     endif
 
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j = 1, j2
       do i = 1, i2
         ekm(i,j,k1)  = ekm(i,j,kmax)
@@ -510,7 +510,7 @@ contains
     real(field_r):: tdef2, uwflux, vwflux, local_dudz, local_dvdz, local_dthvdz, horv
     integer i, j, k
 
-    !$acc parallel loop collapse(3) default(present) private(tdef2)
+    !$acc parallel loop collapse(3) private(tdef2)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -562,7 +562,7 @@ contains
     !--------------------------------------------
 
     if (sgs_surface_fix) then
-      !$acc parallel loop collapse(2) default(present) private(tdef2,horv,uwflux,vwflux,local_dudz,local_dvdz,local_dthvdz)
+      !$acc parallel loop collapse(2) private(tdef2,horv,uwflux,vwflux,local_dudz,local_dvdz,local_dthvdz)
       do j = 2, j1
         do i = 2, i1
           tdef2 = 2 * ( &
@@ -616,7 +616,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present) private(tdef2)
+      !$acc parallel loop collapse(2) private(tdef2)
       do j = 2, j1
         do i = 2, i1
           tdef2 = 2. * ( &
@@ -663,7 +663,7 @@ contains
 
     integer i,j,k
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -685,7 +685,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j = 2, j1
       do i = 2, i1
         a_out(i,j,1) = a_out(i,j,1) &
@@ -716,7 +716,7 @@ contains
 
     integer i,j,k,n
 
-    !$acc parallel loop collapse(4) default(present)
+    !$acc parallel loop collapse(4)
     do n = 1, nsv
       do k = 2, kmax
         do j = 2, j1
@@ -740,7 +740,7 @@ contains
       end do
     end do
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do n = 1, nsv
       do j = 2, j1
         do i = 2, i1
@@ -770,7 +770,7 @@ contains
     real(field_r), intent(inout)  :: a_out(2-ih:i1+ih,2-jh:j1+jh,k1)
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1
@@ -795,7 +795,7 @@ contains
   !     special treatment for lowest full level: k=1
   !     --------------------------------------------
 
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j = 2, j1
       do i = 2, i1
         a_out(i,j,1) = a_out(i,j,1) + &
@@ -826,7 +826,7 @@ contains
     real(field_r)                 :: ucu, upcu
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present) private(emom, emop, empo, emmo)
+    !$acc parallel loop collapse(3) private(emom, emop, empo, emmo)
     do k = 2, kmax
       do j = 2, j1
         do i = sx, i1
@@ -870,7 +870,7 @@ contains
   !     special treatment for lowest full level: k=1
   !     --------------------------------------------
 
-    !$acc parallel loop collapse(2) default(present) private(empo, emmo, emop, ucu, upcu, fu)
+    !$acc parallel loop collapse(2) private(empo, emmo, emop, ucu, upcu, fu)
     do j = 2, j1
       do i = sx, i1
         empo = 0.25_field_r * ( ekm(i  ,j  ,1)+&
@@ -932,7 +932,7 @@ contains
     real(field_r)                 :: fv, vcv,vpcv
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present) private(eomm, eomp, emmo, epmo)
+    !$acc parallel loop collapse(3) private(eomm, eomp, emmo, epmo)
     do k = 2, kmax
       do j = sy, j1
         do i = 2, i1
@@ -977,7 +977,7 @@ contains
   !     special treatment for lowest full level: k=1
   !     --------------------------------------------
 
-    !$acc parallel loop collapse(2) default(present) private(emmo, epmo, eomp, vcv, vpcv, fv)
+    !$acc parallel loop collapse(2) private(emmo, epmo, eomp, vcv, vpcv, fv)
     do j = sy, j1
       do i = 2, i1
         emmo = 0.25_field_r * ( ekm(i  ,j  ,1)+ &
@@ -1035,7 +1035,7 @@ contains
     real(field_r)                 :: emom, eomm, eopm, epom
     integer                       :: i,j,k
 
-    !$acc parallel loop collapse(3) default(present) private(emom, eomm, eopm, epom)
+    !$acc parallel loop collapse(3) private(emom, eomm, eopm, epom)
     do k = 2, kmax
       do j = 2, j1
         do i = 2, i1

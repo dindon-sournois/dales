@@ -156,7 +156,7 @@ contains
 
     call timer_tic(routine, 2)
 
-    !$acc parallel loop collapse(3) default(present) &
+    !$acc parallel loop collapse(3) &
     !$acc private(sed_qr, rm, gamma_n, gamma_m, st)
     do k = 1, kmax
       do j = 2, j1
@@ -231,7 +231,7 @@ contains
 
     call timer_tic(routine, 2)
 
-    !$acc parallel loop collapse(3) default(present) &
+    !$acc parallel loop collapse(3) &
     !$acc private(rc, rm, gamma_n, gamma_m, limit, st)
     do k = 1, kmax
       do j = 2, j1

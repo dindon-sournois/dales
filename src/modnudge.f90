@@ -371,7 +371,7 @@ contains
     dtp = (timenudge(t + 1) - rtimee) / (timenudge(t + 1) - timenudge(t))
 
     if (lunudge) then
-      !$acc parallel loop collapse(3) private(currtnudge) default(present)
+      !$acc parallel loop collapse(3) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -385,7 +385,7 @@ contains
     end if
 
     if (lvnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge)
+      !$acc parallel loop collapse(3) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -399,7 +399,7 @@ contains
     end if
 
     if (lwnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge)
+      !$acc parallel loop collapse(3) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -413,7 +413,7 @@ contains
     end if
 
     if (lthlnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge)
+      !$acc parallel loop collapse(3) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -427,7 +427,7 @@ contains
     end if
 
     if (lqtnudge) then
-      !$acc parallel loop collapse(3) default(present) private(currtnudge)
+      !$acc parallel loop collapse(3) private(currtnudge)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1
@@ -443,7 +443,7 @@ contains
     if (lsvnudge) then
       do n = 1, nsv
         if (tracer_prop(n) % lnudge) then
-          !$acc parallel loop collapse(3) default(present) private(currtnudge) &
+          !$acc parallel loop collapse(3) private(currtnudge) &
           !$acc&
           do k = 1, kmax
             do j = 2, j1

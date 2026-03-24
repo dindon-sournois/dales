@@ -513,7 +513,7 @@ contains
     jend   =  ibatch    * jmax/nbatch + 1
 
     ! Set up layer values within the DALES domain
-    !$acc parallel loop collapse(3) default(present) private(icol)
+    !$acc parallel loop collapse(3) private(icol)
     do k=1,kmax
       do j=jstart, jend
         do i=2,i1 !i1=imax+1
@@ -527,7 +527,7 @@ contains
     call stop_on_err(gas_concs%set_vmr(trim(gas_names(1)), h2ovmr))
 
     ! Set up temperature interface values
-    !$acc parallel loop collapse(3) default(present) private(icol)
+    !$acc parallel loop collapse(3) private(icol)
     do k=2,nlay
       do j=jstart, jend
         do i=2,i1 !i1=imax+1
@@ -536,7 +536,7 @@ contains
         enddo
       enddo
     enddo
-    !$acc parallel loop collapse(2) default(present) private(icol)
+    !$acc parallel loop collapse(2) private(icol)
     do j=jstart, jend
       do i=2,i1 !i1=imax+1
         icol=i-1+(j-jstart)*imax
@@ -547,7 +547,7 @@ contains
     enddo
 
     ! Setup cloud properties (above the DALES domain everyhting is set to zero)
-    !$acc kernels default(present)
+    !$acc kernels
     LWP_slice = 0.0
     IWP_slice = 0.0
     liquidRe = 0.
@@ -558,7 +558,7 @@ contains
     inc = get_tracer_index('nc')
 
     if (inc > 0) then
-       !$acc parallel loop collapse(3) default(present) private(icol)
+       !$acc parallel loop collapse(3) private(icol)
        do k=1,kmax
           do j=jstart, jend
              do i=2,i1
@@ -568,7 +568,7 @@ contains
           end do
        end do
     else
-       !$acc parallel loop collapse(3) default(present) private(icol)
+       !$acc parallel loop collapse(3) private(icol)
        do k=1,kmax
           do j=jstart, jend
              do i=2,i1
@@ -579,7 +579,7 @@ contains
        end do
     endif
 
-    !$acc parallel loop collapse(3) default(present) private(icol,ilratio,layerMass,qcl,qci,B_function)
+    !$acc parallel loop collapse(3) private(icol,ilratio,layerMass,qcl,qci,B_function)
     do k=1,kmax
       do j=jstart, jend
         do i=2,i1 !i1=imax+1
@@ -642,7 +642,7 @@ contains
     jstart = (ibatch-1) * jmax/nbatch + 2
     jend   =  ibatch    * jmax/nbatch + 1
 
-    !$acc parallel loop collapse(3) default(present) private(icol)
+    !$acc parallel loop collapse(3) private(icol)
     do k=1,k1
       do j=jstart, jend
         do i=2,i1 !i1=imax+1
@@ -656,7 +656,7 @@ contains
         enddo
       enddo
     enddo
-    !$acc parallel loop collapse(2) default(present) private(icol)
+    !$acc parallel loop collapse(2) private(icol)
     do j=jstart, jend
       do i=2,i1 !i1=imax+1
         icol=i-1+(j-jstart)*imax
@@ -668,7 +668,7 @@ contains
     enddo
 
     if(doclearsky) then
-      !$acc parallel loop collapse(3) default(present) private(icol)
+      !$acc parallel loop collapse(3) private(icol)
       do k=1,k1
         do j=jstart, jend
           do i=2,i1 !i1=imax+1
@@ -680,7 +680,7 @@ contains
           enddo
         enddo
       enddo
-      !$acc parallel loop collapse(2) default(present) private(icol)
+      !$acc parallel loop collapse(2) private(icol)
       do j=jstart, jend
         do i=2,i1 !i1=imax+1
           icol=i-1+(j-jstart)*imax
@@ -692,7 +692,7 @@ contains
       enddo
     endif
 
-    !$acc parallel loop collapse(3) default(present)
+    !$acc parallel loop collapse(3)
     do k=1,kmax
       do j=jstart, jend
         do i=2,i1
@@ -736,7 +736,7 @@ contains
       ! Constant albedo for now
       ! Albedos can be computed as a function of solarZenithAngleCos,
       ! so it makes sense to keep the init here
-      !$acc kernels default(present)
+      !$acc kernels
       sfc_alb_dir=albedoav
       sfc_alb_dif=albedoav
       !$acc end kernels

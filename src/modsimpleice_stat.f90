@@ -70,7 +70,7 @@ contains
 
       !!$acc data create(is_cloud, is_rain, is_precip)
 
-      !$acc parallel loop collapse(3) default(present)
+      !$acc parallel loop collapse(3)
       do k = 1, kmax
         do j = 2, j1
           do i = 2, i1

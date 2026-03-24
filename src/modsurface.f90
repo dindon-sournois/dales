@@ -858,7 +858,7 @@ contains
     integer :: i, j
     real :: logz
 
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j = 2, j1
       do i = 2, i1
         logz = log(zf(1) / z0m(i,j))
@@ -879,7 +879,7 @@ contains
     integer :: patchx, patchy
 
     if (lmostlocal) then
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           ra(i,j) = 1. / (Cs(i,j) * horv(i,j))
@@ -894,7 +894,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           ra(i,j) = 1. / (Cs(i,j) * horvav)
@@ -918,7 +918,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           tskin(i,j) = thls
@@ -942,7 +942,7 @@ contains
     integer :: Npatch(xpatches, ypatches), SNpatch(xpatches, ypatches)
 
     ! TODO: check if splitting these loops speeds things up on the GPU (async)
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j = 2, j1
       do i = 2, i1
         tskin(i,j) = min(max(thlflux(i,j) / (Cs(i,j) * horv(i,j)), -10.), 10.) + thl0(i,j,1)
@@ -952,7 +952,7 @@ contains
 
     thls = 0.0
     qts = 0.0
-    !$acc parallel loop collapse(2) default(present) reduction(+: thls, qts)
+    !$acc parallel loop collapse(2) reduction(+: thls, qts)
     do j = 2, j1
       do i = 2, i1
         thls = thls + tskin(i,j)
@@ -1004,7 +1004,7 @@ contains
     real :: Supatch(xpatches, ypatches), Svpatch(xpatches, ypatches)
     integer :: Npatch(xpatches, ypatches), SNpatch(xpatches, ypatches)
 
-    !$acc parallel loop collapse(2) default(present) private(upcu, vpcv)
+    !$acc parallel loop collapse(2) private(upcu, vpcv)
     do j = 2, j1
       do i = 2, i1
         upcu = 0.5 * (u0(i,j,1) + u0(i+1,j,1)) + cu
@@ -1057,7 +1057,7 @@ contains
     integer :: i, j
 
     if (lmostlocal) then
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           ustar(i,j) = sqrt(Cm(i,j)) * horv(i,j)
@@ -1072,7 +1072,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           ustar(i,j) = sqrt(Cm(i,j)) * horvav
@@ -1107,7 +1107,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           ustar(i,j) = ustin
@@ -1142,7 +1142,7 @@ contains
       ustl = 0.0
       wtsurfl = 0.0
       wqsurfl = 0.0
-      !$acc parallel loop collapse(2) default(present) reduction(+: ustl, wtsurfl, wqsurfl)
+      !$acc parallel loop collapse(2) reduction(+: ustl, wtsurfl, wqsurfl)
       do j = 2, j1
         do i = 2, i1
           ustl = ustl + ustar(i,j)
@@ -1161,7 +1161,7 @@ contains
 
       call presc_surface_flux
     else
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           thlflux(i,j) = - (thl0(i,j,1) - tskin(i,j)) / ra(i,j)
@@ -1180,7 +1180,7 @@ contains
             end do
           end do
         else
-          !$acc parallel loop collapse(3) default(present)
+          !$acc parallel loop collapse(3)
           do n = 1, nsv
             do j = 2, j1
               do i = 2, i1
@@ -1192,7 +1192,7 @@ contains
       end if
 
       if (lCO2Ags) then
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do n = 1, indCO2
           do j = 2, j1
             do i = 2, i1
@@ -1230,7 +1230,7 @@ contains
         end do
       end if
     else
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 2, j1
         do i = 2, i1
           thlflux(i,j) = wtsurf
@@ -1239,7 +1239,7 @@ contains
       end do
 
       if (nsv > 0) then
-        !$acc parallel loop collapse(3) default(present)
+        !$acc parallel loop collapse(3)
         do n = 1, nsv
           do j = 2, j1
             do i = 2, i1
@@ -1266,7 +1266,7 @@ contains
 
     scaling = 1.0 / (fkar * zf(1))
 
-    !$acc parallel loop collapse(2) default(present)
+    !$acc parallel loop collapse(2)
     do j = 2, j1
       do i = 2, i1
         phimzf = phim(zf(1) / obl(i,j))
@@ -1303,7 +1303,7 @@ contains
 
     if(isurf <= 2) then
       qts = 0.
-      !$acc parallel loop collapse(2) default(present) reduction(+: qts)
+      !$acc parallel loop collapse(2) reduction(+: qts)
       do j = 2, j1
         do i = 2, i1
           exner      = (ps / pref0)**(rd/cp)
@@ -1363,7 +1363,7 @@ contains
     integer       :: retval
 
     if (lneutral) then
-      !$acc parallel loop collapse(2) default(present)
+      !$acc parallel loop collapse(2)
       do j = 1, j2
         do i = 1, i2
           obl(i,j) = -1.e10
@@ -1371,13 +1371,13 @@ contains
       end do
       oblav = -1.e10
     else
-      !$acc serial default(present) copy(oblav)
+      !$acc serial copy(oblav)
       retval = calc_obl_iter(thl0av(1), qt0av(1), real(thls), real(qts), &
                              zf(1), z0mav, z0hav, u0av(1), v0av(1), oblav)
       !$acc end serial
 
       if (lmostlocal) then
-        !$acc parallel loop collapse(2) default(present)
+        !$acc parallel loop collapse(2)
         do j = 2, j1
           do i = 2, i1
             upcu = 0.5_real64 * (u0(i,j,1) + u0(i+1,j,1)) + cu
@@ -1388,7 +1388,7 @@ contains
           end do
         end do
       else
-        !$acc parallel loop collapse(2) default(present)
+        !$acc parallel loop collapse(2)
         do j = 1, j2
           do i = 1, i2
             obl(i,j) = oblav

@@ -256,7 +256,7 @@ contains
     implicit none
     integer :: k
 
-    !$acc kernels default(present)
+    !$acc kernels
     lwdav  = 0.
     lwuav  = 0.
     swdav  = 0.
@@ -279,7 +279,7 @@ contains
     call slabsum(swuav ,1,k1,swu ,2-ih,i1+ih,2-jh,j1+jh,1,k1,2,i1,2,j1,1,k1)
     call slabsum(thltendav ,1,k1,thlprad ,2-ih,i1+ih,2-jh,j1+jh,1,k1,2,i1,2,j1,1,k1)
 
-    !$acc parallel loop default(present)
+    !$acc parallel loop
     do k=1,kmax
        thllwtendav(k) = (abs(lwdav(k+1)) - abs(lwuav(k+1)) - abs(lwdav(k)) + abs(lwuav(k)) )/(rhof(k)*exnf(k)*cp*dzf(k))
        thlswtendav(k) = (abs(swdav(k+1)) - abs(swuav(k+1)) - abs(swdav(k)) + abs(swuav(k)) )/(rhof(k)*exnf(k)*cp*dzf(k))
@@ -287,7 +287,7 @@ contains
     end do
 
  !    ADD SLAB AVERAGES TO TIME MEAN
-    !$acc kernels default(present)
+    !$acc kernels
     lwumn       = lwumn       + lwuav       / ijtot
     lwdmn       = lwdmn       + lwdav       / ijtot
     swdmn       = swdmn       + swdav       / ijtot
@@ -302,13 +302,13 @@ contains
 
     if (lradclearair) then
         call radclearair
-        !$acc parallel loop default(present)
+        !$acc parallel loop
         do k=1,kmax
           thllwtendcaav(k) = (-lwdcaav(k+1) - lwucaav(k+1) + lwdcaav(k) + lwucaav(k))/(rhof(k)*exnf(k)*cp*dzf(k))
           thlswtendcaav(k) = (-swdcaav(k+1) - swucaav(k+1) + swdcaav(k) + swucaav(k))/(rhof(k)*exnf(k)*cp*dzf(k))
         enddo
 
-        !$acc kernels default(present)
+        !$acc kernels
         thllwtendcamn = thllwtendcamn + thllwtendcaav / ijtot
         thlswtendcamn = thlswtendcamn + thlswtendcaav / ijtot
         !$acc end kernels
@@ -331,7 +331,7 @@ contains
     integer :: i,j,k
 
     real :: exnersurf
-    !$acc kernels default(present)
+    !$acc kernels
     lwdcaav  = 0.
     lwucaav  = 0.
     swdcaav  = 0.
@@ -380,7 +380,7 @@ contains
 
  !    ADD SLAB AVERAGES TO TIME MEAN
 
-    !$acc kernels default(present)
+    !$acc kernels
     lwucamn = lwucamn + lwucaav/ijtot
     lwdcamn = lwdcamn + lwdcaav/ijtot
     swdcamn = swdcamn + swdcaav/ijtot
@@ -405,7 +405,7 @@ contains
       nminut  = int(nsecs/60)-nhrs*60
       nsecs   = mod(nsecs,60)
 
-      !$acc kernels default(present)
+      !$acc kernels
       lwumn   = lwumn    /nsamples
       lwdmn   = lwdmn    /nsamples
       swdmn   = swdmn    /nsamples
@@ -510,7 +510,7 @@ contains
       end if
     end if ! end if(myid==0)
 
-    !$acc kernels default(present)
+    !$acc kernels
     lwumn = 0.0
     lwdmn = 0.0
     swdmn = 0.0

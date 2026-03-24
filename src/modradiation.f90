@@ -242,7 +242,7 @@ contains
 
       wtime = MPI_Wtime()
 
-      !$acc kernels default(present)
+      !$acc kernels
       thlprad = 0.0
       !$acc end kernels
 
@@ -279,7 +279,7 @@ contains
       end if
     end if
 
-    !$acc kernels default(present)
+    !$acc kernels
     thlp = thlp + thlprad
     !$acc end kernels
 
@@ -528,7 +528,7 @@ subroutine radpar
 
   call timer_tic('modradiation/radprof', 1)
 
-  !$acc kernels default(present)
+  !$acc kernels
   do k=1,kmax
     thlprad(2:i1,2:j1,k) = thlprad(2:i1,2:j1,k) + thlpcar(k)
   end do

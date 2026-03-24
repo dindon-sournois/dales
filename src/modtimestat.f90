@@ -599,7 +599,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present) reduction(+:ccl, qlintavl, qtintavl) &
+      !$acc parallel loop collapse(2) reduction(+:ccl, qlintavl, qtintavl) &
       !$acc& reduction(max: qlintmaxl) private(qlint, qtint)
       do j = 2, j1
         do i = 2, i1
@@ -625,7 +625,7 @@ contains
        if (iqr == 0) then
           iqr = get_tracer_index("qhr")
        endif
-       !$acc parallel loop collapse(2) default(present) reduction(+:qrintavl) &
+       !$acc parallel loop collapse(2) reduction(+:qrintavl) &
       !$acc& private(qrint)
       do j = 2, j1
         do i = 2, i1
@@ -656,7 +656,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present) reduction(+: zbaseavl) reduction(min: zbaseminl)
+      !$acc parallel loop collapse(2) reduction(+: zbaseavl) reduction(min: zbaseminl)
       do j = 2, j1
         do i = 2, i1
           !$acc loop seq
@@ -703,7 +703,7 @@ contains
         end do
       end do
     else
-      !$acc parallel loop collapse(2) default(present) reduction(+:ztopavl) private(ztop)
+      !$acc parallel loop collapse(2) reduction(+:ztopavl) private(ztop)
       do j = 2, j1
         do i = 2, i1
           ztop = 0.0
@@ -725,7 +725,7 @@ contains
   !     9.5  Domain Averaged TKE
   !     -------------------------
 
-    !$acc parallel loop collapse(3) default(present) reduction(+: tke_totl)
+    !$acc parallel loop collapse(3) reduction(+: tke_totl)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -768,7 +768,7 @@ contains
     ustl = 0
     tstl = 0
     qstl = 0
-    !$acc parallel loop collapse(2) default(present) reduction(+:ustl,tstl,qstl)
+    !$acc parallel loop collapse(2) reduction(+:ustl,tstl,qstl)
     do j = 2, j1
        do i = 2, i1
           ustl = ustl + ustar(i,j)
@@ -780,7 +780,7 @@ contains
     if(isurf < 3) then
        thlfluxl = 0
        qtfluxl  = 0
-       !$acc parallel loop collapse(2) default(present) reduction(+:thlfluxl,qtfluxl)
+       !$acc parallel loop collapse(2) reduction(+:thlfluxl,qtfluxl)
        do j = 2, j1
           do i = 2, i1
              thlfluxl = thlfluxl + thlflux(i, j)
@@ -811,7 +811,7 @@ contains
     prav = 0
     if (imicro == imicro_sice .or. imicro == imicro_sice2 .or. imicro == imicro_bulk) then
        pravl = 0
-       !$acc parallel loop collapse(2) default(present) reduction(+:pravl)
+       !$acc parallel loop collapse(2) reduction(+:pravl)
        do j = 2, j1
           do i = 2, i1
              pravl = pravl + precep(i,j,1)
@@ -1065,7 +1065,7 @@ contains
 
       ! Surface fluxes
 
-      !$acc parallel loop gang vector collapse(2) default(present) &
+      !$acc parallel loop gang vector collapse(2) &
       !$acc reduction(+: s_swd_surf, s_swu_surf, s_lwd_surf, s_lwu_surf)
       do j = 2, j1
         do i = 2, i1
@@ -1078,7 +1078,7 @@ contains
 
       ! Top of atmosphere fluxes
 
-      !$acc parallel loop gang vector collapse(2) default(present) &
+      !$acc parallel loop gang vector collapse(2) &
       !$acc reduction(+: s_swd_toa, s_swu_toa, s_lwu_toa)
       do j = 2, j1
         do i = 2, i1
@@ -1090,7 +1090,7 @@ contains
 
       ! Top of model fluxes
 
-      !$acc parallel loop gang vector collapse(2) default(present) &
+      !$acc parallel loop gang vector collapse(2) &
       !$acc reduction(+: s_swd_tom, s_swu_tom, s_lwd_tom, s_lwu_tom)
       do j = 2, j1
         do i = 2, i1
@@ -1105,7 +1105,7 @@ contains
 
         ! Surface fluxes
 
-        !$acc parallel loop gang vector collapse(2) default(present) &
+        !$acc parallel loop gang vector collapse(2) &
         !$acc reduction(+: s_swd_surf_ca, s_swu_surf_ca, &
         !$acc              s_lwd_surf_ca, s_lwu_surf_ca)
         do j = 2, j1
@@ -1119,7 +1119,7 @@ contains
 
         ! Top of atmosphere fluxes
 
-        !$acc parallel loop gang vector collapse(2) default(present) &
+        !$acc parallel loop gang vector collapse(2) &
         !$acc reduction(+: s_swu_toa_ca, s_lwu_toa_ca)
         do j = 2, j1
           do i = 2, i1
@@ -1130,7 +1130,7 @@ contains
 
         ! Top of model fluxes
 
-        !$acc parallel loop gang vector collapse(2) default(present) &
+        !$acc parallel loop gang vector collapse(2) &
         !$acc reduction(+: s_swu_tom_ca, s_lwu_tom_ca)
         do j = 2, j1
           do i = 2, i1
@@ -1400,7 +1400,7 @@ contains
     endif
 
     zil = 0.0
-    !$acc kernels default(present)
+    !$acc kernels
     gradient(:) = 0.0
     dgrad(:) = 0.0
     !$acc end kernels
@@ -1409,26 +1409,26 @@ contains
       case (iblh_flux)
         select case (iblh_var)
           case(iblh_qt)
-            !$acc kernels default(present)
+            !$acc kernels
             blh_fld(:,:,:) = w0(:,:,:)*qt0h(:,:,:)
             !$acc end kernels
           case(iblh_thl)
-            !$acc kernels default(present)
+            !$acc kernels
             blh_fld(:,:,:) = w0(:,:,:)*thl0h(:,:,:)
             !$acc end kernels
           case(iblh_thv)
-            !$acc kernels default(present)
+            !$acc kernels
             blh_fld(:,:,:) = w0(:,:,:)*thv0h(:,:,:)
             !$acc end kernels
           case(1:)
             if (iadv_sv == iadv_kappa) then
               call halflev_kappa(sv0(:,:,:,iblh_var),sv0h)
-              !$acc kernels default(present)
+              !$acc kernels
               sv0h(2:i1,2:j1,1) = svs(iblh_var)
               blh_fld(:,:,:) = w0(:,:,:)*sv0h(:,:,:)
               !$acc end kernels
             else
-              !$acc kernels default(present)
+              !$acc kernels
               do k = 2, k1
                 do j = 2, j1
                   do i = 2, i1
@@ -1445,15 +1445,15 @@ contains
       case (iblh_grad,iblh_thres)
         select case (iblh_var)
           case(iblh_qt)
-            !$acc kernels default(present)
+            !$acc kernels
             blh_fld(:,:,:) = qt0(:,:,:)
             !$acc end kernels
           case(iblh_thl)
-            !$acc kernels default(present)
+            !$acc kernels
             blh_fld(:,:,:) = thl0(:,:,:)
             !$acc end kernels
           case(iblh_thv)
-            !$acc parallel loop collapse(3) default(present)
+            !$acc parallel loop collapse(3)
             do k = 1, k1
               do j = 2, j1
                 do i = 2, i1
@@ -1463,7 +1463,7 @@ contains
               end do
             end do
           case(1:)
-            !$acc kernels default(present)
+            !$acc kernels
             blh_fld(:,:,:) = sv0(2:i1,2:j1,1:k1,iblh_var)
             !$acc end kernels
         end select
@@ -1473,7 +1473,7 @@ contains
     select case (iblh_meth)
       case (iblh_flux)
         stride = ceiling(real(imax)/real(blh_nsamp))
-        !$acc parallel loop collapse(2) default(present) reduction(+:zil)
+        !$acc parallel loop collapse(2) reduction(+:zil)
         do i = 2, stride+1
           do j = 2, j1
             nsamp =  ceiling(real(i1-i+1)/real(stride))
@@ -1483,7 +1483,7 @@ contains
 
       case (iblh_grad)
         stride = ceiling(real(imax)/real(blh_nsamp))
-        !$acc parallel loop collapse(2) default(present) reduction(+:zil)
+        !$acc parallel loop collapse(2) reduction(+:zil)
         do i = 2, stride+1
           do j = 2, j1
             nsamp =  ceiling(real(i1-i+1)/real(stride))
