@@ -244,7 +244,7 @@ contains
     svprof(:,:) = 0
     dsvdtls(:,:) = 0
 
-    !$acc enter data copyin(svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
+    !!$acc enter data copyin(svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                  sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                  svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                  sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &
@@ -254,7 +254,7 @@ contains
   !> Deallocates all tracers fields
   subroutine exittracers
 
-    !$acc exit data delete(svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
+    !!$acc exit data delete(svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                 sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                 svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                 sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &

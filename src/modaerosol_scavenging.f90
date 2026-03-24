@@ -106,7 +106,7 @@ contains
 
     call nchandle_error(nf90_close(ncid))
 
-    !$acc enter data copyin(log_rp_inc(1:dims_inc(2)), &
+    !!$acc enter data copyin(log_rp_inc(1:dims_inc(2)), &
     !$acc                   log_rp_blc(1:dims_blc(2)), &
     !$acc                   log_rr(1:dims_blc(1)), &
     !$acc                   log_rc(1:dims_inc(1)), &

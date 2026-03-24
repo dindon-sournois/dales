@@ -100,7 +100,7 @@ module modbulkmicro
 
       Ncp(:,:,:) = 0.0_field_r
 
-      !$acc enter data copyin(Ncp(2:i1,2:j1,1:k1))
+      !!$acc enter data copyin(Ncp(2:i1,2:j1,1:k1))
     end if
 
                                         ! Fields accessed by:
@@ -138,10 +138,10 @@ module modbulkmicro
           * (((m/100.0 + 3.0)*(m/100.0 + 2.0)*(m/100.0 + 1.0))**(-1/2.0)))
       end do
 
-      !$acc update device(mygamma21, mygamma251)
+      !!$acc update device(mygamma21, mygamma251)
     end if
 
-    !$acc enter data copyin(Nr, qr, Nrp, qrp, precep, thlpmcr, qtpmcr, Nc)
+    !!$acc enter data copyin(Nr, qr, Nrp, qrp, precep, thlpmcr, qtpmcr, Nc)
 
     if (lstat) call init_bulkmicro_stat
 
@@ -156,7 +156,7 @@ module modbulkmicro
     use modbulkmicro_data, only : Nr,Nrp,qr,qrp
     implicit none
 
-    !$acc exit data delete(Nr, qr, Nrp, qrp, precep, thlpmcr, qtpmcr)
+    !!$acc exit data delete(Nr, qr, Nrp, qrp, precep, thlpmcr, qtpmcr)
 
     deallocate(Nr,Nrp,qr,qrp,thlpmcr,qtpmcr)
     deallocate(precep)
@@ -302,7 +302,7 @@ module modbulkmicro
     if (laerosol) then
       allocate(ncp_tmp(2:i1,2:j1,1:k1), qlp_tmp(2:i1,2:j1,1:k1))
 
-      !$acc enter data create(ncp_tmp, qlp_tmp)
+      !!$acc enter data create(ncp_tmp, qlp_tmp)
 
       call zero_field(ncp_tmp)
       call zero_field(qlp_tmp)
@@ -336,7 +336,7 @@ module modbulkmicro
     if (l_rain) then
       allocate(qrp_tmp(2:i1,2:j1,1:k1), nrp_tmp(2:i1,2:j1,1:k1))
 
-      !$acc enter data create(qrp_tmp, nrp_tmp)
+      !!$acc enter data create(qrp_tmp, nrp_tmp)
 
       call zero_field(qrp_tmp)
       call zero_field(nrp_tmp)
@@ -503,12 +503,12 @@ module modbulkmicro
 
     end if
 
-    !$acc exit data delete(qrp_tmp, nrp_tmp)
+    !!$acc exit data delete(qrp_tmp, nrp_tmp)
 
     if (l_rain) deallocate(qrp_tmp, nrp_tmp)
 
     if (laerosol) then
-      !$acc exit data delete(ncp_tmp, qlp_tmp)
+      !!$acc exit data delete(ncp_tmp, qlp_tmp)
       deallocate(ncp_tmp, qlp_tmp)
     end if
 
@@ -605,7 +605,7 @@ module modbulkmicro
 
     allocate(qr_spl(2:i1,2:j1,1:k1), nr_spl(2:i1,2:j1,1:k1))
 
-    !$acc enter data create(qr_spl, nr_spl)
+    !!$acc enter data create(qr_spl, nr_spl)
 
     !$acc parallel loop collapse(3) default(present)
     do k = 1, k1
@@ -664,7 +664,7 @@ module modbulkmicro
       end do
     end do
 
-    !$acc exit data delete(qr_spl, nr_spl)
+    !!$acc exit data delete(qr_spl, nr_spl)
 
     deallocate(qr_spl, nr_spl)
 

@@ -210,7 +210,7 @@ subroutine vadvecc_5th(a_in, a_out,istart,iend,jstart,jend)
       end do
     end do
   end do
-  !$acc wait
+  !!$acc wait
 end subroutine vadvecc_5th
 
 !> Horizontal advection at the u point.

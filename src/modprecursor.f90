@@ -223,7 +223,7 @@ contains
         sv0avsave(:,s) = sv0av(:,s)
       end do
 
-      !$acc enter data copyin(umsave(2-ih:i1+ih,2-jh:j1+jh,1:k1), &
+      !!$acc enter data copyin(umsave(2-ih:i1+ih,2-jh:j1+jh,1:k1), &
       !$acc                   vmsave(2-ih:i1+ih,2-jh:j1+jh,1:k1), &
       !$acc                   wmsave(2-ih:i1+ih,2-jh:j1+jh,1:k1), &
       !$acc                   e12msave(2-ih:i1+ih,2-jh:j1+jh,1:k1), &
@@ -313,7 +313,7 @@ contains
                                    svp(:,:,:,s))
     end do
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc(routine)
 
@@ -395,7 +395,7 @@ contains
   !> Deallocate the arrays used for the precursor method.
   subroutine exit_precursor
 
-    !$acc exit data delete(umsave, vmsave, wmsave, thlmsave, qtmsave, &
+    !!$acc exit data delete(umsave, vmsave, wmsave, thlmsave, qtmsave, &
     !$acc                  e12msave, u0save, v0save, w0save, thl0save, &
     !$acc                  qt0save, e120save, ql0save, ql0hsave, dthvdzsave, &
     !$acc                  ekmsave, tmp0save, eslsave, qvslsave, qvsisave, &

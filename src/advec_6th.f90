@@ -179,7 +179,7 @@ subroutine vadvecc_6th(a_in, a_out,istart,iend,jstart,jend)
       end do
     end do
   end do
-  !$acc wait
+  !!$acc wait
 end subroutine vadvecc_6th
 
 !> Horizontal advection at the u point.
@@ -327,7 +327,7 @@ subroutine vadvecu_6th(a_in,a_out,istart,iend,jstart,jend)
       end do
     end do
   end do
-  !$acc wait
+  !!$acc wait
 end subroutine vadvecu_6th
 
 !> Horizontal advection at the v point.
@@ -510,7 +510,7 @@ subroutine hadvecw_6th(a_in, a_out,istart,iend,jstart,jend)
     end do
   end do
   !Advection for u, v and w called sequentially in modavection. Only sync here.
-  !$acc wait(1,2,3)
+  !!$acc wait(1,2,3)
 end subroutine hadvecw_6th
 
 !> Vertical advection at the w point.

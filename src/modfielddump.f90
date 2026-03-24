@@ -343,18 +343,18 @@ contains
     iqr = get_tracer_index("qr")
 
 
-    !$acc update self(u0) if(lu) async
-    !$acc update self(v0) if(lv) async
-    !$acc update self(w0) if(lw) async
-    !$acc update self(qt0) if(lqt) async
-    !$acc update self(ql0) if(lql) async
-    !$acc update self(thl0) if(lthl) async
-    !$acc update self(sv0) if(any(lsv)) async
-    !$acc update self(thv0h, thvh) if(lbuoy) async
-    !$acc update self(e120) if(le12) async
-    !$acc update self(ekm) if(lekm) async
-    !$acc update self(ekh) if(lekh) async
-    !$acc wait    
+    !!$acc update self(u0) if(lu) async
+    !!$acc update self(v0) if(lv) async
+    !!$acc update self(w0) if(lw) async
+    !!$acc update self(qt0) if(lqt) async
+    !!$acc update self(ql0) if(lql) async
+    !!$acc update self(thl0) if(lthl) async
+    !!$acc update self(sv0) if(any(lsv)) async
+    !!$acc update self(thv0h, thvh) if(lbuoy) async
+    !!$acc update self(e120) if(le12) async
+    !!$acc update self(ekm) if(lekm) async
+    !!$acc update self(ekh) if(lekh) async
+    !!$acc wait    
 
     if (lbinary) allocate(field(2-ih:i1+ih,2-jh:j1+jh,k1))
     if (lnetcdf) allocate(vars(ceiling(1.0*imax/ncoarse),ceiling(1.0*jmax/ncoarse),khigh-klow+1,nvar))

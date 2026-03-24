@@ -61,7 +61,7 @@ subroutine hadvecc_2nd(a_in,a_out,istart,iend,jstart,jend)
       end do
     end do
   end do
-  !$acc wait
+  !!$acc wait
 
 end subroutine hadvecc_2nd
 
@@ -122,7 +122,7 @@ subroutine vadvecc_2nd(a_in,a_out,istart,iend,jstart,jend)
       end do
     end do
   end if
-  !$acc wait
+  !!$acc wait
 
 end subroutine vadvecc_2nd
 

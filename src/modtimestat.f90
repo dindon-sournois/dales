@@ -401,7 +401,7 @@ contains
       allocate(we_patch      (xpatches,ypatches))
     endif
 
-    !$acc enter data copyin(blh_fld, sv0h, profile, gradient, dgrad)
+    !!$acc enter data copyin(blh_fld, sv0h, profile, gradient, dgrad)
 
     call timer_toc('modtimestat/inittimestat')
 
@@ -879,7 +879,7 @@ contains
 
     tke_tot = tke_tot / ijtot
 
-    !$acc wait ! wait for sum of ustl etc and thlfluxl,qtfluxl
+    !!$acc wait ! wait for sum of ustl etc and thlfluxl,qtfluxl
     call D_MPI_ALLREDUCE(ustl, ust, 1, MPI_SUM, comm3d,mpierr)
     call D_MPI_ALLREDUCE(tstl, tst, 1, MPI_SUM, comm3d,mpierr)
     call D_MPI_ALLREDUCE(qstl, qst, 1, MPI_SUM, comm3d,mpierr)
@@ -1140,7 +1140,7 @@ contains
         end do
       end if
 
-      !$acc wait
+      !!$acc wait
 
       vars(ivar_rad+ 0) = abs(s_lwd_surf)  !'rlds',   'surface downwelling longwave flux'
       vars(ivar_rad+ 1) = abs(s_lwu_surf)  !'rlus',   'surface upwelling longwave flux'
@@ -1616,7 +1616,7 @@ contains
       deallocate(blh_fld2)
     endif
 
-    !$acc wait
+    !!$acc wait
 
   end subroutine calcblheight
 
@@ -1630,7 +1630,7 @@ contains
     if(ltimestat .and. lnetcdf .and. myid==0) call exitstat_nc(ncid)
     if(.not.ltimestat) return
 
-    !$acc exit data delete(blh_fld, sv0h, profile, gradient, dgrad)
+    !!$acc exit data delete(blh_fld, sv0h, profile, gradient, dgrad)
 
     deallocate(blh_fld,sv0h)
     deallocate(profile,gradient,dgrad)

@@ -196,7 +196,7 @@ contains
     endif
 #endif
 
-    !$acc enter data copyin(thlprad, lwd, lwu, swd, swu, lwc, swdir, swdif, &
+    !!$acc enter data copyin(thlprad, lwd, lwu, swd, swu, lwc, swdir, swdif, &
     !$acc&                  lwdca, lwuca, swdca, swuca, &
     !$acc&                  LW_dn_TOA, LW_up_TOA, SW_dn_TOA, SW_up_TOA, &
     !$acc&                  LW_dn_ca_TOA, LW_up_ca_TOA, SW_dn_ca_TOA, SW_up_ca_TOA)
@@ -290,7 +290,7 @@ contains
   subroutine exitradiation
     use modradrte_rrtmgp, only : exit_radrte_rrtmgp
     implicit none
-    !$acc exit data delete(thlprad, lwd, lwu, swd, swu, lwc, swdir, swdif, &
+    !!$acc exit data delete(thlprad, lwd, lwu, swd, swu, lwc, swdir, swdif, &
     !$acc&                lwdca, lwuca, swdca, swuca, &
     !$acc&                LW_dn_TOA, LW_up_TOA, SW_dn_TOA, SW_up_TOA, &
     !$acc&                LW_dn_ca_TOA, LW_up_ca_TOA, SW_dn_ca_TOA, SW_up_ca_TOA)

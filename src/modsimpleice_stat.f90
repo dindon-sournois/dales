@@ -68,7 +68,7 @@ contains
       allocate(is_rain(2:i1,2:j1,1:k1))
       allocate(is_precip(2:i1,2:j1,1:k1))
 
-      !$acc data create(is_cloud, is_rain, is_precip)
+      !!$acc data create(is_cloud, is_rain, is_precip)
 
       !$acc parallel loop collapse(3) default(present)
       do k = 1, kmax
@@ -87,7 +87,7 @@ contains
       call sample_field('qrmn', qr)
       call sample_field('precmn', precip)
 
-      !$acc end data
+      !!$acc end data
 
       deallocate(is_cloud, is_rain, is_precip)
 

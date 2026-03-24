@@ -258,7 +258,7 @@ subroutine initfields
 
     surf_rain = 0
 
-    !$acc enter data copyin(um, u0, up, vm, v0, vp, wm, w0, wp, &
+    !!$acc enter data copyin(um, u0, up, vm, v0, vp, wm, w0, wp, &
     !$acc&                  thlm, thl0, thlp, qtm, qt0, qtp, &
     !$acc&                  e12m, e120, e12p, &
     !$acc&                  rhobf, rhobh, ql0, tmp0, ql0h, thv0h, &
@@ -275,7 +275,7 @@ subroutine initfields
 !> Deallocate the fields
   subroutine exitfields
   implicit none
-    !$acc exit data delete(um, u0, up, vm, v0, vp, wm, w0, wp, &
+    !!$acc exit data delete(um, u0, up, vm, v0, vp, wm, w0, wp, &
     !$acc&                 thlm, thl0, thlp, qtm, qt0, qtp, &
     !$acc&                 e12m, e120, e12p, &
     !$acc&                 rhobf, rhobh, ql0, tmp0, ql0h, thv0h, &

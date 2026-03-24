@@ -56,7 +56,7 @@ module modcufft
       transposer = t_transposer()
       sz = transposer%get_buffer_size()
 
-      !$acc enter data copyin(transposer)
+      !!$acc enter data copyin(transposer)
 
       konx = transposer%konx
       iony = transposer%iony
@@ -74,7 +74,7 @@ module modcufft
       allocate(p_halo(1:(imax+2*ih)*(jmax+2*jh)*kmax))
       allocate(p_nohalo(sz))
 
-      !$acc enter data create(p_halo, p_nohalo)
+      !!$acc enter data create(p_halo, p_nohalo)
 
       p(2-ih:i1+ih,2-jh:j1+jh,1:kmax) => p_halo(1:(imax+2*ih)*(jmax+2*jh)*kmax) ! z-aligned
       px(1:nphix*2,1:jmax,1:konx) => p_nohalo(1:konx*jmax*(nphix*2)) ! x-aligned
@@ -200,12 +200,12 @@ module modcufft
 
       call allocate_workspace(int(worksize))
 
-      !$acc host_data use_device(workspace_0)
+      !!!$acc host_data use_device(workspace_0)
       istat = cufftSetWorkArea(planx, workspace_0)
       istat = cufftSetWorkArea(planxi, workspace_0)
       istat = cufftSetWorkArea(plany, workspace_0)
       istat = cufftSetWorkArea(planyi, workspace_0)
-      !$acc end host_data
+      !!$acc end host_data
 
       call check_exitcode(istat)
 
@@ -229,7 +229,7 @@ module modcufft
 
       norm_fac = 1 / real((itot*jtot))
 
-      !$acc enter data copyin(xyrt, d)
+      !!$acc enter data copyin(xyrt, d)
 
     end subroutine cufftinit
 
@@ -337,24 +337,24 @@ module modcufft
       
       call transposer%z_to_x(p, px, workspace_0)
 
-      !$acc host_data use_device(px)
+      !!!$acc host_data use_device(px)
 #if POIS_PRECISION==32
       istat = cufftExecR2C(planx, px, px)
 #else
       istat = cufftExecD2Z(planx, px, px)
 #endif
-      !$acc end host_data
+      !!$acc end host_data
       
       call postprocess_f_fft(px, (/2*nphix, jmax, konx/), itot)
       call transposer%x_to_y(px, py, workspace_0)
       
-      !$acc host_data use_device(py)
+      !!!$acc host_data use_device(py)
 #if POIS_PRECISION==32
       istat = cufftExecR2C(plany, py, py)
 #else
       istat = cufftExecD2Z(plany, py, py)
 #endif
-      !$acc end host_data
+      !!$acc end host_data
       call postprocess_f_fft(py, (/2*nphiy, konx, iony/), jtot)
 
       call transposer%y_to_z(py, Fp, workspace_0)
@@ -377,25 +377,25 @@ module modcufft
       call transposer%z_to_y(Fp, py, workspace_0)
       call preprocess_b_fft(py, (/2*nphiy, konx, iony/), jtot)
 
-      !$acc host_data use_device(py)
+      !!!$acc host_data use_device(py)
 #if POIS_PRECISION==32
       istat = cufftExecC2R(planyi, py, py)
 #else
       istat = cufftExecZ2D(planyi, py,  py)
 #endif
-      !$acc end host_data
+      !!$acc end host_data
 
       call check_exitcode(istat)
       call transposer%y_to_x(py, px, workspace_0)
       call preprocess_b_fft(px, (/2*nphix, jmax, konx/), itot)
 
-      !$acc host_data use_device(px)
+      !!!$acc host_data use_device(px)
 #if POIS_PRECISION==32
       istat = cufftExecC2R(planxi, px, px)
 #else
       istat = cufftExecZ2D(planxi, px, px)
 #endif
-      !$acc end host_data
+      !!$acc end host_data
 
       call check_exitcode(istat)
       call transposer%x_to_z(px, p, workspace_0)

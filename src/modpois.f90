@@ -128,8 +128,8 @@ contains
     pvp = 0 ! initialize now to not have uninitialized data in the unused halo cells
 
     allocate(a(kmax), b(kmax), c(kmax))
-    !$acc enter data copyin(pup, pvp)
-    !$acc enter data create(pwp, a, b, c)
+    !!$acc enter data copyin(pup, pvp)
+    !!$acc enter data create(pwp, a, b, c)
 
   end subroutine initpois
 
@@ -197,11 +197,11 @@ contains
 
       !call cufftb(p, Fp)
 
-      !$acc update host(p, Fp)
+      !!$acc update host(p, Fp)
       call fftwf(p, Fp)
       call solmpj
       call fftwb(p, Fp)
-      !$acc update device(p, Fp)
+      !!$acc update device(p, Fp)
 
     else
       call solve_hypre(psolver, p, converged)
@@ -317,7 +317,7 @@ contains
       end do
     end do
 
-    !$acc wait(1)
+    !!$acc wait(1)
 
     call timer_toc('modpois/fillps')
 
@@ -390,7 +390,7 @@ contains
       end do
     end do
 
-    !$acc wait(1)
+    !!$acc wait(1)
 
     call timer_toc('modpois/tderive')
 
@@ -523,7 +523,7 @@ contains
       end do
     end do
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc('modpois/solmpj')
   end subroutine solmpj

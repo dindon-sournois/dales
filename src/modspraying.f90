@@ -175,7 +175,7 @@ contains
       endif
     end if
 
-    !$acc wait
+    !!$acc wait
 
   end subroutine spraying
 

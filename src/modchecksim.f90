@@ -143,7 +143,7 @@ contains
 
     allocate(courx(kmax), coury(kmax), courz(kmax), courtot(kmax), peclettot(kmax))
 
-    !$acc enter data create(courx, coury, courz, courtot, peclettot)
+    !!$acc enter data create(courx, coury, courz, courtot, peclettot)
 
     call initETA_stat
     call timer_toc(routine)
@@ -161,7 +161,7 @@ contains
   !> Deallocate checksim arrays.
   subroutine exitchecksim
 
-    !$acc exit data delete(courx, coury, courz, courtot, peclettot)
+    !!$acc exit data delete(courx, coury, courz, courtot, peclettot)
 
     deallocate(courx, coury, courz, courtot, peclettot)
 
@@ -287,7 +287,7 @@ contains
       peclettot(k)=ekm_max*dtmn/min(dzh(k),dx,dy)**2
     end do
 
-    !$acc update self(courx, coury, courz, courtot, peclettot)
+    !!$acc update self(courx, coury, courz, courtot, peclettot)
 
     call D_MPI_ALLREDUCE(courx, kmax, MPI_MAX, comm3d, mpierr)
     call D_MPI_ALLREDUCE(coury, kmax, MPI_MAX, comm3d, mpierr)

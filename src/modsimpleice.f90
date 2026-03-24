@@ -117,7 +117,7 @@ contains
      gammadds3=lacz_gamma(3.+dds)
      gammaddg3=lacz_gamma(3.+ddg)
 
-    !$acc enter data create(qrp, qr, thlpmcr, qtpmcr, sed_qr, qr_spl, &
+    !!$acc enter data create(qrp, qr, thlpmcr, qtpmcr, sed_qr, qr_spl, &
     !$acc&                  ilratio, rsgratio, sgratio, lambdar, lambdas, &
     !$acc&                  lambdag, precep, &
     !$acc&                  ccrz, ccsz, ccgz, ccrz2, ccsz2, ccgz2)
@@ -140,7 +140,7 @@ contains
                              ccrz2,ccsz2,ccgz2
     implicit none
 
-    !$acc exit data delete (qrp, qr, thlpmcr, qtpmcr, sed_qr, qr_spl, &
+    !!$acc exit data delete (qrp, qr, thlpmcr, qtpmcr, sed_qr, qr_spl, &
     !$acc&                  ilratio, rsgratio, sgratio, lambdar, lambdas, &
     !$acc&                  lambdag, precep, &
     !$acc&                  ccrz, ccsz, ccgz, ccrz2, ccsz2, ccgz2)
@@ -289,7 +289,7 @@ contains
         ! Sample the tendencies of each process
         allocate(qrp_tmp(2:i1,2:j1,1:k1))
 
-        !$acc enter data create(qrp_tmp)
+        !!$acc enter data create(qrp_tmp)
 
         call zero_field(qrp_tmp)
 
@@ -326,7 +326,7 @@ contains
 
         call sample_field('qrptot', qrp)
 
-        !$acc exit data delete(qrp_tmp)
+        !!$acc exit data delete(qrp_tmp)
 
         deallocate(qrp_tmp)
 

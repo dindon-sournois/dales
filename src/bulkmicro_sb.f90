@@ -629,7 +629,7 @@ contains
     allocate(qr_tmp(2:i1,2:j1,1:k1))
     allocate(Nr_tmp(2:i1,2:j1,1:k1))
 
-    !$acc enter data create(qr_spl, Nr_spl, qr_tmp, Nr_tmp)
+    !!$acc enter data create(qr_spl, Nr_spl, qr_tmp, Nr_tmp)
 
     n_spl = ceiling(wfallmax * delt / minval(dzf))
     dt_spl = delt / real(n_spl, kind=field_r)
@@ -854,7 +854,7 @@ contains
       end do
     end do
 
-    !$acc exit data delete(qr_spl, Nr_spl, qr_tmp, Nr_tmp)
+    !!$acc exit data delete(qr_spl, Nr_spl, qr_tmp, Nr_tmp)
 
     deallocate(qr_spl, Nr_spl, qr_tmp, Nr_tmp)
 

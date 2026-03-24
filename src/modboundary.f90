@@ -92,8 +92,8 @@ contains
 
    allocate(dsv(nsv))
 
-   !$acc enter data copyin(tsc) async
-   !$acc enter data create(dsv) async
+   !!$acc enter data copyin(tsc) async
+   !!$acc enter data create(dsv) async
 
    call timer_toc('modboundary/initboundary')
 
@@ -129,7 +129,7 @@ contains
   subroutine exitboundary
     implicit none
     
-    !$acc exit data delete(tsc, dsv)
+    !!$acc exit data delete(tsc, dsv)
     deallocate(tsc, dsv)
   end subroutine exitboundary
 
@@ -279,7 +279,7 @@ contains
       !$acc end kernels
     end if
 
-    !$acc wait
+    !!$acc wait
   end if
 
   ! damp layer-average horizontal velocity towards geowind with udvamprate

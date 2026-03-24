@@ -107,7 +107,7 @@ contains
       write (profile_output,*) 'Rigc  = ',Rigc
     endif
 
-    !$acc enter data copyin(ekm, ekh, zlt, csz, anis_fac, &
+    !!$acc enter data copyin(ekm, ekh, zlt, csz, anis_fac, &
     !$acc&                  sbdiss, sbshr, sbbuo)
 
     call timer_toc('modsubgrid/initsubgrid')
@@ -177,13 +177,13 @@ contains
       if(lboundary(3).and. .not. lperiodic(3)) sy = 3
     endif
     call closure
-    !$acc wait
+    !!$acc wait
 
     call diffu(up,sx)
     call diffv(vp,sy)
     call diffw(wp)
     ! All kernels in diff* are async. Wait here.
-    !$acc wait
+    !!$acc wait
 
     if (.not. lsmagorinsky) call diffe(e12p)
 
@@ -201,7 +201,7 @@ contains
 
   subroutine exitsubgrid
     implicit none
-    !$acc exit data delete(ekm, ekh, zlt, csz, anis_fac, &
+    !!$acc exit data delete(ekm, ekh, zlt, csz, anis_fac, &
     !$acc&                 sbdiss, sbshr, sbbuo)
     deallocate(ekm,ekh,zlt,sbdiss,sbbuo,sbshr,csz,anis_fac)
   end subroutine exitsubgrid
@@ -353,7 +353,7 @@ contains
           end do
         end do
       end do
-      !$acc wait(1,2)
+      !!$acc wait(1,2)
      ! do TKE scheme
     else
       ! choose one of ldelta, ldelta+lmason, lanisotropic, or none of them for Deardorff length scale adjustment
@@ -647,7 +647,7 @@ contains
         end do
       end do
     endif
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
 
     return
   end subroutine sources
@@ -702,7 +702,7 @@ contains
                   )
       end do
     end do
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
   end subroutine diffc
 
   subroutine diffcsv (a_in,a_out,flux)
@@ -759,7 +759,7 @@ contains
         end do
       end do
     end do
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
   end subroutine diffcsv
 
   subroutine diffe(a_out)
@@ -809,7 +809,7 @@ contains
               *  (e120(i,j,2)-e120(i,j,1)) * dzhi(2)**2 )*dzfi(1)
       end do
     end do
-    !$acc wait(1,2)
+    !!$acc wait(1,2)
 
   end subroutine diffe
 

@@ -40,7 +40,7 @@ contains
 
     implicit none
 
-    !$acc update device(um, u0, up, vm, v0, vp, wm, w0, wp, &
+    !!$acc update device(um, u0, up, vm, v0, vp, wm, w0, wp, &
     !$acc&              thlm, thl0, thlp, qtm, qt0, qtp, &
     !$acc&              e12m, e120, e12p, svm, sv0, svp, &
     !$acc&              rhobf, rhobh, ql0, tmp0, ql0h, thv0h, &
@@ -76,7 +76,7 @@ contains
 
     implicit none
 
-    !$acc update device(tskin, qskin, ra, rs, obl)
+    !!$acc update device(tskin, qskin, ra, rs, obl)
 
   end subroutine update_gpu_surface
   
@@ -113,7 +113,7 @@ contains
 
     if (host_is_updated) return
 
-    !$acc update self(um, u0, up, vm, v0, vp, wm, w0, wp, &
+    !!$acc update self(um, u0, up, vm, v0, vp, wm, w0, wp, &
     !$acc&            thlm, thl0, thlp, qtm, qt0, qtp, &
     !$acc&            e12m, e120, e12p, svm, sv0, svp, &
     !$acc&            rhobf, rhobh, ql0, tmp0, ql0h, thv0h, &
@@ -151,7 +151,7 @@ contains
 
     implicit none
 
-    !$acc update self(tskin, qskin, obl)
+    !!$acc update self(tskin, qskin, obl)
 
   end subroutine update_host_surface
 
@@ -164,13 +164,13 @@ contains
 
     allocate(workspace_0(n))
     workspace_0 = 0
-    !$acc enter data copyin(workspace_0)
+    !!$acc enter data copyin(workspace_0)
 
     ! Allocate another workspace for the all-to-all operations
     if (nprocs > 1) then
       allocate(workspace_1(n))
       workspace_1 = 0
-      !$acc enter data copyin(workspace_1)
+      !!$acc enter data copyin(workspace_1)
     end if
 
   end subroutine allocate_workspace
@@ -180,11 +180,11 @@ contains
     use modmpi, only: nprocs
     implicit none
 
-    !$acc exit data delete(workspace_0)
+    !!$acc exit data delete(workspace_0)
     deallocate(workspace_0)
 
     if (nprocs > 1) then
-      !$acc exit data delete (workspace_1)
+      !!$acc exit data delete (workspace_1)
       deallocate(workspace_1)
     end if
 

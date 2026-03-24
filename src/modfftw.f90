@@ -352,7 +352,7 @@ contains
     endif
 
     call fftwinit_factors(xyrt)
-    !$acc enter data copyin(fptr)
+    !!$acc enter data copyin(fptr)
 
  end subroutine
 
@@ -381,7 +381,7 @@ contains
    ! so Nullify() doesnt work with them
    Nullify(p, p210, p201, Fp, p_nohalo)
 
-   !$acc exit data delete(fptr)
+   !!$acc exit data delete(fptr)
    call fftw_free(ptr)
 
    deallocate(xyrt, d)

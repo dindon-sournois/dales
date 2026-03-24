@@ -166,7 +166,7 @@ contains
 
     profiles = 0
 
-    !$acc enter data copyin(profiles) create(slab_average) async
+    !!$acc enter data copyin(profiles) create(slab_average) async
 
     if (lprocblock) then
       my_task_writes = .true. ! All MPI ranks write to a file
@@ -314,7 +314,7 @@ contains
         end do
       end do
 
-      !$acc update host(profiles)
+      !!$acc update host(profiles)
 
       if (my_task_writes) then
         call writestat_nc(ncid, 1, tncname, [rtimee], nrec, .true.)

@@ -434,7 +434,7 @@ contains
 
     !   Allocate send / receive buffers
     allocate(sendn(nssize),sends(nssize),recvn(nssize),recvs(nssize))
-    !$acc enter data copyin(sendn, sends, recvn, recvs)
+    !!$acc enter data copyin(sendn, sends, recvn, recvs)
 
     !$acc parallel loop collapse(3) default(present) private(ii)
     do k = 1, zl
@@ -485,7 +485,7 @@ contains
 
     !   Allocate send / receive buffers
     allocate(sende(ewsize),sendw(ewsize),recve(ewsize),recvw(ewsize))
-    !$acc enter data copyin(sende, sendw, recve, recvw)
+    !!$acc enter data copyin(sende, sendw, recve, recvw)
 
     !$acc parallel loop collapse(3) default(present) private(ii)
     do k = 1, zl
@@ -538,7 +538,7 @@ contains
     call MPI_WAIT(reqn, status, mpierr)
     call MPI_WAIT(reqs, status, mpierr)
 
-    !$acc exit data delete(sendn, sends, recvn, recvs)
+    !!$acc exit data delete(sendn, sends, recvn, recvs)
     deallocate (sendn, sends)
     deallocate (recvn, recvs)
 
@@ -551,13 +551,13 @@ contains
     call MPI_WAIT(reqw, status, mpierr)
 
     ! Deallocate buffers
-    !$acc exit data delete(sende, sendw, recve, recvw)
+    !!$acc exit data delete(sende, sendw, recve, recvw)
     deallocate (sende, sendw)
     deallocate (recve, recvw)
 
   endif
 
-  !$acc wait
+  !!$acc wait
 
   end subroutine excjs_real32
 
@@ -818,7 +818,7 @@ contains
     !   Allocate send / receive buffers
     ! TODO: allocate these once
     allocate(sendn(nssize),sends(nssize),recvn(nssize),recvs(nssize))
-    !$acc enter data copyin(sendn, sends, recvn, recvs)
+    !!$acc enter data copyin(sendn, sends, recvn, recvs)
 
     !$acc parallel loop collapse(3) default(present) private(ii)
     do k = 1, zl
@@ -870,7 +870,7 @@ contains
 
     !   Allocate send / receive buffers
     allocate(sende(ewsize),sendw(ewsize),recve(ewsize),recvw(ewsize))
-    !$acc enter data copyin(sende, sendw, recve, recvw)
+    !!$acc enter data copyin(sende, sendw, recve, recvw)
 
     !$acc parallel loop collapse(3) default(present) private(ii)
     do k = 1, zl
@@ -924,7 +924,7 @@ contains
     call MPI_WAIT(reqs, status, mpierr)
     if (mpierr /= MPI_SUCCESS) call abort
 
-    !$acc exit data delete(sendn, sends, recvn, recvs)
+    !!$acc exit data delete(sendn, sends, recvn, recvs)
     deallocate (sendn, sends)
     deallocate (recvn, recvs)
 
@@ -939,13 +939,13 @@ contains
     if (mpierr /= MPI_SUCCESS) call abort
 
     ! Deallocate buffers
-    !$acc exit data delete(sende, sendw, recve, recvw)
+    !!$acc exit data delete(sende, sendw, recve, recvw)
     deallocate (sende, sendw)
     deallocate (recve, recvw)
 
   endif
 
-  !$acc wait
+  !!$acc wait
 
   end subroutine excjs_real64
 
@@ -1085,9 +1085,9 @@ contains
         aver(k) = aver(k) + sum(var(ibs:ies, jbs:jes, k))
       end do
       !$acc end kernels
-      !$acc host_data use_device(aver)
+      !!!$acc host_data use_device(aver)
       call MPI_ALLREDUCE(MPI_IN_PLACE, aver, kf-ks+1, MPI_REAL4, MPI_SUM, comm3d, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
     else
       averl       = 0.
       avers       = 0.
@@ -1121,9 +1121,9 @@ contains
         aver(k) = aver(k) + sum(var(ibs:ies, jbs:jes, k))
       end do
       !$acc end kernels
-      !$acc host_data use_device(aver)
+      !!!$acc host_data use_device(aver)
       call MPI_ALLREDUCE(MPI_IN_PLACE, aver, kf-ks+1, MPI_REAL8, MPI_SUM, comm3d, mpierr)
-      !$acc end host_data
+      !!$acc end host_data
     else
       averl       = 0.
       avers       = 0.
@@ -1163,7 +1163,7 @@ contains
 
     allocate(sum2d(kf-ks+1,5))
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4, sum_lcl5)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1202,9 +1202,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*5, MPI_REAL4, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1215,7 +1215,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)
@@ -1245,7 +1245,7 @@ contains
 
     allocate(sum2d(kf-ks+1,4))
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1280,9 +1280,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*4, MPI_REAL4, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1292,7 +1292,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)
@@ -1320,7 +1320,7 @@ contains
     allocate(sum2d(kf-ks+1,3))
 
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1351,9 +1351,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*3, MPI_REAL4, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1362,7 +1362,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)
@@ -1388,7 +1388,7 @@ contains
     allocate(sum2d(kf-ks+1,2))
 
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1415,9 +1415,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*2, MPI_REAL4, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1425,7 +1425,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)
@@ -1458,7 +1458,7 @@ contains
     allocate(sum2d(kf-ks+1,5))
 
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4, sum_lcl5)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1497,9 +1497,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*5, MPI_REAL8, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1510,7 +1510,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)
@@ -1541,7 +1541,7 @@ contains
     allocate(sum2d(kf-ks+1,4))
 
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3, sum_lcl4)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1576,9 +1576,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*4, MPI_REAL8, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1588,7 +1588,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)
@@ -1616,7 +1616,7 @@ contains
     allocate(sum2d(kf-ks+1,3))
 
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2, sum_lcl3)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1647,9 +1647,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*3, MPI_REAL8, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1658,7 +1658,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)
@@ -1684,7 +1684,7 @@ contains
     allocate(sum2d(kf-ks+1,2))
 
     if (present(on_gpu)) then
-      !$acc enter data create(sum2d)
+      !!$acc enter data create(sum2d)
       !$acc parallel loop gang default(present) private(sum_lcl1, sum_lcl2)
       do k = kbs, kes
         sum_lcl1 = 0.0
@@ -1711,9 +1711,9 @@ contains
       end do
     endif
 
-    !$acc host_data use_device(sum2d)
+    !!!$acc host_data use_device(sum2d)
     call MPI_ALLREDUCE(MPI_IN_PLACE, sum2d, (kf-ks+1)*2, MPI_REAL8, MPI_SUM, comm3d, mpierr)
-    !$acc end host_data
+    !!$acc end host_data
 
     !$acc kernels default(present)
     aver1(:) = sum2d(:,1)
@@ -1721,7 +1721,7 @@ contains
     !$acc end kernels
 
     if (present(on_gpu)) then
-      !$acc exit data delete(sum2d)
+      !!$acc exit data delete(sum2d)
       deallocate(sum2d)
     else
       deallocate(sum2d)

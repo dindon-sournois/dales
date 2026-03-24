@@ -125,7 +125,7 @@ contains
 
     th0av(:) = 0.
 
-    !$acc enter data copyin(th0av, thv0, thetah, qth, qlh)
+    !!$acc enter data copyin(th0av, thv0, thetah, qth, qlh)
 
     ! esatltab(m) gives the saturation vapor pressure over water at T corresponding to m
     ! esatitab(m) is the same over ice
@@ -148,7 +148,7 @@ contains
        end if
     end do
 
-    !$acc update device(ttab, esatltab, esatitab, esatmtab)
+    !!$acc update device(ttab, esatltab, esatitab, esatmtab)
 
   end subroutine initthermodynamics
 
@@ -195,7 +195,7 @@ contains
         end do
       end do
 
-      !$acc wait
+      !!$acc wait
       if (too_cold) then
         call finish(routine, 'temperature below 150 K encountered!')
       else if (too_hot) then
@@ -256,7 +256,7 @@ contains
       thvf(k) = 0.0_field_r
     end do
 
-    !$acc wait
+    !!$acc wait
 
     if (.not. lapply_ibm) then
       call slabavg(thv0h, ih, thvh)
@@ -275,7 +275,7 @@ contains
       rhof(k) = presf(k)/(rd*thvf(k)*exnf(k))
     end do
 
-    !$acc wait
+    !!$acc wait
 
     call timer_toc(routine)
 
@@ -283,7 +283,7 @@ contains
 
   !> Cleans up after the run
   subroutine exitthermodynamics
-    !$acc exit data delete(th0av, thv0, thetah, qth, qlh)
+    !!$acc exit data delete(th0av, thv0, thetah, qth, qlh)
     deallocate(th0av, thv0, thetah, qth, qlh)
   end subroutine exitthermodynamics
 
@@ -486,7 +486,7 @@ contains
       end do
     end do
 
-    !$acc wait
+    !!$acc wait
 
     ! If the IBM is enabled, exclude the building cells from the averages
     if (.not. lapply_ibm) then
@@ -593,8 +593,8 @@ contains
     ! Calculate pressures at full levels
     ! Do this on the CPU for now; these loops are serial so GPU is very slow!
 
-    !$acc update self(thetah, qth, qlh, th0av, qt0av, ql0av) async(1)
-    !$acc wait
+    !!$acc update self(thetah, qth, qlh, th0av, qt0av, ql0av) async(1)
+    !!$acc wait
 
     thvh(1) = th0av(1)*(1+(rv/rd-1)*qt0av(1)-rv/rd*ql0av(1))
     presf(1) = ps**rdocp - grav*(pref0**rdocp)*zf(1) /(cp*thvh(1))
@@ -619,7 +619,7 @@ contains
       presh(k) = presh(k)**(1/rdocp)
     end do
 
-    !$acc update device(thvh, presf, thvf, presh) async(1)
+    !!$acc update device(thvh, presf, thvf, presh) async(1)
 
     call timer_toc(routine)
 
