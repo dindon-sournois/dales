@@ -253,7 +253,7 @@ contains
       emis=0.95
       !!$acc enter data copyin(emis, sources_lw)
       !!$acc enter data create(sources_lw%lay_source, sources_lw%lev_source, &
-      !$acc&                  sources_lw%sfc_source, sources_lw%sfc_source_Jac)
+      !!$acc&                  sources_lw%sfc_source, sources_lw%sfc_source_Jac)
 
       ! Define lw fluxes pointers
       fluxes_lw%flux_up => lwUp_slice(:,:)
@@ -449,7 +449,7 @@ contains
     !!$acc exit data delete(layerP, layerT, interfaceP, interfaceT, tg_slice, h2ovmr)
     if(doclearsky) then
       !!$acc exit data delete(lwUpCS_slice, lwDownCS_slice, &
-      !$acc&                 swUpCS_slice, swDownCS_slice)
+      !!$acc&                 swUpCS_slice, swDownCS_slice)
     endif
 
     if(isAllocated_RadInputsOutputs) then

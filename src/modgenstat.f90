@@ -486,16 +486,16 @@ contains
     end if
 
     !!$acc enter data copyin(umn, vmn, wmn, thlmn, thvmn, qtmn, qlmn, qlhmn, cfracmn, wthlsmn, wthlrmn, wthltmn, &
-    !$acc&                  wthvsmn, wthvrmn, wthvtmn, wqtsmn, wqtrmn, wqttmn, wqlsmn, wqlrmn, wqltmn, &
-    !$acc&                  uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, u2mn, v2mn, w2mn, w2submn, skewmn, &
-    !$acc&                  qt2mn, thl2mn, thv2mn, th2mn, ql2mn, svmmn, svpmn, svpav, svptmn, svptav, &
-    !$acc&                  sv2mn, wsvsmn, wsvrmn, wsvtmn, cszav, cszmn, qlmnlast, wthvtmnlast, qlhav, &
-    !$acc&                  wqlsub, wqlres, wthlsub, wthlres, wqtsub, wqtres, wthvsub, wthvres, wqttot, &
-    !$acc&                  wqltot, wthltot, wthvtot, wsvsub, wsvres, wsvtot, uwres, vwres, uwsub, vwsub, &
-    !$acc&                  uwtot, vwtot, umav, vmav, wmav, thvmav, thlmav, qtmav, qlmav, cfracav, u2av, v2av, &
-    !$acc&                  w2av, w2subav, qt2av, thl2av, thv2av, th2av, svmav, svpav, svptav, sv2av, w3av, &
-    !$acc&                  ql2av, thvmav, thmav, thv0, sv0h, hurav, clwav, cliav, plwav, pliav, taav, &
-    !$acc&                  hurmn, clwmn, climn, plwmn, plimn, tamn)
+    !!$acc&                  wthvsmn, wthvrmn, wthvtmn, wqtsmn, wqtrmn, wqttmn, wqlsmn, wqlrmn, wqltmn, &
+    !!$acc&                  uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, u2mn, v2mn, w2mn, w2submn, skewmn, &
+    !!$acc&                  qt2mn, thl2mn, thv2mn, th2mn, ql2mn, svmmn, svpmn, svpav, svptmn, svptav, &
+    !!$acc&                  sv2mn, wsvsmn, wsvrmn, wsvtmn, cszav, cszmn, qlmnlast, wthvtmnlast, qlhav, &
+    !!$acc&                  wqlsub, wqlres, wthlsub, wthlres, wqtsub, wqtres, wthvsub, wthvres, wqttot, &
+    !!$acc&                  wqltot, wthltot, wthvtot, wsvsub, wsvres, wsvtot, uwres, vwres, uwsub, vwsub, &
+    !!$acc&                  uwtot, vwtot, umav, vmav, wmav, thvmav, thlmav, qtmav, qlmav, cfracav, u2av, v2av, &
+    !!$acc&                  w2av, w2subav, qt2av, thl2av, thv2av, th2av, svmav, svpav, svptav, sv2av, w3av, &
+    !!$acc&                  ql2av, thvmav, thmav, thv0, sv0h, hurav, clwav, cliav, plwav, pliav, taav, &
+    !!$acc&                  hurmn, clwmn, climn, plwmn, plimn, tamn)
 
     call timer_toc('modgenstat/initgenstat')
 
@@ -1275,11 +1275,11 @@ contains
       !$acc end kernels
 
       !!$acc update self(umn, vmn, wmn, thvmn, thlmn, qtmn, qlmn, cfracmn, qlhmn, &
-      !$acc&            wthlsmn, wthlrmn, wthltmn, wqtsmn, wqtrmn, wqttmn, &
-      !$acc&            wqlsmn, wqlrmn, wqltmn, wthvsmn, wthvrmn, wthvtmn, &
-      !$acc&            uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, w2mn, skewmn, &
-      !$acc&            w2submn, qt2mn, v2mn, u2mn, thl2mn, thv2mn, th2mn, ql2mn, &
-      !$acc&            cszmn, cfracmn, hurmn, clwmn, climn, plwmn, plimn, tamn)
+      !!$acc&            wthlsmn, wthlrmn, wthltmn, wqtsmn, wqtrmn, wqttmn, &
+      !!$acc&            wqlsmn, wqlrmn, wqltmn, wthvsmn, wthvrmn, wthvtmn, &
+      !!$acc&            uwtmn, vwtmn, uwrmn, vwrmn, uwsmn, vwsmn, w2mn, skewmn, &
+      !!$acc&            w2submn, qt2mn, v2mn, u2mn, thl2mn, thv2mn, th2mn, ql2mn, &
+      !!$acc&            cszmn, cfracmn, hurmn, clwmn, climn, plwmn, plimn, tamn)
 
       !!$acc update self(svmmn, svpmn, svptmn, sv2mn, wsvsmn, wsvrmn, wsvtmn) if(nsv > 0)
 

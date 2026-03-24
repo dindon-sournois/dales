@@ -163,9 +163,9 @@ contains
 
     !!$acc enter data copyin(this)
     !!$acc enter data create(this%n(2:i1,2:j1,1:k1), &
-    !$acc                   this%np(2:i1,2:j1,1:k1), &
-    !$acc                   this%q(1:this%nspecies,2:i1,2:j1,1:k1), &
-    !$acc                   this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
+    !!$acc                   this%np(2:i1,2:j1,1:k1), &
+    !!$acc                   this%q(1:this%nspecies,2:i1,2:j1,1:k1), &
+    !!$acc                   this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
 
   end subroutine aerosol_mode_init
 
@@ -302,7 +302,7 @@ contains
     this%qp(:,:,:,:) = 0
 
     !!$acc enter data copyin(this, this%q(1:this%nspecies,2:i1,2:j1,1:k1), &
-    !$acc                   this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
+    !!$acc                   this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
 
   end subroutine hydrometeor_mode_init
 

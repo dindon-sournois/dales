@@ -108,7 +108,7 @@ contains
     endif
 
     !!$acc enter data copyin(ekm, ekh, zlt, csz, anis_fac, &
-    !$acc&                  sbdiss, sbshr, sbbuo)
+    !!$acc&                  sbdiss, sbshr, sbbuo)
 
     call timer_toc('modsubgrid/initsubgrid')
   end subroutine initsubgrid
@@ -202,7 +202,7 @@ contains
   subroutine exitsubgrid
     implicit none
     !!$acc exit data delete(ekm, ekh, zlt, csz, anis_fac, &
-    !$acc&                 sbdiss, sbshr, sbbuo)
+    !!$acc&                 sbdiss, sbshr, sbbuo)
     deallocate(ekm,ekh,zlt,sbdiss,sbbuo,sbshr,csz,anis_fac)
   end subroutine exitsubgrid
 

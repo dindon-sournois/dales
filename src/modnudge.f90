@@ -335,8 +335,8 @@ contains
     end if
 
     !!$acc enter data copyin(timenudge, unudge, vnudge, wnudge, thlnudge, &
-    !$acc&                  qtnudge, tunudge, tvnudge, twnudge, tthlnudge, &
-    !$acc&                  tqtnudge, svnudge, tsvnudge)
+    !!$acc&                  qtnudge, tunudge, tvnudge, twnudge, tthlnudge, &
+    !!$acc&                  tqtnudge, svnudge, tsvnudge)
 
     call timer_toc(routine)
   end subroutine initnudge

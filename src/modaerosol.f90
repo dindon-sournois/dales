@@ -669,7 +669,7 @@ contains
              qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
 
     !!$acc enter data create(qr_spl(2:i1,2:j1,1:k1), nr_spl(2:i1,2:j1,1:k1), &
-    !$acc                   qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
+    !!$acc                   qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
 
     n_spl = ceiling(9.9 * delt / minval(dzf))
     dt_spl = delt / real(n_spl, kind=field_r)

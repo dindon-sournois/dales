@@ -788,8 +788,8 @@ contains
     obl = 1e5 ! initialize since used as starting point for iteration
 
     !!$acc enter data copyin(z0m, z0h, obl, tskin, qskin, Cm, Cs, &
-    !$acc&                  ustar, dudz, dvdz, thlflux, qtflux, &
-    !$acc&                  dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
+    !!$acc&                  ustar, dudz, dvdz, thlflux, qtflux, &
+    !!$acc&                  dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
 
     call timer_toc('modsurface/initsurface')
   end subroutine initsurface
@@ -1900,8 +1900,8 @@ contains
     implicit none
 
     !!$acc exit data delete(z0m, z0h, obl, tskin, qskin, Cm, Cs, &
-    !$acc&                 ustar, dudz, dvdz, thlflux, qtflux, &
-    !$acc&                 dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
+    !!$acc&                 ustar, dudz, dvdz, thlflux, qtflux, &
+    !!$acc&                 dqtdz, dthldz, svflux, svs, horv, ra, rs, wsvsurf)
 
     return
   end subroutine exitsurface

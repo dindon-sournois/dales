@@ -197,9 +197,9 @@ contains
 #endif
 
     !!$acc enter data copyin(thlprad, lwd, lwu, swd, swu, lwc, swdir, swdif, &
-    !$acc&                  lwdca, lwuca, swdca, swuca, &
-    !$acc&                  LW_dn_TOA, LW_up_TOA, SW_dn_TOA, SW_up_TOA, &
-    !$acc&                  LW_dn_ca_TOA, LW_up_ca_TOA, SW_dn_ca_TOA, SW_up_ca_TOA)
+    !!$acc&                  lwdca, lwuca, swdca, swuca, &
+    !!$acc&                  LW_dn_TOA, LW_up_TOA, SW_dn_TOA, SW_up_TOA, &
+    !!$acc&                  LW_dn_ca_TOA, LW_up_ca_TOA, SW_dn_ca_TOA, SW_up_ca_TOA)
 
     if (iradiation /= 0) then
       itimerad = floor(timerad/tres)
@@ -291,9 +291,9 @@ contains
     use modradrte_rrtmgp, only : exit_radrte_rrtmgp
     implicit none
     !!$acc exit data delete(thlprad, lwd, lwu, swd, swu, lwc, swdir, swdif, &
-    !$acc&                lwdca, lwuca, swdca, swuca, &
-    !$acc&                LW_dn_TOA, LW_up_TOA, SW_dn_TOA, SW_up_TOA, &
-    !$acc&                LW_dn_ca_TOA, LW_up_ca_TOA, SW_dn_ca_TOA, SW_up_ca_TOA)
+    !!$acc&                lwdca, lwuca, swdca, swuca, &
+    !!$acc&                LW_dn_TOA, LW_up_TOA, SW_dn_TOA, SW_up_TOA, &
+    !!$acc&                LW_dn_ca_TOA, LW_up_ca_TOA, SW_dn_ca_TOA, SW_up_ca_TOA)
     deallocate(thlprad,swd,swdir,swdif,swu,lwd,lwu,swdca,swuca,lwdca,lwuca,lwc)
     deallocate(SW_up_TOA, SW_dn_TOA,LW_up_TOA,LW_dn_TOA, &
                SW_up_ca_TOA,SW_dn_ca_TOA,LW_up_ca_TOA,LW_dn_ca_TOA)

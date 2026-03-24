@@ -118,9 +118,9 @@ contains
      gammaddg3=lacz_gamma(3.+ddg)
 
     !!$acc enter data create(qrp, qr, thlpmcr, qtpmcr, sed_qr, qr_spl, &
-    !$acc&                  ilratio, rsgratio, sgratio, lambdar, lambdas, &
-    !$acc&                  lambdag, precep, &
-    !$acc&                  ccrz, ccsz, ccgz, ccrz2, ccsz2, ccgz2)
+    !!$acc&                  ilratio, rsgratio, sgratio, lambdar, lambdas, &
+    !!$acc&                  lambdag, precep, &
+    !!$acc&                  ccrz, ccsz, ccgz, ccrz2, ccsz2, ccgz2)
 
     !$acc kernels default(present)
     precep=0
@@ -141,9 +141,9 @@ contains
     implicit none
 
     !!$acc exit data delete (qrp, qr, thlpmcr, qtpmcr, sed_qr, qr_spl, &
-    !$acc&                  ilratio, rsgratio, sgratio, lambdar, lambdas, &
-    !$acc&                  lambdag, precep, &
-    !$acc&                  ccrz, ccsz, ccgz, ccrz2, ccsz2, ccgz2)
+    !!$acc&                  ilratio, rsgratio, sgratio, lambdar, lambdas, &
+    !!$acc&                  lambdag, precep, &
+    !!$acc&                  ccrz, ccsz, ccgz, ccrz2, ccsz2, ccgz2)
     deallocate(qr,qrp,thlpmcr,qtpmcr,sed_qr,qr_spl,ilratio,rsgratio,sgratio,lambdar,lambdas,lambdag)
     deallocate(precep)
     deallocate(ccrz,ccsz,ccgz)

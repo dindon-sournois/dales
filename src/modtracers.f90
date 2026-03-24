@@ -245,20 +245,20 @@ contains
     dsvdtls(:,:) = 0
 
     !!$acc enter data copyin(svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
-    !$acc&                  sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
-    !$acc&                  svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
-    !$acc&                  sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &
-    !$acc&                  dsvdtls(1:k1,1:nsv))
+    !!$acc&                  sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
+    !!$acc&                  svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
+    !!$acc&                  sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &
+    !!$acc&                  dsvdtls(1:k1,1:nsv))
   end subroutine allocate_tracers
 
   !> Deallocates all tracers fields
   subroutine exittracers
 
     !!$acc exit data delete(svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
-    !$acc&                 sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
-    !$acc&                 svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
-    !$acc&                 sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &
-    !$acc&                 dsvdtls(1:k1,1:nsv))
+    !!$acc&                 sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
+    !!$acc&                 svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
+    !!$acc&                 sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &
+    !!$acc&                 dsvdtls(1:k1,1:nsv))
 
     if (nsv > 0) then
       deallocate(tracer_prop)
