@@ -5,6 +5,7 @@ module modaerosol_common
   use modglobal,    only: pi
 
   implicit none
+!!$omp declare target
 
   public
 
@@ -101,3 +102,5 @@ contains
   end function calc_median_diameter
 
 end module modaerosol_common
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

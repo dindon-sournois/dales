@@ -839,6 +839,7 @@ end subroutine slurb_bulk_deallocations
     !$ACC ROUTINE SEQ
 
     IMPLICIT NONE
+!!$omp declare target
 
     REAL(field_r), INTENT(IN) ::  t  !< temperature (K)
 
@@ -913,3 +914,5 @@ end subroutine slurb_bulk_deallocations
  END FUNCTION calc_1d_heat_equation
 
 end module modslurbhelpers
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

@@ -33,6 +33,11 @@ module modtranspose
     procedure :: y_to_z => transpose_y_to_z
     procedure :: z_to_y => transpose_z_to_y
   end type t_transposer
+!!$omp declare mapper (t_transposer::x) map ( &
+!!$omp  x%iony &
+!!$omp , x%jonx &
+!!$omp , x%konx &
+!!$omp )
 
 #if POIS_PRECISION == 64
   type(MPI_DATATYPE), parameter :: MPI_DTYPE = MPI_REAL8
@@ -105,6 +110,8 @@ contains
 
     if (nprocs == 1) then
       !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do k=1,kmax
         do j=1,jtot
           do i=1,itot
@@ -119,6 +126,8 @@ contains
       n3 = this%konx
       
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -131,11 +140,15 @@ contains
       end do
 
       !$acc host_data use_device(buffer)
+!!$omp target update from(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
       !$acc end host_data
+!!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -174,6 +187,8 @@ contains
 
     if (nprocs == 1) then
       !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -188,6 +203,8 @@ contains
       n3 = this%konx
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -200,11 +217,15 @@ contains
       end do
 
       !$acc host_data use_device(buffer)
+!!$omp target update from(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
       !$acc end host_data
+!!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n2
@@ -243,6 +264,8 @@ contains
 
     if (nprocs == 1) then
       !$acc parallel loop collapse(3) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(3)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -253,6 +276,8 @@ contains
       end do
 
       !$acc parallel loop collapse(3) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(3)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do k = 1, kmax
         do j = 1, jtot
          do i = 1, itot
@@ -268,6 +293,8 @@ contains
       n3 = this%konx
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocy-1
         do k = 1, n3
           do j = 1, n2
@@ -280,12 +307,16 @@ contains
       end do
 
       !$acc host_data use_device(buffer)
+!!$omp target update from(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commcol, mpierr)
       !$acc end host_data
+!!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocy-1
         do k = 1, n3
           do i = 1, n1
@@ -324,6 +355,8 @@ contains
 
     if (nprocs == 1) then
       !$acc parallel loop collapse(3) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(3)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -334,6 +367,8 @@ contains
       end do
 
       !$acc parallel loop collapse(3) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(3)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -349,6 +384,8 @@ contains
       n3 = this%konx
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocy-1
         do k = 1, n3
           do i = 1, n1
@@ -361,12 +398,16 @@ contains
       end do
 
       !$acc host_data use_device(buffer)
+!!$omp target update from(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commcol, mpierr)
       !$acc end host_data
+!!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocy-1
         do k = 1, n3
           do j = 1, n2
@@ -405,6 +446,8 @@ contains
 
     if (nprocs == 1) then
       !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do k = 1, kmax
         do j = 1, jtot
           do i = 1, itot
@@ -419,6 +462,8 @@ contains
       n3 = this%konx
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do i = 1, n2
@@ -431,12 +476,16 @@ contains
       end do
 
       !$acc host_data use_device(buffer)
+!!$omp target update from(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commrow, mpierr)
       !$acc end host_data
+!!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n1
@@ -475,6 +524,8 @@ contains
 
     if (nprocs == 1) then
       !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do k=1,kmax
         do j=1,jtot
           do i=1,itot
@@ -489,6 +540,8 @@ contains
       n3 = this%konx
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do j = 1, n1
@@ -501,12 +554,16 @@ contains
       end do
 
       !$acc host_data use_device(buffer)
+!!$omp target update from(buffer)
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commrow, mpierr)
       !$acc end host_data
+!!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
+!!$omp target teams loop private(ii) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do n = 0, nprocx-1
         do k = 1, n3
           do i = 1, n2
@@ -524,3 +581,4 @@ contains
   end subroutine transpose_z_to_y
 
 end module modtranspose
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

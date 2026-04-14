@@ -249,6 +249,10 @@ contains
     !$acc&                  svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                  sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &
     !$acc&                  dsvdtls(1:k1,1:nsv))
+!!$omp target enter data map(to:svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv),&
+!!$omp sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv),svp(2-ih:i1+ih,2-jh:j1+jh,&
+!!$omp 1:k1,1:nsv),sv0av(1:k1,1:nsv),svprof(1:k1,1:nsv),dsvdtls(1:k1,&
+!!$omp 1:nsv))
   end subroutine allocate_tracers
 
   !> Deallocates all tracers fields
@@ -259,6 +263,10 @@ contains
     !$acc&                 svp(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv), &
     !$acc&                 sv0av(1:k1,1:nsv), svprof(1:k1,1:nsv), &
     !$acc&                 dsvdtls(1:k1,1:nsv))
+!!$omp target exit data map(delete:svm(2-ih:i1+ih,2-jh:j1+jh,1:k1,&
+!!$omp 1:nsv),sv0(2-ih:i1+ih,2-jh:j1+jh,1:k1,1:nsv),svp(2-ih:i1+ih,&
+!!$omp 2-jh:j1+jh,1:k1,1:nsv),sv0av(1:k1,1:nsv),svprof(1:k1,1:nsv),&
+!!$omp dsvdtls(1:k1,1:nsv))
 
     if (nsv > 0) then
       deallocate(tracer_prop)
@@ -454,3 +462,5 @@ contains
   end subroutine tracer_profs_from_netcdf
 
 end module modtracers
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

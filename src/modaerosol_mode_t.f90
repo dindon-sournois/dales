@@ -28,10 +28,16 @@ module modaerosol_mode_t
   type :: mode_container_t
     class(mode_t), pointer :: p
   end type mode_container_t
+!!$omp declare mapper (mode_container_t::x) map ( &
+!!$omp  x%p &
+!!$omp )
 
   type :: mode_connection_t
     integer, allocatable :: cnct(:,:)
   end type mode_connection_t
+!!$omp declare mapper (mode_connection_t::x) map ( &
+!!$omp  x%cnct(:,:) &
+!!$omp )
 
   !> Base mode type
   type, abstract :: mode_t
@@ -50,6 +56,14 @@ module modaerosol_mode_t
     procedure(mode_t_prepare), deferred :: prepare
     procedure(mode_t_finish), deferred :: finish
   end type mode_t
+!!$omp declare mapper (mode_t::x) map ( &
+!!$omp  x%name &
+!!$omp , x%longname &
+!!$omp , x%nspecies &
+!!$omp , x%itype(maxspecies) &
+!!$omp , x%sig_g &
+!!$omp , x%rho(maxspecies) &
+!!$omp )
 
   interface
     subroutine mode_t_init(this, imode_type, lspecies)
@@ -93,6 +107,15 @@ module modaerosol_mode_t
     procedure :: prepare => aerosol_mode_prepare
     procedure :: finish => aerosol_mode_finish
   end type aerosol_mode_t
+!!$omp declare mapper (aerosol_mode_t::x) map ( &
+!!$omp  x%itrac_n &
+!!$omp , x%itrac_q(maxspecies) &
+!!$omp , x%n(:,:,:) &
+!!$omp , x%np(:,:,:) &
+!!$omp , x%q(:,:,:,:) &
+!!$omp , x%qp(:,:,:,:) &
+!!$omp , x%to_hydro &
+!!$omp )
 
   !> Mode representing in-hydrometeor aerosol.
   !!
@@ -110,6 +133,11 @@ module modaerosol_mode_t
     procedure :: prepare => hydrometeor_mode_prepare
     procedure :: finish => hydrometeor_mode_finish
   end type hydrometeor_mode_t
+!!$omp declare mapper (hydrometeor_mode_t::x) map ( &
+!!$omp  x%itrac_q(maxspecies) &
+!!$omp , x%q(:,:,:,:) &
+!!$omp , x%qp(:,:,:,:) &
+!!$omp )
 
 contains
 
@@ -162,10 +190,14 @@ contains
              this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
 
     !$acc enter data copyin(this)
+!!$omp target enter data map(to:this)
     !$acc enter data create(this%n(2:i1,2:j1,1:k1), &
     !$acc                   this%np(2:i1,2:j1,1:k1), &
     !$acc                   this%q(1:this%nspecies,2:i1,2:j1,1:k1), &
     !$acc                   this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
+!!$omp target enter data map(alloc:this%n(2:i1,2:j1,1:k1),this%np(2:i1,&
+!!$omp 2:j1,1:k1),this%q(1:this%nspecies,2:i1,2:j1,1:k1),&
+!!$omp this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
 
   end subroutine aerosol_mode_init
 
@@ -188,6 +220,8 @@ contains
     call timer_tic(routine, 3)
 
     !$acc parallel loop collapse(3) default(present) async wait(1)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -198,6 +232,8 @@ contains
     end do
 
     !$acc parallel loop collapse(4) default(present) async wait(1)
+!!$omp target teams loop collapse(4) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do s = 1, this%nspecies 
       do k = 1, kmax 
         do j = 2, j1
@@ -232,6 +268,8 @@ contains
     call timer_tic(routine, 3)
 
     !$acc parallel loop collapse(3) default(present) async wait(1)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -241,6 +279,8 @@ contains
     end do
 
     !$acc parallel loop collapse(4) default(present) async wait(1)
+!!$omp target teams loop collapse(4) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do s = 1, this%nspecies
       do k = 1, kmax
         do j = 2, j1
@@ -303,6 +343,8 @@ contains
 
     !$acc enter data copyin(this, this%q(1:this%nspecies,2:i1,2:j1,1:k1), &
     !$acc                   this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
+!!$omp target enter data map(to:this,this%q(1:this%nspecies,2:i1,2:j1,&
+!!$omp 1:k1),this%qp(1:this%nspecies,2:i1,2:j1,1:k1))
 
   end subroutine hydrometeor_mode_init
 
@@ -326,6 +368,8 @@ contains
     call timer_tic(routine, 3)
 
     !$acc parallel loop collapse(4) default(present) async wait(1)
+!!$omp target teams loop collapse(4) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do s = 1, this%nspecies 
       do k = 1, kmax 
         do j = 2, j1
@@ -360,6 +404,8 @@ contains
     call timer_tic(routine, 3)
 
     !$acc parallel loop collapse(4) default(present) async wait(1)
+!!$omp target teams loop collapse(4) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do s = 1, this%nspecies
       do k = 1, kmax
         do j = 2, j1
@@ -405,3 +451,5 @@ contains
   end subroutine connect_modes
 
 end module modaerosol_mode_t
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

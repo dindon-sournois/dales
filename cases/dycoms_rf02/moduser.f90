@@ -42,6 +42,8 @@ real    :: thres = 8e-3,a=1,D=3.75e-6
 real    :: zi=0.0
 
 !$acc parallel loop collapse(2) default(present) private(k,zi)
+!!$omp target teams loop private(k,zi) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
   do i=2,j1
   do j=2,j1
   !Determine local BL-height following the specifications.
@@ -70,3 +72,5 @@ subroutine surf_user
 end subroutine surf_user
 
 end module moduser
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

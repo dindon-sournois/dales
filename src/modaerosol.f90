@@ -154,6 +154,7 @@ contains
         class is (aerosol_mode_t)
           call connect_modes(mode, modes(iINC)%p, mode%to_hydro)
           !$acc enter data copyin(mode%to_hydro%cnct)
+!!$omp target enter data map(to:mode%to_hydro%cnct)
       end select
     end do
 
@@ -163,6 +164,8 @@ contains
     qlm(:,:,:) = 0
 
     !$acc enter data copyin(sed_qr(2:i1,2:j1,1:k1), qlm(2:i1,2:j1,1:k1))
+!!$omp target enter data map(to:sed_qr(2:i1,2:j1,1:k1),qlm(2:i1,2:j1,&
+!!$omp 1:k1))
 
     call init_scavenging()
 
@@ -267,6 +270,9 @@ contains
     
     !$acc parallel loop collapse(3) default(present) &
     !$acc private(dm, fn, n_act, w0, dncdt, fm, tend_n, tend_m, st)
+!!$omp target teams loop private(dm,fn,n_act,w0,dncdt,fm,tend_n,tend_m,&
+!!$omp st) collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -392,6 +398,8 @@ contains
     m_inr => modes_h(iINR)
 
     !$acc parallel loop collapse(4) default(present) private(dqadt)
+!!$omp target teams loop private(dqadt) collapse(4)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -466,6 +474,9 @@ contains
 
     !$acc parallel loop collapse(3) default(present) &
     !$acc private(f_evp, eps, evapm, evapn, dn, dm, fn, fm)
+!!$omp target teams loop private(f_evp,eps,evapm,evapn,dn,dm,fn,fm)&
+!!$omp collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -563,6 +574,9 @@ contains
 
     !$acc parallel loop collapse(3) default(present) &
     !$acc private(f_evp, eps, evapm, evapn, dn, dm, fn, fm)
+!!$omp target teams loop private(f_evp,eps,evapm,evapn,dn,dm,fn,fm)&
+!!$omp collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -606,6 +620,8 @@ contains
 
     if (rk3step == 3) then
       !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1
@@ -670,11 +686,15 @@ contains
 
     !$acc enter data create(qr_spl(2:i1,2:j1,1:k1), nr_spl(2:i1,2:j1,1:k1), &
     !$acc                   qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
+!!$omp target enter data map(alloc:qr_spl(2:i1,2:j1,1:k1),nr_spl(2:i1,&
+!!$omp 2:j1,1:k1),qa_spl(1:m_inr%nspecies,2:i1,2:j1,1:k1))
 
     n_spl = ceiling(9.9 * delt / minval(dzf))
     dt_spl = delt / real(n_spl, kind=field_r)
 
     !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -685,6 +705,8 @@ contains
     end do
 
     !$acc parallel loop collapse(4) default(present)
+!!$omp target teams loop collapse(4) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -697,6 +719,8 @@ contains
 
     do ts = 1, n_spl
       !$acc parallel loop collapse(3) default(present) private(sed_nr)
+!!$omp target teams loop private(sed_nr) collapse(3)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do k = qrbase, qrroof
         do j = 2, j1 
           do i = 2, i1
@@ -715,9 +739,11 @@ contains
               nr_spl(i,j,k) = nr_spl(i,j,k) - sed_nr * dt_spl / dzf(k)
               if (k > 1) then
                 !$acc atomic update
+!!$omp atomic update
                 qr_spl(i,j,k-1) = qr_spl(i,j,k-1) + sed_qr(i,j,k) * dt_spl &
                                   / (dzf(k-1) * rho(k-1))
                 !$acc atomic update
+!!$omp atomic update
                 nr_spl(i,j,k-1) = nr_spl(i,j,k-1) + sed_nr * dt_spl / dzf(k-1)
               end if
               do s = 1, m_inr%nspecies
@@ -725,6 +751,7 @@ contains
                                   * qa_spl(s,i,j,k) * dt_spl / (dzf(k) * rho(k))
                 if (k > 1) then
                   !$acc atomic update
+!!$omp atomic update
                   qa_spl(s,i,j,k-1) = qa_spl(s,i,j,k-1) + sed_qr(i,j,k) &
                                       / qr_spl(i,j,k) * qa_spl(s,i,j,k) &
                                       * dt_spl / (dzf(k-1) * rho(k-1))
@@ -737,6 +764,8 @@ contains
     end do
 
     !$acc parallel loop collapse(4) default(present)
+!!$omp target teams loop collapse(4) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -749,6 +778,7 @@ contains
     end do
 
     !$acc exit data delete(qr_spl, nr_spl, qa_spl)
+!!$omp target exit data map(delete:qr_spl,nr_spl,qa_spl)
 
     deallocate(qr_spl, nr_spl, qa_spl)
     
@@ -790,3 +820,5 @@ contains
   end subroutine aerosol_scavenging_cloud
 
 end module modaerosol
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

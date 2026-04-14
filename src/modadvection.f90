@@ -438,3 +438,5 @@ istart = 2; iend = i1; jstart = 2; jend = j1
   call timer_toc('modadvection/advection')
 end subroutine advection
 end module modadvection
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

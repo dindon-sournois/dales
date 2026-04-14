@@ -569,6 +569,8 @@ contains
         else if (isurf == 11) then
             !$acc update host(H, LE, G0, tskin, obl, ustar, cliq, Wl, ra, &
             !$acc& rssoil, rsveg, f1, f2b)
+!!$omp target update from(h,le,g0,tskin,obl,ustar,cliq,wl,ra,rssoil,&
+!!$omp rsveg,f1,f2b)
             vars(:,:, 1) = H(2:i1,2:j1)
             vars(:,:, 2) = LE(2:i1,2:j1)
             vars(:,:, 3) = G0(2:i1,2:j1)
@@ -829,3 +831,5 @@ contains
   end subroutine exitlsmcrosssection
 
 end module modlsmcrosssection
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

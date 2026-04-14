@@ -208,6 +208,7 @@ contains
     call initmpi
 
     !$acc update device (myidx,myidy)
+!!$omp target update to(myidx,myidy)
 
     ! Ignore user-provided nsv, we take care of it ourselves
     nsv = 0
@@ -1977,3 +1978,5 @@ contains
   end subroutine check_initial_state
 
 end module modstartup
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

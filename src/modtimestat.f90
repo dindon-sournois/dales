@@ -402,6 +402,7 @@ contains
     endif
 
     !$acc enter data copyin(blh_fld, sv0h, profile, gradient, dgrad)
+!!$omp target enter data map(to:blh_fld,sv0h,profile,gradient,dgrad)
 
     call timer_toc('modtimestat/inittimestat')
 
@@ -601,11 +602,15 @@ contains
     else
       !$acc parallel loop collapse(2) default(present) reduction(+:ccl, qlintavl, qtintavl) &
       !$acc& reduction(max: qlintmaxl) private(qlint, qtint) async
+!!$omp target teams loop private(qlint,qtint) reduction(+:ccl,qlintavl,&
+!!$omp qtintavl) reduction(max:qlintmaxl) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           qlint = 0.
           qtint = 0.
           !$acc loop reduction(+: qlint, qtint)
+!!$omp loop reduction(+:qlint,qtint)
           do k = 1, kmax
             qlint = qlint + ql0(i,j,k)*rhof(k)*dzf(k)
             qtint = qtint + qt0(i,j,k)*rhof(k)*dzf(k)
@@ -627,10 +632,14 @@ contains
        endif
        !$acc parallel loop collapse(2) default(present) reduction(+:qrintavl) &
       !$acc& private(qrint) async
+!!$omp target teams loop private(qrint) reduction(+:qrintavl)&
+!!$omp collapse(2) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           qrint = 0.0
           !$acc loop reduction(+: qrint)
+!!$omp loop reduction(+:qrint)
           do k = 1, kmax
             qrint = qrint + sv0(i, j, k, iqr) * rhof(k) * dzf(k)
           end do
@@ -657,6 +666,9 @@ contains
       end do
     else
       !$acc parallel loop collapse(2) default(present) reduction(+: zbaseavl) reduction(min: zbaseminl) async
+!!$omp target teams loop reduction(+:zbaseavl) reduction(min:zbaseminl)&
+!!$omp collapse(2) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           !$acc loop seq
@@ -704,6 +716,8 @@ contains
       end do
     else
       !$acc parallel loop collapse(2) default(present) reduction(+:ztopavl) private(ztop)
+!!$omp target teams loop private(ztop) reduction(+:ztopavl) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           ztop = 0.0
@@ -726,6 +740,8 @@ contains
   !     -------------------------
 
     !$acc parallel loop collapse(3) default(present) reduction(+: tke_totl) async
+!!$omp target teams loop reduction(+:tke_totl) collapse(3)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -769,6 +785,8 @@ contains
     tstl = 0
     qstl = 0
     !$acc parallel loop collapse(2) default(present) reduction(+:ustl,tstl,qstl) async
+!!$omp target teams loop reduction(+:ustl,tstl,qstl) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
     do j = 2, j1
        do i = 2, i1
           ustl = ustl + ustar(i,j)
@@ -781,6 +799,8 @@ contains
        thlfluxl = 0
        qtfluxl  = 0
        !$acc parallel loop collapse(2) default(present) reduction(+:thlfluxl,qtfluxl) async
+!!$omp target teams loop reduction(+:thlfluxl,qtfluxl) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
        do j = 2, j1
           do i = 2, i1
              thlfluxl = thlfluxl + thlflux(i, j)
@@ -812,6 +832,8 @@ contains
     if (imicro == imicro_sice .or. imicro == imicro_sice2 .or. imicro == imicro_bulk) then
        pravl = 0
        !$acc parallel loop collapse(2) default(present) reduction(+:pravl)
+!!$omp target teams loop reduction(+:pravl) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
        do j = 2, j1
           do i = 2, i1
              pravl = pravl + precep(i,j,1)
@@ -1072,6 +1094,9 @@ contains
 
       !$acc parallel loop gang vector collapse(2) default(present) &
       !$acc reduction(+: s_swd_surf, s_swu_surf, s_lwd_surf, s_lwu_surf) async
+!!$omp target teams loop reduction(+:s_swd_surf,s_swu_surf,s_lwd_surf,&
+!!$omp s_lwu_surf) collapse(2) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           s_swd_surf = s_swd_surf + swd(i,j,1)
@@ -1085,6 +1110,9 @@ contains
 
       !$acc parallel loop gang vector collapse(2) default(present) &
       !$acc reduction(+: s_swd_toa, s_swu_toa, s_lwu_toa) async
+!!$omp target teams loop reduction(+:s_swd_toa,s_swu_toa,s_lwu_toa)&
+!!$omp collapse(2) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           s_swd_toa = s_swd_toa + swd(i,j,k1)
@@ -1097,6 +1125,9 @@ contains
 
       !$acc parallel loop gang vector collapse(2) default(present) &
       !$acc reduction(+: s_swd_tom, s_swu_tom, s_lwd_tom, s_lwu_tom) async
+!!$omp target teams loop reduction(+:s_swd_tom,s_swu_tom,s_lwd_tom,&
+!!$omp s_lwu_tom) collapse(2) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           s_swd_tom = s_swd_tom + swd(i,j,kmax)
@@ -1113,6 +1144,9 @@ contains
         !$acc parallel loop gang vector collapse(2) default(present) &
         !$acc reduction(+: s_swd_surf_ca, s_swu_surf_ca, &
         !$acc              s_lwd_surf_ca, s_lwu_surf_ca) async
+!!$omp target teams loop reduction(+:s_swd_surf_ca,s_swu_surf_ca,&
+!!$omp s_lwd_surf_ca,s_lwu_surf_ca) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
         do j = 2, j1
           do i = 2, i1
             s_swd_surf_ca = s_swd_surf_ca + swdca(i,j,1)
@@ -1126,6 +1160,9 @@ contains
 
         !$acc parallel loop gang vector collapse(2) default(present) &
         !$acc reduction(+: s_swu_toa_ca, s_lwu_toa_ca) async
+!!$omp target teams loop reduction(+:s_swu_toa_ca,s_lwu_toa_ca)&
+!!$omp collapse(2) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
         do j = 2, j1
           do i = 2, i1
             s_swu_toa_ca = s_swu_toa_ca + swuca(i,j,k1)
@@ -1137,6 +1174,9 @@ contains
 
         !$acc parallel loop gang vector collapse(2) default(present) &
         !$acc reduction(+: s_swu_tom_ca, s_lwu_tom_ca) async
+!!$omp target teams loop reduction(+:s_swu_tom_ca,s_lwu_tom_ca)&
+!!$omp collapse(2) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
         do j = 2, j1
           do i = 2, i1
             s_swu_tom_ca = s_swu_tom_ca + swuca(i,j,kmax)
@@ -1406,34 +1446,51 @@ contains
 
     zil = 0.0
     !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
     gradient(:) = 0.0
     dgrad(:) = 0.0
     !$acc end kernels
+!!$omp end target
 
     select case (iblh_meth)
       case (iblh_flux)
         select case (iblh_var)
           case(iblh_qt)
             !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
             blh_fld(:,:,:) = w0(:,:,:)*qt0h(:,:,:)
             !$acc end kernels
+!!$omp end target
           case(iblh_thl)
             !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
             blh_fld(:,:,:) = w0(:,:,:)*thl0h(:,:,:)
             !$acc end kernels
+!!$omp end target
           case(iblh_thv)
             !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
             blh_fld(:,:,:) = w0(:,:,:)*thv0h(:,:,:)
             !$acc end kernels
+!!$omp end target
           case(1:)
             if (iadv_sv == iadv_kappa) then
               call halflev_kappa(sv0(:,:,:,iblh_var),sv0h)
               !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
               sv0h(2:i1,2:j1,1) = svs(iblh_var)
               blh_fld(:,:,:) = w0(:,:,:)*sv0h(:,:,:)
               !$acc end kernels
+!!$omp end target
             else
               !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
               do k = 2, k1
                 do j = 2, j1
                   do i = 2, i1
@@ -1444,6 +1501,7 @@ contains
               sv0h(2:i1,2:j1,1) = svs(iblh_var)
               blh_fld(:,:,:) = w0(:,:,:)*sv0h(:,:,:)
               !$acc end kernels
+!!$omp end target
             end if
         end select
 
@@ -1451,14 +1509,22 @@ contains
         select case (iblh_var)
           case(iblh_qt)
             !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
             blh_fld(:,:,:) = qt0(:,:,:)
             !$acc end kernels
+!!$omp end target
           case(iblh_thl)
             !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
             blh_fld(:,:,:) = thl0(:,:,:)
             !$acc end kernels
+!!$omp end target
           case(iblh_thv)
             !$acc parallel loop collapse(3) default(present) async
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
             do k = 1, k1
               do j = 2, j1
                 do i = 2, i1
@@ -1469,8 +1535,11 @@ contains
             end do
           case(1:)
             !$acc kernels default(present)
+!!$omp target defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable) defaultmap(tofrom:scalar)
             blh_fld(:,:,:) = sv0(2:i1,2:j1,1:k1,iblh_var)
             !$acc end kernels
+!!$omp end target
         end select
 
     end select
@@ -1479,6 +1548,8 @@ contains
       case (iblh_flux)
         stride = ceiling(real(imax)/real(blh_nsamp))
         !$acc parallel loop collapse(2) default(present) reduction(+:zil) async
+!!$omp target teams loop reduction(+:zil) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
         do i = 2, stride+1
           do j = 2, j1
             nsamp =  ceiling(real(i1-i+1)/real(stride))
@@ -1489,6 +1560,8 @@ contains
       case (iblh_grad)
         stride = ceiling(real(imax)/real(blh_nsamp))
         !$acc parallel loop collapse(2) default(present) reduction(+:zil)
+!!$omp target teams loop reduction(+:zil) collapse(2)&
+!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
         do i = 2, stride+1
           do j = 2, j1
             nsamp =  ceiling(real(i1-i+1)/real(stride))
@@ -1636,6 +1709,7 @@ contains
     if(.not.ltimestat) return
 
     !$acc exit data delete(blh_fld, sv0h, profile, gradient, dgrad)
+!!$omp target exit data map(delete:blh_fld,sv0h,profile,gradient,dgrad)
 
     deallocate(blh_fld,sv0h)
     deallocate(profile,gradient,dgrad)
@@ -1751,3 +1825,5 @@ contains
   end function
 
 end module modtimestat
+
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90

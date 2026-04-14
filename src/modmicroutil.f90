@@ -34,6 +34,8 @@ contains
     integer :: i, j, k
 
     !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, size(field, dim=3)
       do j = 1, size(field, dim=2)
         do i = 1, size(field, dim=1)
@@ -52,6 +54,8 @@ contains
     integer :: i, j, k
 
     !$acc parallel loop collapse(3) default(present)
+!!$omp target teams loop collapse(3) defaultmap(present:aggregate)&
+!!$omp defaultmap(present:allocatable)
     do k = 1, size(field, dim=3)
       do j = 1, size(field, dim=2)
         do i = 1, size(field, dim=1)
@@ -63,3 +67,4 @@ contains
   end subroutine sum_fields
 
 end module modmicroutil
+! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90
