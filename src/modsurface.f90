@@ -1461,9 +1461,9 @@ contains
 
   !> Calculate the Obukhov length iteratively.
   function calc_obl_iter(thl, qt, tskin, qskin, z, z0m, z0h, u, v, L) &
-!!$omp declare target
     result(retval)
 
+    !$omp declare target
     !$acc routine seq
     real(field_r), intent(in) :: thl   !< Liquid potential temperature [K]
     real(field_r), intent(in) :: qt    !< Specific humidity [kg/kg]
@@ -1797,7 +1797,7 @@ contains
 
   pure function psim(zeta)
     implicit none
-!!$omp declare target
+    !$omp declare target
     !$acc routine seq
 
     real             :: psim
@@ -1820,7 +1820,7 @@ contains
   pure function psih(zeta)
 
     implicit none
-!!$omp declare target
+    !$omp declare target
     !$acc routine seq
 
     real             :: psih
@@ -1848,7 +1848,7 @@ contains
   function phim(zeta)
     !$acc routine seq
     implicit none
-!!$omp declare target
+    !$omp declare target
     real             :: phim
     real, intent(in) :: zeta
 
@@ -1868,7 +1868,7 @@ contains
   function phih(zeta)
     !$acc routine seq
     implicit none
-!!$omp declare target
+    !$omp declare target
     real             :: phih
     real, intent(in) :: zeta
 
@@ -1943,7 +1943,7 @@ contains
     use modmpi,     only : myidy
     use modglobal,  only : jmax,jtot
     implicit none
-!!$omp declare target
+    !$omp declare target
     integer, intent(in) :: ypos
     integer             :: patchynr
     integer             :: positiony
