@@ -191,9 +191,8 @@ contains
 
       !$acc parallel loop collapse(3) default(present) async(1) private(T) &
       !$acc firstprivate(too_cold, too_hot)
-      !$omp target teams loop private(T) collapse(3) reduction(.or.: too_cold,&
-      !$omp too_hot) defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do private(T) collapse(3) reduction(.or.: too_cold,&
+      !$omp too_hot) defaultmap(present:allocatable)
       do k = 1, k1
         do j = 2, j1
           do i = 2, i1
@@ -251,8 +250,7 @@ contains
     call calthv
 
     !$acc parallel loop collapse(3) default(present) async(1)
-    !$omp target teams loop collapse(3) defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do collapse(3) defaultmap(present:allocatable)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -263,15 +261,13 @@ contains
     end do
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       thvh(k) = 0.0_field_r
     end do
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       thvf(k) = 0.0_field_r
     end do
@@ -293,8 +289,7 @@ contains
     !$omp end target
 
     !$acc parallel loop default(present) async(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       rhof(k) = presf(k)/(rd*thvf(k)*exnf(k))
     end do
@@ -322,8 +317,7 @@ contains
     integer :: i, j, k
 
     !$acc parallel loop collapse(3) default(present) async(1)
-    !$omp target teams loop collapse(3) defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do collapse(3) defaultmap(present:allocatable)
     do k = 1,k1
        do j = 2,j1
           do i = 2,i1
@@ -350,8 +344,7 @@ contains
 
     if (lmoist) then
       !$acc parallel loop collapse(3) default(present) async(1)
-      !$omp target teams loop collapse(3) defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do collapse(3) defaultmap(present:allocatable)
       do k = 2, k1
         do j = 2, j1
           do i = 2, i1
@@ -366,10 +359,9 @@ contains
       !$acc private(a_dry, b_dry, a_moist, b_moist, c_liquid, epsilon, eps_I, &
       !$acc         chi_sat, chi, dthv, del_thv_dry, del_thv_sat, temp, qs, dq, dth) &
       !$acc async(1)
-      !$omp target teams loop private(a_dry,b_dry,a_moist,b_moist,c_liquid,&
+      !$omp target teams distribute parallel do private(a_dry,b_dry,a_moist,b_moist,c_liquid,&
       !$omp epsilon,eps_i,chi_sat,chi,dthv,del_thv_dry,del_thv_sat,temp,qs,&
-      !$omp dq,dth) collapse(3) defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp dq,dth) collapse(3) defaultmap(present:allocatable)
       do k = 2, kmax
         do j = 2 , j1
           do i = 2, i1
@@ -418,8 +410,8 @@ contains
       end do
 
       !$acc parallel loop collapse(2) default(present) private(temp, qs, a_surf, b_surf) async(1)
-      !$omp target teams loop private(temp,qs,a_surf,b_surf) collapse(2)&
-      !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do private(temp,qs,a_surf,b_surf) collapse(2)&
+      !$omp defaultmap(present:allocatable)
       do j=2,j1
         do i=2,i1
           if(ql0(i,j,1)>0) then
@@ -442,8 +434,7 @@ contains
 
     else
       !$acc parallel loop collapse(3) default(present) async(1)
-       !$omp target teams loop collapse(3) defaultmap(present:aggregate)&
-       !$omp defaultmap(present:allocatable)
+       !$omp target teams distribute parallel do collapse(3) defaultmap(present:allocatable)
       do k = 2, k1
         do j = 2, j1
           do i = 2, i1
@@ -453,8 +444,7 @@ contains
       end do
 
       !$acc parallel loop collapse(3) default(present) async(1)
-      !$omp target teams loop collapse(3) defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do collapse(3) defaultmap(present:allocatable)
       do k = 2, kmax
         do j = 2, j1
           do i = 2, i1
@@ -464,8 +454,7 @@ contains
       end do
 
       !$acc parallel loop collapse(2) default(present) async(1)
-      !$omp target teams loop collapse(2) defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do collapse(2) defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           dthvdz(i,j,1) = dthldz(i,j)
@@ -474,8 +463,7 @@ contains
     end if
 
     !$acc parallel loop collapse(3) default(present) async(1)
-    !$omp target teams loop collapse(3) defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do collapse(3) defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -502,49 +490,43 @@ contains
     ! 1. Compute slab averaged fields
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       u0av(k) = 0.0_field_r
     end do
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       v0av(k) = 0.0_field_r
     end do
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       thl0av(k) = 0.0_field_r
     end do
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       th0av(k) = 0.0_field_r
     end do
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       qt0av(k) = 0.0_field_r
     end do
 
     !$acc parallel loop gang(static:1) default(present) async wait(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       ql0av(k) = 0.0_field_r
     end do
 
     !$acc parallel loop gang vector collapse(2) default(present) async wait(1)
-    !$omp target teams loop collapse(2)
+    !$omp target teams distribute parallel do collapse(2)
     do k = 1, k1
       do n = 1, nsv
         sv0av(k,n) = 0.0_field_r
@@ -576,8 +558,7 @@ contains
 
     if ((timee < 0.01 .or. .not. lconstexner) .and. .not. lbaseexner) then
       !$acc parallel loop gang(static:1) default(present)
-      !$omp target teams loop defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do defaultmap(present:allocatable)
       do k = 1, k1
         exnf(k) = 1 - grav * zf(k) / (cp * thls)
         exnh(k) = 1 - grav * zh(k) / (cp * thls)
@@ -585,8 +566,7 @@ contains
     endif
 
     !$acc parallel loop gang(static:1) default(present) async(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       th0av(k) = thl0av(k) + (rlv / cp) * ql0av(k) / exnf(k)
     end do
@@ -599,14 +579,14 @@ contains
     call fromztop
 
     !$acc parallel loop gang(static:1) default(present) async(1)
-    !$omp target teams loop defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k = 1, k1
       th0av(k) = thl0av(k) + (rlv / cp) * ql0av(k) / exnf(k)
     end do
 
     if ((timee < 0.01 .or. .not. lconstexner) .and. .not. lbaseexner) then
       !$acc parallel loop gang(static:1) default(present) async(1)
-      !$omp target teams loop defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do defaultmap(present:allocatable)
       do k = 1, k1
         exnf(k) = (presf(k) / pref0)**(rd / cp)
       end do
@@ -626,8 +606,7 @@ contains
       !$omp end target
 
       !$acc parallel loop default(present) async(1)
-      !$omp target teams loop defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do defaultmap(present:allocatable)
       do k=2,k1
         exnf(k) = (presf(k)/pref0)**(rd/cp)
         exnh(k) = (presh(k)/pref0)**(rd/cp)
@@ -635,8 +614,7 @@ contains
     endif
 
     !$acc parallel loop default(present) async(1)
-    !$omp target teams loop defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k=1,k1
       thvf(k) = th0av(k)*exnf(k)*(1+(rv/rd-1)*qt0av(k)-rv/rd*ql0av(k))
       rhof(k) = presf(k)/(rd*thvf(k))
@@ -661,7 +639,7 @@ contains
     ! Interpolate theta and qt to half levels
 
     !$acc parallel loop default(present) async(1)
-    !$omp target teams loop defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do defaultmap(present:allocatable)
     do k=2,k1
       thetah(k) = (th0av(k)*dzf(k-1) + th0av(k-1)*dzf(k))/(2*dzh(k))
       qth   (k) = (qt0av(k)*dzf(k-1) + qt0av(k-1)*dzf(k))/(2*dzh(k))
@@ -828,8 +806,8 @@ contains
 
     !$acc parallel loop gang default(present) async(stream) &
     !$acc private(b, qli, qsat, qti, Tl)
-    !$omp target teams loop private(b,qli,qsat,qti,tl)&
-    !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do private(b,qli,qsat,qti,tl)&
+    !$omp defaultmap(present:allocatable)
     do k = 1, k1
       ! Find lowest thl and highest qt in the slab.
       ! If they in combination are not saturated, the whole slab is below saturation.
@@ -965,8 +943,8 @@ contains
 
     !$acc parallel loop collapse(3) default(present) async(1) &
     !$acc private(qsat, T, interp_w, tlo, esi)
-    !$omp target teams loop private(qsat,t,interp_w,tlo,esi) collapse(3)&
-    !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do private(qsat,t,interp_w,tlo,esi) collapse(3)&
+    !$omp defaultmap(present:allocatable)
     do k = 1, k1
       do j = 2, j1
         do i = 2, i1
@@ -1019,8 +997,7 @@ contains
       call halflev_kappa(phi, phi_half)
     else
       !$acc parallel loop collapse(3) default(present) async(stream)
-      !$omp target teams loop collapse(3) defaultmap(present:aggregate)&
-      !$omp defaultmap(present:allocatable)
+      !$omp target teams distribute parallel do collapse(3) defaultmap(present:allocatable)
       do k = 2, k1
         do j = 2, j1
           do i = 2, i1
@@ -1032,8 +1009,7 @@ contains
     end if
 
     !$acc parallel loop collapse(2) default(present) async(stream)
-    !$omp target teams loop collapse(2) defaultmap(present:aggregate)&
-    !$omp defaultmap(present:allocatable)
+    !$omp target teams distribute parallel do collapse(2) defaultmap(present:allocatable)
     do j = 2, j1
       do i = 2, i1
         phi_half(i,j,1) = phi_surf
