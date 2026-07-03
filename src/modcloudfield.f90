@@ -83,7 +83,7 @@ contains
     use modglobal, only : imax,i1,jmax,j1,kmax, rk3step,dt_lim,timee,rtimee, cexpnr,ifoutput
     use modfields, only : w0,ql0
     use modmpi,    only : cmyid
-#if defined(_OPENACC)
+#if defined(DALES_GPU)
     use modgpu, only: update_host
 #endif
     implicit none
@@ -102,7 +102,7 @@ contains
     tnext = tnext+idtav
     dt_lim = minval((/dt_lim,tnext-timee/))
 
-#if defined(_OPENACC)
+#if defined(DALES_GPU)
     call update_host
 #endif
 
