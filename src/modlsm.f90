@@ -2461,11 +2461,11 @@ subroutine init_lsm_tiles
       tile(ilu) % obuk   (:,:) = -0.1
 
       !$acc update device(tile(ilu)%thlskin)
-!!$omp target update to(tile(ilu)%thlskin)
+!$omp target update to(tile(ilu)%thlskin)
       !$acc update device(tile(ilu)%qtskin)
-!!$omp target update to(tile(ilu)%qtskin)
+!$omp target update to(tile(ilu)%qtskin)
       !$acc update device(tile(ilu)%obuk)
-!!$omp target update to(tile(ilu)%obuk)
+!$omp target update to(tile(ilu)%obuk)
     end do
 
 end subroutine init_lsm_tiles

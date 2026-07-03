@@ -144,7 +144,7 @@ contains
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
       !$acc end host_data
-!!$omp target update to(buffer)
+!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
 !!$omp target teams loop private(ii) collapse(4)&
@@ -221,7 +221,7 @@ contains
       call MPI_ALLTOALL(MPI_IN_PLACE, 0, MPI_DTYPE, &
                         buffer, n1*n2*n3, MPI_DTYPE, commrow, mpierr)
       !$acc end host_data
-!!$omp target update to(buffer)
+!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
 !!$omp target teams loop private(ii) collapse(4)&
@@ -312,7 +312,7 @@ contains
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commcol, mpierr)
       !$acc end host_data
-!!$omp target update to(buffer)
+!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
 !!$omp target teams loop private(ii) collapse(4)&
@@ -403,7 +403,7 @@ contains
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commcol, mpierr)
       !$acc end host_data
-!!$omp target update to(buffer)
+!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
 !!$omp target teams loop private(ii) collapse(4)&
@@ -481,7 +481,7 @@ contains
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commrow, mpierr)
       !$acc end host_data
-!!$omp target update to(buffer)
+!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
 !!$omp target teams loop private(ii) collapse(4)&
@@ -559,7 +559,7 @@ contains
                         buffer, n1*n2*n3, MPI_DTYPE, &
                         commrow, mpierr)
       !$acc end host_data
-!!$omp target update to(buffer)
+!$omp target update to(buffer)
 
       !$acc parallel loop collapse(4) default(present) private(ii)
 !!$omp target teams loop private(ii) collapse(4)&
