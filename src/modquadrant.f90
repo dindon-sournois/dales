@@ -292,7 +292,7 @@ contains
 !> General routine, does the timekeeping
   subroutine quadrant
     use modglobal, only : rk3step,timee,dt_lim
-#if defined(DALES_GPU)
+#if defined(_OPENACC)
     use modgpu, only: update_host
 #endif
     implicit none
@@ -304,7 +304,7 @@ contains
     end if
     if (timee>=tnext) then
       tnext = tnext+idtav
-#if defined(DALES_GPU)
+#if defined(_OPENACC)
       call update_host
 #endif
       do isamp = 1,isamptot
