@@ -225,7 +225,7 @@ SAVE
   real, allocatable :: svflux  (:,:,:)        !<  Kinematic scalar flux [- m/s]
   real              :: min_horv = .1          !<  minimum surface wind speed for drag calculation
   !$acc declare create(min_horv)
-!!$omp declare target (min_horv)
+!$omp declare target (min_horv)
 
   ! Surface gradients of prognostic variables
   real, allocatable :: dudz  (:,:)            !<  U-wind gradient in surface layer [1/s]
@@ -316,7 +316,7 @@ SAVE
   real, allocatable :: tskininp(:,:,:), ttskin(:)
   integer           :: nttskin
   !$acc declare create(xpatches, ypatches)
-!!$omp declare target (xpatches,ypatches)
+!$omp declare target (xpatches,ypatches)
 end module modsurfdata
 
 ! Code was translated using: /users/lucidolo/src/intel-application-migration-tool-for-openacc-to-openmp/src/intel-application-migration-tool-for-openacc-to-openmp -no-openacc-conditional-define -no-translated-openmp-conditional-define -no-original-openmp-conditional-define -no-force-backup -async=ignore -overwrite-input -present=keep -no-suppress-openacc -experimental-kernels-support src/tstep.f90
