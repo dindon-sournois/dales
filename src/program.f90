@@ -279,6 +279,7 @@ program DALES
     !-----------------------------------------------------
     !   3.2   RADIATION
     !-----------------------------------------------------
+        call update_gpu
         call radiation !radiation scheme
         call samptend(tend_rad)
     
@@ -287,7 +288,6 @@ program DALES
     !-----------------------------------------------------
         call lsm
         call drydep
-        call update_gpu
         call surface
         host_is_updated=.false.; call update_host
     
