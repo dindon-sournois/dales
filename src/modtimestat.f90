@@ -423,9 +423,6 @@ contains
     use modmpi,     only : mpi_sum,mpi_max,mpi_min,comm3d,mpierr,myid, D_MPI_ALLREDUCE
     use modstat_nc,  only : lnetcdf, writestat_nc,nc_fillvalue
     use modlsm,     only : tile, f1, f2b, nlu, lags, an_co2, resp_co2
-#if defined(_OPENACC)
-    use modgpu, only: update_host
-#endif
     use modraddata, only :  lwd,lwu,swd,swu,lwdca,lwuca,swdca,swuca, &
                             iradiation, doclearsky
     use modtracers, only : get_tracer_index
@@ -560,7 +557,7 @@ contains
     zbaseminl = zf(kmax)
     store_zi = .true.
 
-    call calcblheight_cpu
+    call calcblheight
 
     store_zi = .false.
 
@@ -602,15 +599,16 @@ contains
     else
       !$acc parallel loop collapse(2) default(present) reduction(+:ccl, qlintavl, qtintavl) &
       !$acc& reduction(max: qlintmaxl) private(qlint, qtint) async
-!!$omp target teams loop private(qlint,qtint) reduction(+:ccl,qlintavl,&
-!!$omp qtintavl) reduction(max:qlintmaxl) collapse(2)&
-!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+      ! FIXME: check if that reduction behave properly in omp
+      !$omp target teams loop private(qlint,qtint) reduction(+:ccl,qlintavl,&
+      !$omp qtintavl) reduction(max:qlintmaxl) collapse(2)&
+      !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           qlint = 0.
           qtint = 0.
           !$acc loop reduction(+: qlint, qtint)
-!!$omp loop reduction(+:qlint,qtint)
+          !$omp loop reduction(+:qlint,qtint)
           do k = 1, kmax
             qlint = qlint + ql0(i,j,k)*rhof(k)*dzf(k)
             qtint = qtint + qt0(i,j,k)*rhof(k)*dzf(k)
@@ -632,14 +630,14 @@ contains
        endif
        !$acc parallel loop collapse(2) default(present) reduction(+:qrintavl) &
       !$acc& private(qrint) async
-!!$omp target teams loop private(qrint) reduction(+:qrintavl)&
-!!$omp collapse(2) defaultmap(present:aggregate)&
-!!$omp defaultmap(present:allocatable)
+      !$omp target teams loop private(qrint) reduction(+:qrintavl)&
+      !$omp collapse(2) defaultmap(present:aggregate)&
+      !$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           qrint = 0.0
           !$acc loop reduction(+: qrint)
-!!$omp loop reduction(+:qrint)
+          !$omp loop reduction(+:qrint)
           do k = 1, kmax
             qrint = qrint + sv0(i, j, k, iqr) * rhof(k) * dzf(k)
           end do
@@ -666,9 +664,9 @@ contains
       end do
     else
       !$acc parallel loop collapse(2) default(present) reduction(+: zbaseavl) reduction(min: zbaseminl) async
-!!$omp target teams loop reduction(+:zbaseavl) reduction(min:zbaseminl)&
-!!$omp collapse(2) defaultmap(present:aggregate)&
-!!$omp defaultmap(present:allocatable)
+      !$omp target teams loop reduction(+:zbaseavl) reduction(min:zbaseminl)&
+      !$omp collapse(2) defaultmap(present:aggregate)&
+      !$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           !$acc loop seq
@@ -716,8 +714,8 @@ contains
       end do
     else
       !$acc parallel loop collapse(2) default(present) reduction(+:ztopavl) private(ztop)
-!!$omp target teams loop private(ztop) reduction(+:ztopavl) collapse(2)&
-!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+      !$omp target teams loop private(ztop) reduction(+:ztopavl) collapse(2)&
+      !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           ztop = 0.0
@@ -740,8 +738,8 @@ contains
   !     -------------------------
 
     !$acc parallel loop collapse(3) default(present) reduction(+: tke_totl) async
-!!$omp target teams loop reduction(+:tke_totl) collapse(3)&
-!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+    !$omp target teams loop reduction(+:tke_totl) collapse(3)&
+    !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
     do k = 1, kmax
       do j = 2, j1
         do i = 2, i1
@@ -785,8 +783,8 @@ contains
     tstl = 0
     qstl = 0
     !$acc parallel loop collapse(2) default(present) reduction(+:ustl,tstl,qstl) async
-!!$omp target teams loop reduction(+:ustl,tstl,qstl) collapse(2)&
-!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+    !$omp target teams loop reduction(+:ustl,tstl,qstl) collapse(2)&
+    !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
     do j = 2, j1
        do i = 2, i1
           ustl = ustl + ustar(i,j)
@@ -799,8 +797,8 @@ contains
        thlfluxl = 0
        qtfluxl  = 0
        !$acc parallel loop collapse(2) default(present) reduction(+:thlfluxl,qtfluxl) async
-!!$omp target teams loop reduction(+:thlfluxl,qtfluxl) collapse(2)&
-!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+       !$omp target teams loop reduction(+:thlfluxl,qtfluxl) collapse(2)&
+       !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
        do j = 2, j1
           do i = 2, i1
              thlfluxl = thlfluxl + thlflux(i, j)
@@ -832,8 +830,8 @@ contains
     if (imicro == imicro_sice .or. imicro == imicro_sice2 .or. imicro == imicro_bulk) then
        pravl = 0
        !$acc parallel loop collapse(2) default(present) reduction(+:pravl)
-!!$omp target teams loop reduction(+:pravl) collapse(2)&
-!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+       !$omp target teams loop reduction(+:pravl) collapse(2)&
+       !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
        do j = 2, j1
           do i = 2, i1
              pravl = pravl + precep(i,j,1)
@@ -1094,9 +1092,9 @@ contains
 
       !$acc parallel loop gang vector collapse(2) default(present) &
       !$acc reduction(+: s_swd_surf, s_swu_surf, s_lwd_surf, s_lwu_surf) async
-!!$omp target teams loop reduction(+:s_swd_surf,s_swu_surf,s_lwd_surf,&
-!!$omp s_lwu_surf) collapse(2) defaultmap(present:aggregate)&
-!!$omp defaultmap(present:allocatable)
+      !$omp target teams loop reduction(+:s_swd_surf,s_swu_surf,s_lwd_surf,&
+      !$omp s_lwu_surf) collapse(2) defaultmap(present:aggregate)&
+      !$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           s_swd_surf = s_swd_surf + swd(i,j,1)
@@ -1110,9 +1108,9 @@ contains
 
       !$acc parallel loop gang vector collapse(2) default(present) &
       !$acc reduction(+: s_swd_toa, s_swu_toa, s_lwu_toa) async
-!!$omp target teams loop reduction(+:s_swd_toa,s_swu_toa,s_lwu_toa)&
-!!$omp collapse(2) defaultmap(present:aggregate)&
-!!$omp defaultmap(present:allocatable)
+      !$omp target teams loop reduction(+:s_swd_toa,s_swu_toa,s_lwu_toa)&
+      !$omp collapse(2) defaultmap(present:aggregate)&
+      !$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           s_swd_toa = s_swd_toa + swd(i,j,k1)
@@ -1125,9 +1123,9 @@ contains
 
       !$acc parallel loop gang vector collapse(2) default(present) &
       !$acc reduction(+: s_swd_tom, s_swu_tom, s_lwd_tom, s_lwu_tom) async
-!!$omp target teams loop reduction(+:s_swd_tom,s_swu_tom,s_lwd_tom,&
-!!$omp s_lwu_tom) collapse(2) defaultmap(present:aggregate)&
-!!$omp defaultmap(present:allocatable)
+      !$omp target teams loop reduction(+:s_swd_tom,s_swu_tom,s_lwd_tom,&
+      !$omp s_lwu_tom) collapse(2) defaultmap(present:aggregate)&
+      !$omp defaultmap(present:allocatable)
       do j = 2, j1
         do i = 2, i1
           s_swd_tom = s_swd_tom + swd(i,j,kmax)
@@ -1144,9 +1142,9 @@ contains
         !$acc parallel loop gang vector collapse(2) default(present) &
         !$acc reduction(+: s_swd_surf_ca, s_swu_surf_ca, &
         !$acc              s_lwd_surf_ca, s_lwu_surf_ca) async
-!!$omp target teams loop reduction(+:s_swd_surf_ca,s_swu_surf_ca,&
-!!$omp s_lwd_surf_ca,s_lwu_surf_ca) collapse(2)&
-!!$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
+        !$omp target teams loop reduction(+:s_swd_surf_ca,s_swu_surf_ca,&
+        !$omp s_lwd_surf_ca,s_lwu_surf_ca) collapse(2)&
+        !$omp defaultmap(present:aggregate) defaultmap(present:allocatable)
         do j = 2, j1
           do i = 2, i1
             s_swd_surf_ca = s_swd_surf_ca + swdca(i,j,1)
@@ -1160,9 +1158,9 @@ contains
 
         !$acc parallel loop gang vector collapse(2) default(present) &
         !$acc reduction(+: s_swu_toa_ca, s_lwu_toa_ca) async
-!!$omp target teams loop reduction(+:s_swu_toa_ca,s_lwu_toa_ca)&
-!!$omp collapse(2) defaultmap(present:aggregate)&
-!!$omp defaultmap(present:allocatable)
+        !$omp target teams loop reduction(+:s_swu_toa_ca,s_lwu_toa_ca)&
+        !$omp collapse(2) defaultmap(present:aggregate)&
+        !$omp defaultmap(present:allocatable)
         do j = 2, j1
           do i = 2, i1
             s_swu_toa_ca = s_swu_toa_ca + swuca(i,j,k1)
@@ -1174,9 +1172,9 @@ contains
 
         !$acc parallel loop gang vector collapse(2) default(present) &
         !$acc reduction(+: s_swu_tom_ca, s_lwu_tom_ca) async
-!!$omp target teams loop reduction(+:s_swu_tom_ca,s_lwu_tom_ca)&
-!!$omp collapse(2) defaultmap(present:aggregate)&
-!!$omp defaultmap(present:allocatable)
+        !$omp target teams loop reduction(+:s_swu_tom_ca,s_lwu_tom_ca)&
+        !$omp collapse(2) defaultmap(present:aggregate)&
+        !$omp defaultmap(present:allocatable)
         do j = 2, j1
           do i = 2, i1
             s_swu_tom_ca = s_swu_tom_ca + swuca(i,j,kmax)
