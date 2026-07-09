@@ -376,7 +376,6 @@ program DALES
           call genstat  !Genstat must preceed all other statistics that could write in the same netCDF file (unless stated otherwise
           call write_profiles
           call radstat
-          host_is_updated=.false.; call update_host
           call lsmstat
           !call depstat
           call sampling
@@ -389,6 +388,7 @@ program DALES
           call docape
           !call projection
           call cloudfield
+          host_is_updated=.false.; call update_host
           call fielddump
           call radfield
           !call particles
