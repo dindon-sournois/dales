@@ -389,16 +389,16 @@ program DALES
           !call projection
           call cloudfield
           call fielddump
-          host_is_updated=.false.; call update_host
           call radfield
           !call particles
-    
+
           call budgetstat
           call varbudget
           call msebudg2
           !call stressbudgetstat
           call heterostats
-    
+          host_is_updated=.false.; call update_host
+
           call testwctime
           call writerestartfiles
        else
